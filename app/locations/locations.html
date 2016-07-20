@@ -1,0 +1,39 @@
+<h2>Location</h2>
+<p>Restrict your dataset to particular states, or draw a
+bounding box on the map in the Region Selector.</p>
+<ul class="nav nav-tabs">
+  <li role="presentation" *ngFor="let tab of tabs"
+                [class.active]=isActiveTab(tab.view)
+                (click)=onClickTab(tab)
+                onclick="initMap()"><a href="javascript:;">{{tab.title}}</a>
+  </li>
+</ul>
+<div class="panel panel-default">
+  <div id="mainView" class="panel-body">
+    <div id="statesView" [class.hidden]="isActiveTab('regionView')" style="overflow-y: scroll; height:400px;">
+      <table class="table table-striped table-hover table-responsive header-fixed">
+        <tr *ngFor="let state of states">
+          <td><input type="checkbox" name="state" [(ngModel)]="state.selected" (change)="toggleState(state)"></td>
+          <td>{{state.state_code}} ({{state.state_name}})</td>
+        </tr>
+      </table>
+    </div>
+    <div id="regionView" [class.hidden]="isActiveTab('statesView')" style="height:400px;">
+      <div id="map_canvas"></div>
+      <div class="panel panel-default">
+        <p>Pan and zoom to find an area of interest. Hold left-shift and drag the mouse to set a coordinate box.</p>
+        <div class="panel-body">
+          <div id="necoords"></div>
+          <div id="swcoords"></div>
+          <div id="ObservationBottomLeftX1"></div>
+          <div id="ObservationBottomLeftY1"></div>
+          <div id="ObservationUpperRightX2"></div>
+          <div id="ObservationUpperRightY2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button type="button" class="btn btn-default" (click)="submitLocation()">Set Location</button>
+<button type="button" class="btn btn-default" (click)="onSelect('Species')">Next</button>
+

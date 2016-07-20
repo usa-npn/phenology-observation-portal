@@ -1,0 +1,40 @@
+div.column {
+  height: 300px;
+  width: 100px; /* Account for margins + border values */
+  float: left;
+  padding: 5px 15px;
+  margin: 0px 5px 5px 5px;
+}
+
+.btn-group button:focus {outline:0;}
+
+button {
+  width: 132px;
+}
+
+.ng-valid {
+  border-left: 5px solid #42A948; /* green */
+}
+.ng-invalid {
+  border-left: 5px solid #a94442; /* red */
+}
+.panel-body > .table{
+  margin-bottom:0px;
+}
+.panel-heading-sm{
+  height: 28px;
+  padding: 4px 10px;
+}
+
+.panel-body-sm{
+  padding: 5px 10px;
+}
+
+.error {
+  color: #a94442;
+  height: 20px;
+  padding: 0px;
+  margin: 0px;
+  text-align: right;
+  font-weight: bold;
+}

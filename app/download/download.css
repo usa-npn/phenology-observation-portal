@@ -1,0 +1,38 @@
+.btn-group-xs button {
+    width: 50px;
+    height: 30px;
+}
+
+.panel-body-sm{
+    padding: 5px 5px 5px 5px;
+}
+
+.container {
+    width: 850px;
+}
+
+.badge {
+    float: right;
+}
+
+.glyphicon-remove {
+    color: red;
+}
+
+.panel-heading-sm{
+    height: 28px;
+    padding: 4px 10px;
+}
+
+.list-group-item {
+height: 32px;
+padding: 6px 10px 2px 10px;
+}
+
+.panel-body > .list-group {
+    margin-bottom:2px;
+}
+
+.btn-long {
+    width: 200px;
+}

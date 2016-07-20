@@ -1,0 +1,5 @@
+.btn-group button {
+    height: 100px;
+}
+
+.btn-group button:focus {outline:0;}

@@ -1,0 +1,48 @@
+<h2>Output Fields</h2>
+<p>Select which optional fields and climate data fields you would like to appear in your data output file.</p>
+<ul class="nav nav-tabs">
+    <li role="presentation" *ngFor="let tab of tabs" [class.active]=isActiveTab(tab.view) (click)=onClickTab(tab)>
+        <a href="javascript:;">{{tab.title}}</a>
+    </li>
+</ul>
+<div class="panel panel-default">
+    <div id="mainView" class="panel-body">
+        <div id="optionalFieldsView" class="list-group" [class.hide]="!isActiveTab('optionalFieldsView')" style="height:400px;">
+            <table class="table table-striped table-hover table-responsive header-fixed table-condensed">
+                <tr><td><input type="checkbox" name="selectAllOptional" value="{{selectAllOptional}}" [(ngModel)]="selectAllOptional" (change)="selectAll()"> <strong>Select All</strong></td></tr>
+                <tr *ngFor="let optionalField of getNonQcFields()">
+                    <td><input type="checkbox" name="optionalField" value="{{optionalField.machine_name}}" [(ngModel)]="optionalField.selected" (change)="toggleOptionalField(optionalField)">
+                        <a class="outputfield" href="javascript:;" data-toggle="tooltip" title="{{optionalField.field_description}}">{{optionalField.field_name}}</a>
+                    </td>
+                </tr>
+                <tr style="height: 40px; line-height: 40px; vertical-align:middle"><td style="height: 40px; line-height: 40px; vertical-align:middle" align="center"><span class="glyphicon glyphicon-option-horizontal"></span>  <strong>Quality Control Fields</strong>  <span class="glyphicon glyphicon-option-horizontal"></span></td></tr>
+                <tr *ngFor="let optionalField of getQcFields()">
+                    <td><input type="checkbox" name="optionalField" value="{{optionalField.machine_name}}" [(ngModel)]="optionalField.selected" (change)="toggleOptionalField(optionalField)">
+                        <a class="outputfield" href="javascript:;" data-toggle="tooltip" title="{{optionalField.field_description}}">{{optionalField.field_name}}</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="climateFieldsView" [class.hide]="!isActiveTab('climateFieldsView')" style="height:400px;">
+            <table class="table table-striped table-hover table-responsive header-fixed table-condensed">
+            <tr><td><input type="checkbox" name="selectAllClimate" value="{{selectAllClimate}}" [(ngModel)]="selectAllClimate" (change)="selectAll()"> <strong>Select All</strong></td></tr>
+            <tr *ngFor="let climateField of climateFields">
+                <td><input type="checkbox" name="climateField" value="{{climateField.machine_name}}" [(ngModel)]="climateField.selected" (change)="toggleClimateField(climateField)">
+                    <a class="outputfield" href="javascript:;" data-toggle="tooltip" title="{{climateField.field_description}}">{{climateField.field_name}}</a>
+                </td>
+            </tr>
+            </table>
+        </div>
+        <div id="defaultFieldsView" [class.hide]="!isActiveTab('defaultFieldsView')" style="height:400px;">
+            <table class="table table-striped table-hover table-responsive header-fixed">
+                <tr *ngFor="let defaultField of defaultFields">
+                    <td>
+                        <a class="outputfield" href="javascript:;" data-toggle="tooltip" title="{{defaultField.field_description}}">{{defaultField.field_name}}</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<button type="button" class="btn btn-default" (click)="submitOutputFields()">Set Optional Fields</button>
+<button type="button" class="btn btn-default" (click)="onSelect('AncillaryData')">Next</button>

@@ -1,0 +1,319 @@
+<div class="panel panel-default">
+    <div class="panel-heading text-center">
+        <h2 class="panel-title">Your Download</h2>
+    </div>
+    <div class="panel-body panel-body-sm">
+        <ul [class.hide]="!downloadTypeIsSet()" class="list-group">
+        <li class="list-group-item" [class.hide]="!downloadTypeIsSet()">{{getDownloadType()}} Data Set</li>
+        <li class="list-group-item" [class.hide]="getObservationCount() != -1"  ><span class="badge"><i class="fa fa-refresh fa-spin" style="font-size: 12px"></i></span>Estimated Records:</li>
+        <li class="list-group-item" [class.hide]="getObservationCount() == -1" ><span class="badge">{{getObservationCount()}}</span>Estimated Records:</li>
+        </ul>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-sm-3">
+                <h3 class="panel-title panel-title-sm" style="line-height: 40px">Filters</h3>
+            </div>
+            <div class="col-sm-9">
+                <div class="btn-group btn-group-xs" role="group" aria-label="...">
+                    <button type="button" class="btn btn-xs btn-default" aria-label="Right Align" data-toggle="tooltip" data-placement="top" title="view filters" (click)="submitActivePage();filterModal.open()">
+                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                    </button>
+                    <button type="button" class="btn btn-xs btn-default" aria-label="Right Align" data-toggle="tooltip" data-placement="top" title="save search" >
+                        <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>
+                    </button>
+                    <button type="button" class="btn btn-xs btn-default" aria-label="Right Align" data-toggle="tooltip" data-placement="top" title="delete search" (click)="deleteFiltersModal.open()">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body panel-body-sm">
+        <ul class="list-group">
+            <li [class.hide]="getSelectedDate() == ''" class="list-group-item"><span class="badge">{{getSelectedDate()}}</span>Date:</li>
+            <li [class.hide]="!getDataPrecision()" class="list-group-item"><span class="badge">{{getDataPrecision()}}</span>Data Precision:</li>
+            <li [class.hide]="getSelectedStates().length == 0" class="list-group-item"><span class="badge">{{getSelectedStates().length}}</span>States:</li>
+            <li [class.hide]="!getSelectedExtent().bottom_left_x1" class="list-group-item"><span class="badge">1</span>Regions:</li>
+            <li [class.hide]="getSelectedSpecies().length == 0" class="list-group-item"><span class="badge">{{getSelectedSpecies().length}}</span>Species:</li>
+            <li [class.hide]="getSelectedPhenophases().length == 0" class="list-group-item"><span class="badge">{{getSelectedPhenophases().length}}</span>Phenophases:</li>
+            <li [class.hide]="getSelectedPartnerGroups().length == 0" class="list-group-item"><span class="badge">{{getSelectedPartnerGroups().length}}</span>PartnerGroups:</li>
+            <li [class.hide]="getSelectedIntegratedDatasets().length == 0" class="list-group-item"><span class="badge">{{getSelectedIntegratedDatasets().length}}</span>Datasets:</li>
+            <li [class.hide]="getSelectedOptionalFields().length == 0" class="list-group-item"><span class="badge">{{getSelectedOptionalFields().length}}</span>Output Fields:</li>
+            <li [class.hide]="getSelectedAncillaryData().length == 0" class="list-group-item"><span class="badge">{{getSelectedAncillaryData().length}}</span>Datasheets:</li>
+        </ul>
+    </div>
+</div>
+
+<modal #citationModal>
+    <modal-header>
+        <h4 class="modal-title">Download Error</h4>
+    </modal-header>
+    <modal-body>
+        Please check that you have read and acknowledged the USA-NPN data citation policy.
+    </modal-body>
+    <modal-footer><button type="button" class="btn btn-default" (click)="citationModal.close()">Close</button></modal-footer>
+</modal>
+
+<modal #noDateModal>
+    <modal-header>
+        <h4 class="modal-title">Download Warning</h4>
+    </modal-header>
+    <modal-body>
+        You have not yet selected a data range. The resulting download may take some time. Would you like to continue?
+    </modal-body>
+    <modal-footer>
+        <button type="button" class="btn btn-danger" (click)="noDateModal.close()">Cancel</button>
+        <button type="button" class="btn btn-success" (click)="noDateModal.close(); continueDownload()">Continue</button>
+    </modal-footer>
+</modal>
+
+<modal #deleteFiltersModal>
+    <modal-header>
+        <h4 class="modal-title">Reset Search</h4>
+    </modal-header>
+    <modal-body>
+        Warning, you are about to remove all filters and return to the get started page.
+    </modal-body>
+    <modal-footer>
+        <button type="button" class="btn btn-danger" (click)="deleteFiltersModal.close();">Cancel</button>
+        <button type="button" class="btn btn-success" (click)="deleteFiltersModal.close(); resetFilters('GetStarted')">Continue</button>
+    </modal-footer>
+</modal>
+
+<modal #noFiltersModal>
+    <modal-header>
+        <h4 class="modal-title">Download Warning</h4>
+    </modal-header>
+    <modal-body>
+        You have not yet set any Filters. The resulting download may take some time. Would you like to continue?
+    </modal-body>
+    <modal-footer>
+        <button type="button" class="btn btn-danger btn-long" (click)="noFiltersModal.close()">No, let me add filters</button>
+        <button type="button" class="btn btn-success btn-long" (click)="noFiltersModal.close(); continueDownload()">Yes, continue with download</button>
+    </modal-footer>
+</modal>
+
+<modal #downloadModal>
+    <modal-header>
+        <h1 class="modal-title" [class.hide]="getDownloadStatus() != 'complete'">Download Complete</h1>
+        <h1 class="modal-title" [class.hide]="getDownloadStatus() != 'error'">Download Error</h1>
+        <h1 class="modal-title" [class.hide]="getDownloadStatus() != 'downloading'"><i class="fa fa-refresh fa-spin" style="font-size:30px"></i>  Downloading</h1>
+    </modal-header>
+    <modal-body>
+        <div class="container">
+        <div class="jumbotron">
+            <p [class.hide]="getDownloadStatus() != 'error'">There was an error downloading your data. Please try again later.</p>
+            <p [class.hide]="getDownloadStatus() != 'downloading'">Please do not close your browser. This may take up to 20 minutes to process. While you're waiting:</p>
+            <p [class.hide]="getDownloadStatus() != 'complete'">Your data has finished downloading. Feel free to:</p>
+            <div [class.hide]="getDownloadStatus() == 'error'">
+                <ul class="list-group">
+                    <li class="list-group-item"><p><a target="_blank" href="http://www.usanpn.org">Sign up</a> for our researcher's newsletter.</p></li>
+                    <li class="list-group-item"><p><a target="_blank" href="http://www.usanpn.org">Provide feedback</a> about the tool.</p></li>
+                </ul>
+                <p>Clicking these links will not disrupt your download progress.</p>
+            </div>
+        </div>
+        </div>
+    </modal-body>
+    <modal-footer><button type="button" class="btn btn-default" (click)="downloadModal.close()">Close</button></modal-footer>
+</modal>
+
+<modal #filterModal>
+    <modal-header>
+        <h1 class="modal-title">Selected Filters</h1>
+    </modal-header>
+    <modal-body>
+        <p>Below is a summary of filters you have selected for your download. You can expand sections for more details and to remove unwanted filters by clicking the red x.</p>
+        <div class="panel-group" id="filterAccordion">
+            <div class="panel panel-default" [class.hide]="_npnPortalService.getDateFilter() == ''">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        Date Range: <span class="badge">{{getSelectedDate()}}</span>
+                    </h4>
+                </div>
+            </div>
+            <div class="panel panel-default" [class.hide]="!_npnPortalService.dataPrecision">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        Data Precision: <span class="badge">{{getDataPrecision()}}</span>
+                    </h4>
+                </div>
+            </div>
+            <div class="panel panel-default" [class.hide]="_npnPortalService.getSelectedStates().length == 0">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#filterAccordion" href="#stateCollapse">
+                            States: <span class="badge">{{getSelectedStates().length}}</span></a>
+                    </h4>
+                </div>
+                <div id="stateCollapse" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div id="statesView" style="overflow-y: scroll; height:100px;">
+                            <table class="table table-striped table-hover table-responsive header-fixed">
+                                <tr *ngFor="let state of getSelectedStates()">
+                                    <td><a (click)="removeState(state)">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </a> {{state.state_code}} ({{state.state_name}})</td>
+                                </tr>
+                            </table>
+                        </div>
+                        </div>
+                </div>
+            </div>
+            <div class="panel panel-default" [class.hide]="!_npnPortalService.getSelectedExtent().bottom_left_x1">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#filterAccordion" href="#locationCollapse">
+                            Region: <span class="badge">1</span></a>
+                    </h4>
+                </div>
+                <div id="locationCollapse" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <ul class="list-group">
+                            <li class="list-group-item"><strong>North East Corner:</strong> {{getSelectedExtent().upper_right_x2}}, {{getSelectedExtent().upper_right_y2}}</li>
+                            <li class="list-group-item"><strong>South West Corner:</strong> {{getSelectedExtent().bottom_left_x1}}, {{getSelectedExtent().bottom_left_y1}}</li>
+                        </ul>
+                       </div>
+                </div>
+            </div>
+            <div class="panel panel-default" [class.hide]="_npnPortalService.getSelectedSpecies().length == 0">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#filterAccordion" href="#speciesCollapse">
+                            Species: <span class="badge">{{getSelectedSpecies().length}}</span></a>
+                    </h4>
+                </div>
+                <div id="speciesCollapse" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div id="speciesView" style="overflow-y: scroll; height:100px;">
+                            <table class="table table-striped table-hover table-responsive header-fixed">
+                                <tr *ngFor="let sp of getSelectedSpecies()">
+                                    <td><a (click)="removeSpecies(sp)">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </a> {{sp.common_name}}</td>
+                                    <td>{{sp.genus + ' ' + sp.species}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        </div>
+                </div>
+            </div>
+            <div class="panel panel-default" [class.hide]="_npnPortalService.getSelectedPhenophases().length == 0">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#filterAccordion" href="#phenophaseCollapse">
+                            Phenophases: <span class="badge">{{getSelectedPhenophases().length}}</span></a>
+                    </h4>
+                </div>
+                <div id="phenophaseCollapse" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div id="phenophaseView" style="overflow-y: scroll; height:100px;">
+                            <table class="table table-striped table-hover table-responsive header-fixed">
+                                <tr *ngFor="let phenophase of getSelectedPhenophases()">
+                                    <td><a (click)="removePhenophase(phenophase)">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </a> {{phenophase.phenophase_category}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        </div>
+                </div>
+            </div>
+            <div class="panel panel-default" [class.hide]="_npnPortalService.getSelectedPartnerGroups().length == 0">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#filterAccordion" href="#partnerGroupCollapse">
+                            Partner Groups: <span class="badge">{{getSelectedPartnerGroups().length}}</span></a>
+                    </h4>
+                </div>
+                <div id="partnerGroupCollapse" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div id="partnerGroupView" style="overflow-y: scroll; height:100px;">
+                            <table class="table table-striped table-hover table-responsive header-fixed">
+                                <tr *ngFor="let group of getSelectedPartnerGroups()">
+                                    <td><a (click)="removePartnerGroup(group)">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </a> {{group.network_name}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default" [class.hide]="_npnPortalService.getSelectedDatasets().length == 0">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#filterAccordion" href="#integratedDatasetsCollapse">
+                            Datasets: <span class="badge">{{getSelectedIntegratedDatasets().length}}</span></a>
+                    </h4>
+                </div>
+                <div id="integratedDatasetsCollapse" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div id="datasetView" style="overflow-y: scroll; height:100px;">
+                            <table class="table table-striped table-hover table-responsive header-fixed">
+                                <tr *ngFor="let dataset of getSelectedIntegratedDatasets()">
+                                    <td><a (click)="removeIntegratedDataset(dataset)">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </a> {{dataset.name}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default" [class.hide]="_npnPortalService.getSelectedOptionalFields().length == 0">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#filterAccordion" href="#outputFieldsCollapse">
+                            Output Fields: <span class="badge">{{getSelectedOptionalFields().length}}</span></a>
+                    </h4>
+                </div>
+                <div id="outputFieldsCollapse" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div id="outputFieldView" style="overflow-y: scroll; height:100px;">
+                            <table class="table table-striped table-hover table-responsive header-fixed">
+                                <tr *ngFor="let outputField of getSelectedOptionalFields()">
+                                    <td><a (click)="removeOptionalField(outputField)">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </a> {{outputField.field_name}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default" [class.hide]="_npnPortalService.getSelectedDatasheets().length == 0">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#filterAccordion" href="#ancillaryDataCollapse">
+                            Ancillary Data: <span class="badge">{{getSelectedAncillaryData().length}}</span></a>
+                    </h4>
+                </div>
+                <div id="ancillaryDataCollapse" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div id="ancillaryDataView" style="overflow-y: scroll; height:100px;">
+                            <table class="table table-striped table-hover table-responsive header-fixed">
+                                <tr *ngFor="let datasheet of getSelectedAncillaryData()">
+                                    <td><a (click)="removeAncillaryData(datasheet)">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </a> {{datasheet.name}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </modal-body>
+    <modal-footer><button type="button" class="btn btn-default" (click)="filterModal.close()">Close</button></modal-footer>
+</modal>
+
+<div [class.hide]="!(downloadTypeIsSet() && dateRangeIsValid())">
+    <div class="well">
+    <input type="checkbox" name="agree" value="agree" [(ngModel)]="hasAgreed"> I have read and acknowledged the USA-NPN data citation policy.
+        <button type="button" class="btn btn-block btn-success" (click)="download()">Download</button>
+    </div>
+</div>

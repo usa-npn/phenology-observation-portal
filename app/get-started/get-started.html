@@ -1,0 +1,34 @@
+<!--<h1 [hidden]="allDataLoaded()"><i class="fa fa-refresh fa-spin" style="font-size:30px"></i>  Loading</h1>-->
+<div [hidden]="allDataLoaded()">
+  <h1>Loading</h1>
+  <div class="progress">
+    <div class="progress-bar progress-bar-info progress-bar-striped active" aria-valuemin="0" aria-valuemax="100" role="progressbar" aria-valuenow="{dataLoaded()}" [ngStyle]="{width: dataLoaded() + '%'}"></div>
+  </div>
+</div>
+<div [hidden]="!allDataLoaded()">
+  <h2>Introduction</h2>
+  <p>Download customized datasets from the National Phenology
+    Database using the filters in the menu at left to specify dates,
+    locations, species, and phenophases of interest.</p>
+  <h2>Get Started!</h2>
+  <div class="btn-group btn-group-lg" role="group" aria-label="...">
+    <button type="button" class="btn btn-default" [class.active]="isSelected('raw')" (click)="setDownloadType('raw')">Raw</button>
+    <button type="button" class="btn btn-default" [class.active]="isSelected('summarized')" (click)="setDownloadType('summarized')">Individual<br/>Summarized</button>
+    <button type="button" class="btn btn-default" [class.active]="isSelected('siteLevelSummarized')" (click)="setDownloadType('siteLevelSummarized')">Site Level<br/>Summarized</button>
+    <button type="button" class="btn btn-default" [class.active]="isSelected('savedSearch')">Saved Search</button>
+  </div>
+  <br/><br/>
+  <div class="panel panel-default" [class.hide]="!downloadTypeIsSet()">
+    <div class="panel-heading"><strong>Data Description</strong></div>
+    <div class="panel-body" [class.hide]="!isSelected('raw')">
+        <strong>Raw Status Data: </strong>This data type includes raw phenophase status records of presence (“yes”) or absence (“no”) of the phenophase. Each row represents the status of one phenophase on one individual plant or animal species at a given site, on a single date and time.
+    </div>
+    <div class="panel-body" [class.hide]="!isSelected('summarized')">
+        <strong>Individual Level Summarized Data: </strong>This data type includes estimates of the dates of phenophase onsets and ends for individual plants and for animal species at a site during a user-defined time period. Each row represents a series of consecutive "yes" phenophase status records, beginning with the date of the first "yes" and ending with the date of the last "yes", submitted for a given phenophase on a given organism. Note that more than one consecutive series for an organism may be present within a single growing season or year.
+    </div>
+    <div class="panel-body" [class.hide]="!isSelected('siteLevelSummarized')">
+        <strong>Site Level Summarized Data: </strong>This data type includes estimates of the overall onset and end of phenophase activity for plant and animal species at a site over a user-defined time period. Each row represents the duration of activity of a given phenophase on a given species, beginning with the date of the first observed “yes” and ending with the date of the last observed “yes” of the user-defined time period. For plant species, where multiple individuals are monitored at a site, the dates given are means for the dates of first and last “yes” for each individual plant. Note that a phenophase may have ended and restarted during the overall period of its activity at the site. These more fine-scale patterns can be explored from the individual-level summarized data.
+    </div>
+  </div>
+  <button type="button" class="btn btn-default" [class.hide]="!downloadTypeIsSet()" (click)="onSelect('DateRange')">Next</button>
+</div>

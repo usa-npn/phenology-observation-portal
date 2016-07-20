@@ -1,0 +1,45 @@
+<h2>Metadata</h2>
+<p>Information about our raw and summarized data types, as well as field-level metadata, can be found from the links below.</p>
+
+<div>
+    <table class="table table-striped table-bordered table-hover table-responsive">
+        <thead>
+            <tr>
+                <th width="60"></th>
+                <th>File</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td width="60"><a (click)="downloadFile('../metadata/individual-summarized_metadata.xlsx')"><span class="glyphicon glyphicon-file" aria-hidden="true"></span></a></td>
+                <td>Summarized</td>
+                <td>Supports estimates of
+                    phenophase onset,
+                    duration and end.</td>
+            </tr>
+            <tr>
+                <td width="60"><a (click)="downloadFile('../metadata/raw_metadata.xlsx')"><span class="glyphicon glyphicon-file" aria-hidden="true"></span></a></td>
+                <td>Raw</td>
+                <td>Each row in this data type
+                    represents the status of one
+                    phenophase for one
+                    individual plant or animal
+                    species at a given site, on a
+                    single date and time.</td>
+            </tr>
+            <tr>
+                <td width="60"><a (click)="downloadFile('../metadata/site-summarized_metadata.xlsx')"><span class="glyphicon glyphicon-file" aria-hidden="true"></span></a></td>
+                <td>Site Level</td>
+                <td>Provides information on the
+                    mean first and the mean
+                    last positive observations
+                    for a given species and
+                    phenophase within a
+                    calendar year that are
+                    captured at a site within a
+                    user-defined interval.</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
