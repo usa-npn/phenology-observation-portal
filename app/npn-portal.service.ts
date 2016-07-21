@@ -29,11 +29,28 @@ export class NpnPortalService {
   optionalFields:OutputField[] = [];
   datasheets:AncillaryData[] = [];
   observationCount;
-  startDate;
-  endDate;
+  startDate = null;
+  endDate = null;
   startYear;
   endYear;
   dataPrecision:number;
+  resettingFilters:boolean = false;
+  
+  filtersAreSet(): boolean {
+    if(this.startDate !== null 
+        || this.endDate !== null
+        || this.getSelectedStates().length > 0 
+        || this.extent.bottom_left_x1 !== null
+        || this.getSelectedSpecies().length > 0
+        || this.getSelectedPhenophases().length > 0
+        || this.getSelectedPartnerGroups().length > 0
+        || this.getSelectedOptionalFields().length > 0 
+        || this.getSelectedDatasetIds().length > 0
+        || this.getSelectedDatasheets().length > 0)
+        return true;
+    else
+      return false;
+  }
 
   reset() {
     this.downloadType = null;
@@ -189,7 +206,7 @@ export class NpnPortalService {
     
     this.observationCount = -1;
     this.getObservationCount().subscribe(
-        observationCount => {
+        (observationCount: any) => {
           console.log('observationCount = ' + observationCount.obsCount);
           let estimatedCount = observationCount.obsCount;
           if(this.downloadType === 'summarized')
@@ -207,7 +224,7 @@ export class NpnPortalService {
             this.observationCount = (Math.round( numInMillions * 10 ) / 10).toFixed(1).toString() + ' M';
           }
         },
-        error => {
+        (error) => {
           this.errorMessage = <any>error;
           console.log(this.errorMessage);
         })

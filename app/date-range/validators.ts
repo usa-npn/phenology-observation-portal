@@ -27,7 +27,7 @@ export function validateRawDateRange(group:ControlGroup) {
     let startDate:Control = <Control> group.controls['startDate'];
     let endDate:Control = <Control> group.controls['endDate'];
     
-    if (endDate.value <= startDate.value) {
+    if (endDate.value && endDate.value <= startDate.value) {
         return {invalidDateRange: true};
     }
 }

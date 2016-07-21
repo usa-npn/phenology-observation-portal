@@ -32,3 +32,16 @@
   </div>
   <button type="button" class="btn btn-default" [class.hide]="!downloadTypeIsSet()" (click)="onSelect('DateRange')">Next</button>
 </div>
+
+<modal #resetFiltersModal>
+  <modal-header>
+    <h4 class="modal-title">Reset Search</h4>
+  </modal-header>
+  <modal-body>
+    Warning, changing your search type will remove all filters.
+  </modal-body>
+  <modal-footer>
+    <button type="button" class="btn btn-danger" (click)="resetFiltersModal.close();">Cancel</button>
+    <button type="button" class="btn btn-success" (click)="resetFiltersModal.close(); resetFilters()">Continue</button>
+  </modal-footer>
+</modal>

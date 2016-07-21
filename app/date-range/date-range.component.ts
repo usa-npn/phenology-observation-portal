@@ -78,27 +78,27 @@ export class DateRangeComponent implements CanDeactivate, OnInit, AfterViewInit 
               private _router: Router,
               private builder: FormBuilder,
               private cdr: ChangeDetectorRef) {
-
-      this.dateForm = builder.group({
-          startDateGroup:  builder.group({
-              year: ['', Validators.required],
-              month: ['', Validators.required],
-              day: ['', Validators.required]
-          },  {validator: validateDay}),
-          endDateGroup:  builder.group({
-              year: ['', Validators.required],
-              month: ['', Validators.required],
-              day: ['', Validators.required]
-          },  {validator: validateDay})
-      },  {validator: validateDateRange});
       
-      this.rawDateForm = builder.group({
-          startDate: ['', Validators.required],
-          endDate: ['', Validators.required]
-      }, {validator: validateRawDateRange});
-
-      this.startDateGroup = <ControlGroup> this.dateForm.controls['startDateGroup'];
-      this.endDateGroup = <ControlGroup> this.dateForm.controls['endDateGroup'];
+      // this.dateForm = builder.group({
+      //     startDateGroup:  builder.group({
+      //         year: ['', Validators.required],
+      //         month: ['', Validators.required],
+      //         day: ['', Validators.required]
+      //     },  {validator: validateDay}),
+      //     endDateGroup:  builder.group({
+      //         year: ['', Validators.required],
+      //         month: ['', Validators.required],
+      //         day: ['', Validators.required]
+      //     },  {validator: validateDay})
+      // },  {validator: validateDateRange});
+      //
+      // this.rawDateForm = builder.group({
+      //     startDate: ['', Validators.required],
+      //     endDate: ['', Validators.required]
+      // }, {validator: validateRawDateRange});
+      //
+      // this.startDateGroup = <ControlGroup> this.dateForm.controls['startDateGroup'];
+      // this.endDateGroup = <ControlGroup> this.dateForm.controls['endDateGroup'];
 
   }
     
@@ -235,6 +235,10 @@ export class DateRangeComponent implements CanDeactivate, OnInit, AfterViewInit 
   }
 
   routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
+      if(this._npnPortalService.resettingFilters) {
+          this._npnPortalService.activePage = next.routeName;
+          return true;
+      }
       if(this.getDownloadType() === 'raw' && !this.startDate && !this.endDate) {
           this._npnPortalService.activePage = next.routeName;
           return true;
@@ -273,6 +277,28 @@ export class DateRangeComponent implements CanDeactivate, OnInit, AfterViewInit 
       if (!this.dataPrecision) {
           this.dataPrecision = 30;
       }
+
+
+      this.dateForm = this.builder.group({
+          startDateGroup:  this.builder.group({
+              year: ['', Validators.required],
+              month: ['', Validators.required],
+              day: ['', Validators.required]
+          },  {validator: validateDay}),
+          endDateGroup:  this.builder.group({
+              year: ['', Validators.required],
+              month: ['', Validators.required],
+              day: ['', Validators.required]
+          },  {validator: validateDay})
+      },  {validator: validateDateRange});
+
+      this.rawDateForm = this.builder.group({
+          startDate: ['', Validators.required],
+          endDate: ['', Validators.required]
+      }, {validator: validateRawDateRange});
+
+      this.startDateGroup = <ControlGroup> this.dateForm.controls['startDateGroup'];
+      this.endDateGroup = <ControlGroup> this.dateForm.controls['endDateGroup'];
   }
     
     ngAfterViewInit() {

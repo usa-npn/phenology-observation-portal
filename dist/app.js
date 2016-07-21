@@ -43890,27 +43890,27 @@
 	var http_1 = __webpack_require__(313);
 	__webpack_require__(334);
 	var get_started_component_1 = __webpack_require__(591);
-	var date_range_component_1 = __webpack_require__(598);
-	var locations_component_1 = __webpack_require__(608);
-	var species_component_1 = __webpack_require__(609);
-	var phenophases_component_1 = __webpack_require__(612);
-	var partner_groups_component_1 = __webpack_require__(614);
-	var integrated_datasets_component_1 = __webpack_require__(616);
-	var output_fields_component_1 = __webpack_require__(618);
-	var ancillary_data_component_1 = __webpack_require__(619);
+	var date_range_component_1 = __webpack_require__(608);
+	var locations_component_1 = __webpack_require__(610);
+	var species_component_1 = __webpack_require__(611);
+	var phenophases_component_1 = __webpack_require__(614);
+	var partner_groups_component_1 = __webpack_require__(616);
+	var integrated_datasets_component_1 = __webpack_require__(618);
+	var output_fields_component_1 = __webpack_require__(619);
+	var ancillary_data_component_1 = __webpack_require__(620);
 	var metadata_component_1 = __webpack_require__(622);
 	var help_component_1 = __webpack_require__(623);
 	var download_component_1 = __webpack_require__(624);
 	var npn_portal_service_1 = __webpack_require__(592);
-	var date_service_1 = __webpack_require__(599);
+	var date_service_1 = __webpack_require__(598);
 	// import {Modal, MODAL_PROVIDERS} from 'angular2-modal';
 	var locations_service_1 = __webpack_require__(593);
 	var species_service_1 = __webpack_require__(595);
 	var phenophases_service_1 = __webpack_require__(594);
 	var output_fields_service_1 = __webpack_require__(597);
 	var partner_groups_service_1 = __webpack_require__(596);
-	var integrated_datasets_service_1 = __webpack_require__(617);
-	var ancillary_data_service_1 = __webpack_require__(620);
+	var integrated_datasets_service_1 = __webpack_require__(599);
+	var ancillary_data_service_1 = __webpack_require__(600);
 	var AppComponent = (function () {
 	    function AppComponent(_npnPortalService, _dateService, _locationsService, _speciesService, _phenophasesService, _partnerGroupsService, _integratedDatasetService, _outputFieldsService, _ancillaryDataService, _router) {
 	        this._npnPortalService = _npnPortalService;
@@ -43925,18 +43925,20 @@
 	        this._router = _router;
 	    }
 	    AppComponent.prototype.onSelect = function (page) {
-	        if (page == "GetStarted" || page == "Metadata" || page == "Help") {
-	            this._npnPortalService.activePage = page;
-	            this._router.navigate([page]);
-	        }
-	        else {
-	            if (page === "DateRange" && this.reportTypeSelected()) {
+	        if (this.allDataLoaded()) {
+	            if (page == "GetStarted" || page == "Metadata" || page == "Help") {
 	                this._npnPortalService.activePage = page;
 	                this._router.navigate([page]);
 	            }
-	            if (this.reportTypeSelected() && this.validDateRange()) {
-	                this._npnPortalService.activePage = page;
-	                this._router.navigate([page]);
+	            else {
+	                if (page === "DateRange" && this.reportTypeSelected()) {
+	                    this._npnPortalService.activePage = page;
+	                    this._router.navigate([page]);
+	                }
+	                if (this.reportTypeSelected() && this.validDateRange()) {
+	                    this._npnPortalService.activePage = page;
+	                    this._router.navigate([page]);
+	                }
 	            }
 	        }
 	    };
@@ -43948,6 +43950,15 @@
 	    };
 	    AppComponent.prototype.isSelected = function (page) {
 	        return page == this._npnPortalService.activePage;
+	    };
+	    AppComponent.prototype.allDataLoaded = function () {
+	        return this._locationsService.ready
+	            && this._phenophasesService.ready
+	            && this._speciesService.ready
+	            && this._partnerGroupsService.ready
+	            && this._outputFieldsService.rawFieldsReady
+	            && this._outputFieldsService.summarizedFieldsReady
+	            && this._outputFieldsService.siteLevelSummarizedFieldsReady;
 	    };
 	    AppComponent.prototype.ngOnInit = function () {
 	        this._locationsService.initStates();
@@ -43962,7 +43973,7 @@
 	    AppComponent = __decorate([
 	        core_1.Component({
 	            selector: 'my-app',
-	            template: "\n      <div id=\"pagewrap1\">\n      <header>\n        <h1>Phenology Observation Portal</h1>\n      </header>\n     \n\n      <section id=\"content1\">\n        <div class=\"btn-group-vertical btn-block\" role=\"group\" aria-label=\"...\">\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('GetStarted')\" (click)=\"onSelect('GetStarted')\">Get Started</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('DateRange')\" [class.disabled]=\"!reportTypeSelected()\" (click)=\"onSelect('DateRange')\">Date Range</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('Locations')\" [class.disabled]=\"!(reportTypeSelected() && validDateRange())\" (click)=\"onSelect('Locations')\">Locations</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('Species')\" [class.disabled]=\"!(reportTypeSelected() && validDateRange())\" (click)=\"onSelect('Species')\">Species</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('Phenophases')\" [class.disabled]=\"!(reportTypeSelected() && validDateRange())\" (click)=\"onSelect('Phenophases')\">Phenophases</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('PartnerGroups')\" [class.disabled]=\"!(reportTypeSelected() && validDateRange())\" (click)=\"onSelect('PartnerGroups')\">Partner Groups</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('IntegratedDatasets')\" [class.disabled]=\"!(reportTypeSelected() && validDateRange())\" (click)=\"onSelect('IntegratedDatasets')\">Integrated Datasets</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('OutputFields')\" [class.disabled]=\"!(reportTypeSelected() && validDateRange())\" (click)=\"onSelect('OutputFields')\">Output Fields</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('AncillaryData')\" [class.disabled]=\"!(reportTypeSelected() && validDateRange())\" (click)=\"onSelect('AncillaryData')\">Ancillary Data</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('Metadata')\" (click)=\"onSelect('Metadata')\">Metadata</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('Help')\" (click)=\"onSelect('Help')\">Help</button>\n        </div>\n\n      </section>\n\n      <section id=\"middle1\">\n        <router-outlet></router-outlet>\n      </section>\n\n      <aside id=\"sidebar1\">\n        <download></download>\n      </aside>\n\n      <footer>\n        <!--<h4>Footer</h4>-->\n        <!--<p>Do we want this footer for anything or remove it?</p>-->\n      </footer>\n\n    </div>\n  ",
+	            template: "\n      <div id=\"pagewrap1\">\n      <header>\n        <h1>Phenology Observation Portal</h1>\n      </header>\n     \n\n      <section id=\"content1\">\n        <div class=\"btn-group-vertical btn-block\" role=\"group\" aria-label=\"...\">\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('GetStarted')\" (click)=\"onSelect('GetStarted')\">Get Started</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('DateRange')\" [class.disabled]=\"!reportTypeSelected()\" (click)=\"onSelect('DateRange')\">Date Range</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('Locations')\" [class.disabled]=\"!(reportTypeSelected() && validDateRange())\" (click)=\"onSelect('Locations')\">Locations</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('Species')\" [class.disabled]=\"!(reportTypeSelected() && validDateRange())\" (click)=\"onSelect('Species')\">Species</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('Phenophases')\" [class.disabled]=\"!(reportTypeSelected() && validDateRange())\" (click)=\"onSelect('Phenophases')\">Phenophases</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('PartnerGroups')\" [class.disabled]=\"!(reportTypeSelected() && validDateRange())\" (click)=\"onSelect('PartnerGroups')\">Partner Groups</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('IntegratedDatasets')\" [class.disabled]=\"!(reportTypeSelected() && validDateRange())\" (click)=\"onSelect('IntegratedDatasets')\">Integrated Datasets</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('OutputFields')\" [class.disabled]=\"!(reportTypeSelected() && validDateRange())\" (click)=\"onSelect('OutputFields')\">Output Fields</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('AncillaryData')\" [class.disabled]=\"!(reportTypeSelected() && validDateRange())\" (click)=\"onSelect('AncillaryData')\">Ancillary Data</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('Metadata')\" [class.disabled]=\"!allDataLoaded()\" (click)=\"onSelect('Metadata')\">Metadata</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('Help')\" [class.disabled]=\"!allDataLoaded()\" (click)=\"onSelect('Help')\">Help</button>\n        </div>\n\n      </section>\n\n      <section id=\"middle1\">\n        <router-outlet></router-outlet>\n      </section>\n\n      <aside id=\"sidebar1\">\n        <download></download>\n      </aside>\n\n      <footer>\n        <!--<h4>Footer</h4>-->\n        <!--<p>Do we want this footer for anything or remove it?</p>-->\n      </footer>\n\n    </div>\n  ",
 	            providers: [npn_portal_service_1.NpnPortalService, date_service_1.DateService, locations_service_1.LocationsService, species_service_1.SpeciesService, phenophases_service_1.PhenophasesService, partner_groups_service_1.PartnerGroupsService, integrated_datasets_service_1.IntegratedDatasetService, output_fields_service_1.OutputFieldsService, ancillary_data_service_1.AncillaryDataService, http_1.HTTP_PROVIDERS],
 	            directives: [router_deprecated_1.ROUTER_DIRECTIVES, download_component_1.DownloadComponent]
 	        }),
@@ -59282,14 +59293,21 @@
 	var species_service_1 = __webpack_require__(595);
 	var partner_groups_service_1 = __webpack_require__(596);
 	var output_fields_service_1 = __webpack_require__(597);
+	var date_service_1 = __webpack_require__(598);
+	var integrated_datasets_service_1 = __webpack_require__(599);
+	var ancillary_data_service_1 = __webpack_require__(600);
+	var ng2_bs3_modal_1 = __webpack_require__(601);
 	var GetStartedComponent = (function () {
-	    function GetStartedComponent(_npnPortalService, _locationsService, _phenophasesService, _speciesService, _partnerGroupsService, _outputFieldsService, _router) {
+	    function GetStartedComponent(_npnPortalService, _dateService, _locationsService, _phenophasesService, _speciesService, _partnerGroupsService, _outputFieldsService, _integratedDatasetService, _ancillaryDataService, _router) {
 	        this._npnPortalService = _npnPortalService;
+	        this._dateService = _dateService;
 	        this._locationsService = _locationsService;
 	        this._phenophasesService = _phenophasesService;
 	        this._speciesService = _speciesService;
 	        this._partnerGroupsService = _partnerGroupsService;
 	        this._outputFieldsService = _outputFieldsService;
+	        this._integratedDatasetService = _integratedDatasetService;
+	        this._ancillaryDataService = _ancillaryDataService;
 	        this._router = _router;
 	    }
 	    GetStartedComponent.prototype.allDataLoaded = function () {
@@ -59319,10 +59337,29 @@
 	            numLoaded = numLoaded + 15;
 	        return numLoaded;
 	    };
-	    GetStartedComponent.prototype.setDownloadType = function (type) {
-	        console.log('in set download type');
-	        this._npnPortalService.downloadType = type;
+	    GetStartedComponent.prototype.resetFilters = function () {
+	        this._npnPortalService.resettingFilters = true;
+	        this._dateService.reset();
+	        this._locationsService.reset();
+	        this._speciesService.reset();
+	        this._phenophasesService.reset();
+	        this._partnerGroupsService.reset();
+	        this._integratedDatasetService.reset();
+	        this._outputFieldsService.reset();
+	        this._ancillaryDataService.reset();
+	        this._npnPortalService.reset();
+	        this._npnPortalService.downloadType = this.newType;
 	        this._npnPortalService.setObservationCount();
+	    };
+	    GetStartedComponent.prototype.setDownloadType = function (type) {
+	        if (this._npnPortalService.filtersAreSet()) {
+	            this.resetFiltersModal.open();
+	            this.newType = type;
+	        }
+	        else {
+	            this._npnPortalService.downloadType = type;
+	            this._npnPortalService.setObservationCount();
+	        }
 	    };
 	    GetStartedComponent.prototype.getDownloadType = function () {
 	        return this._npnPortalService.downloadType;
@@ -59347,13 +59384,20 @@
 	            }
 	        }
 	    };
+	    GetStartedComponent.prototype.ngOnInit = function () {
+	        this._npnPortalService.resettingFilters = false;
+	    };
+	    __decorate([
+	        core_1.ViewChild('resetFiltersModal'), 
+	        __metadata('design:type', ng2_bs3_modal_1.ModalComponent)
+	    ], GetStartedComponent.prototype, "resetFiltersModal", void 0);
 	    GetStartedComponent = __decorate([
 	        core_1.Component({
 	            templateUrl: 'app/get-started/get-started.html',
 	            styleUrls: ['app/get-started/get-started.component.css'],
-	            directives: [router_deprecated_1.ROUTER_DIRECTIVES]
+	            directives: [router_deprecated_1.ROUTER_DIRECTIVES, ng2_bs3_modal_1.MODAL_DIRECTIVES]
 	        }), 
-	        __metadata('design:paramtypes', [npn_portal_service_1.NpnPortalService, locations_service_1.LocationsService, phenophases_service_1.PhenophasesService, species_service_1.SpeciesService, partner_groups_service_1.PartnerGroupsService, output_fields_service_1.OutputFieldsService, router_deprecated_1.Router])
+	        __metadata('design:paramtypes', [npn_portal_service_1.NpnPortalService, date_service_1.DateService, locations_service_1.LocationsService, phenophases_service_1.PhenophasesService, species_service_1.SpeciesService, partner_groups_service_1.PartnerGroupsService, output_fields_service_1.OutputFieldsService, integrated_datasets_service_1.IntegratedDatasetService, ancillary_data_service_1.AncillaryDataService, router_deprecated_1.Router])
 	    ], GetStartedComponent);
 	    return GetStartedComponent;
 	}());
@@ -59390,9 +59434,40 @@
 	        this.datasets = [];
 	        this.optionalFields = [];
 	        this.datasheets = [];
+	        this.startDate = null;
+	        this.endDate = null;
+	        this.resettingFilters = false;
 	        //called when download is pressed //////////////////////////////////////
 	        this.downloadStatus = 'testing';
 	    }
+	    NpnPortalService.prototype.filtersAreSet = function () {
+	        // if(this.startDate !== null )
+	        //   console.log("boom" + this.startDate)
+	        // console.log(this.endDate)
+	        // if(this.extent.bottom_left_x1 !== null)
+	        //   console.log("bam" + this.extent.bottom_left_x1)
+	        // if(this.getSelectedSpecies().length > 0)
+	        //   console.log("beem" + this.getSelectedSpecies().length)
+	        // console.log(this.getSelectedStates())
+	        // console.log(this.getSelectedPhenophases())
+	        // console.log(this.getSelectedPartnerGroups())
+	        // console.log(this.getSelectedOptionalFields())
+	        // console.log(this.getSelectedDatasetIds())
+	        // console.log(this.getSelectedDatasheets())
+	        if (this.startDate !== null
+	            || this.endDate !== null
+	            || this.getSelectedStates().length > 0
+	            || this.extent.bottom_left_x1 !== null
+	            || this.getSelectedSpecies().length > 0
+	            || this.getSelectedPhenophases().length > 0
+	            || this.getSelectedPartnerGroups().length > 0
+	            || this.getSelectedOptionalFields().length > 0
+	            || this.getSelectedDatasetIds().length > 0
+	            || this.getSelectedDatasheets().length > 0)
+	            return true;
+	        else
+	            return false;
+	    };
 	    NpnPortalService.prototype.reset = function () {
 	        this.downloadType = null;
 	        this.errorMessage = null;
@@ -60148,260 +60223,6 @@
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(7);
-	var common_1 = __webpack_require__(181);
-	var router_deprecated_1 = __webpack_require__(280);
-	var npn_portal_service_1 = __webpack_require__(592);
-	var date_service_1 = __webpack_require__(599);
-	var validators_1 = __webpack_require__(600);
-	var ng2_bs3_modal_1 = __webpack_require__(601);
-	var DatePicker = (function () {
-	    function DatePicker(element) {
-	        this.dateChange = new core_1.EventEmitter();
-	        this.element = element;
-	    }
-	    DatePicker.prototype.ngOnInit = function () {
-	        var that = this;
-	        $(this.element.nativeElement).datetimepicker({ format: 'YYYY-MM-DD', ignoreReadonly: true });
-	        $(this.element.nativeElement).on("dp.change", function (e) {
-	            that.dateChange.emit({
-	                value: e
-	            });
-	        });
-	    };
-	    __decorate([
-	        core_1.Output(), 
-	        __metadata('design:type', Object)
-	    ], DatePicker.prototype, "dateChange", void 0);
-	    DatePicker = __decorate([
-	        core_1.Directive({
-	            selector: '[datePicker]'
-	        }), 
-	        __metadata('design:paramtypes', [core_1.ElementRef])
-	    ], DatePicker);
-	    return DatePicker;
-	}());
-	exports.DatePicker = DatePicker;
-	var DateRangeComponent = (function () {
-	    function DateRangeComponent(_npnPortalService, _dateService, _router, builder, cdr) {
-	        this._npnPortalService = _npnPortalService;
-	        this._dateService = _dateService;
-	        this._router = _router;
-	        this.builder = builder;
-	        this.cdr = cdr;
-	        this.startMonth = "June";
-	        this.dateForm = builder.group({
-	            startDateGroup: builder.group({
-	                year: ['', common_1.Validators.required],
-	                month: ['', common_1.Validators.required],
-	                day: ['', common_1.Validators.required]
-	            }, { validator: validators_1.validateDay }),
-	            endDateGroup: builder.group({
-	                year: ['', common_1.Validators.required],
-	                month: ['', common_1.Validators.required],
-	                day: ['', common_1.Validators.required]
-	            }, { validator: validators_1.validateDay })
-	        }, { validator: validators_1.validateDateRange });
-	        this.rawDateForm = builder.group({
-	            startDate: ['', common_1.Validators.required],
-	            endDate: ['', common_1.Validators.required]
-	        }, { validator: validators_1.validateRawDateRange });
-	        this.startDateGroup = this.dateForm.controls['startDateGroup'];
-	        this.endDateGroup = this.dateForm.controls['endDateGroup'];
-	    }
-	    DateRangeComponent.prototype.startDateChange = function (event) {
-	        if (event.value && event.value.target && event.value.target.children[0])
-	            this.startDate = event.value.target.children[0].value;
-	        this.cdr.detectChanges();
-	    };
-	    DateRangeComponent.prototype.endDateChange = function (event) {
-	        if (event.value && event.value.target && event.value.target.children[0])
-	            this.endDate = event.value.target.children[0].value;
-	        this.cdr.detectChanges();
-	    };
-	    DateRangeComponent.prototype.isSelected = function (button) {
-	        return button == this.rangeType;
-	    };
-	    DateRangeComponent.prototype.setRangeDates = function () {
-	        if (this.rangeType == 'calendar') {
-	            this.startMonth = 'January';
-	            this.endMonth = 'December';
-	            this.startDay = 1;
-	            this.endDay = 31;
-	        }
-	        else if (this.rangeType == 'water') {
-	            this.startMonth = 'October';
-	            this.endMonth = 'September';
-	            this.startDay = 1;
-	            this.endDay = 30;
-	        }
-	        else if (this.rangeType == 'summer') {
-	            this.startMonth = 'July';
-	            this.endMonth = 'June';
-	            this.startDay = 1;
-	            this.endDay = 30;
-	        }
-	    };
-	    DateRangeComponent.prototype.setRangeType = function (type) {
-	        this.rangeType = type;
-	        this.setRangeDates();
-	        // this.cdr.detectChanges();
-	    };
-	    DateRangeComponent.prototype.getDownloadType = function () {
-	        return this._npnPortalService.downloadType;
-	    };
-	    DateRangeComponent.prototype.getMonths = function () {
-	        return this._dateService.months;
-	    };
-	    DateRangeComponent.prototype.getYears = function () {
-	        var today = new Date();
-	        var year = today.getFullYear();
-	        var years = [];
-	        for (var i = 1950; i <= year; i++) {
-	            years.push(i);
-	        }
-	        return years;
-	    };
-	    DateRangeComponent.prototype.isDateRangeValid = function () {
-	        if (this.getDownloadType() === 'raw') {
-	            if (!this.startDate) {
-	                this.modalErrorMessage = "You have entered an invalid date range. Please enter a start date.";
-	                this.invalidDateRangeModal.open();
-	                return false;
-	            }
-	            if (!this.endDate) {
-	                this.modalErrorMessage = "You have entered an invalid date range. Please enter an end date.";
-	                this.invalidDateRangeModal.open();
-	                return false;
-	            }
-	            if (this.endDate <= this.startDate) {
-	                this.modalErrorMessage = "Please make the end date come after the start date.";
-	                this.invalidDateRangeModal.open();
-	                return false;
-	            }
-	        }
-	        else {
-	            if (!this.dateForm.valid || !this.startDateGroup.valid || !this.endDateGroup.valid) {
-	                if (!this.startDateGroup.valid && !this.endDateGroup.valid)
-	                    this.modalErrorMessage = "You have entered an invalid date range. Please enter a valid start and end days.";
-	                if (!this.startDateGroup.valid)
-	                    this.modalErrorMessage = "You have entered an invalid date range. Please enter a valid start day.";
-	                else if (!this.endDateGroup.valid)
-	                    this.modalErrorMessage = "You have entered an invalid date range. Please enter a valid end day.";
-	                else
-	                    this.modalErrorMessage = "Please make the end date come after the start date.";
-	                this.invalidDateRangeModal.open();
-	                return false;
-	            }
-	        }
-	        return true;
-	    };
-	    DateRangeComponent.prototype.submitDateRange = function () {
-	        if (this.getDownloadType() === 'raw' && !this.startDate && !this.endDate) {
-	            return;
-	        }
-	        if (!this.isDateRangeValid())
-	            return;
-	        if (this.getDownloadType() != 'raw') {
-	            this._dateService.rangeType = this.rangeType;
-	            this._dateService.startDate = this.startDate;
-	            this._dateService.endDate = this.endDate;
-	            this._dateService.startDay = this.startDay;
-	            this._dateService.endDay = this.endDay;
-	            this._dateService.startMonth = this.startMonth;
-	            this._dateService.endMonth = this.endMonth;
-	            this._dateService.startYear = this.startYear;
-	            this._dateService.endYear = this.endYear;
-	            this._dateService.startDate = new Date(this.startYear, this._dateService.months.indexOf(this.startMonth), this.startDay).toISOString().split('T')[0];
-	            this._dateService.endDate = new Date(this.endYear, this._dateService.months.indexOf(this.endMonth), this.endDay).toISOString().split('T')[0];
-	            if (this.getDownloadType() === 'siteLevelSummarized') {
-	                this._dateService.dataPrecision = this.dataPrecision;
-	                this._npnPortalService.dataPrecision = this.dataPrecision;
-	            }
-	            else {
-	                this._dateService.dataPrecision = null;
-	                this._npnPortalService.dataPrecision = null;
-	            }
-	        }
-	        if (this.getDownloadType() === 'raw') {
-	            this._dateService.startDate = this.startDate;
-	            this._dateService.endDate = this.endDate;
-	        }
-	        this._npnPortalService.startDate = this._dateService.startDate;
-	        this._npnPortalService.endDate = this._dateService.endDate;
-	        this._npnPortalService.setObservationCount();
-	    };
-	    DateRangeComponent.prototype.onSelect = function (page) {
-	        this._router.navigate([page]);
-	    };
-	    DateRangeComponent.prototype.routerCanDeactivate = function (next, prev) {
-	        if (this.getDownloadType() === 'raw' && !this.startDate && !this.endDate) {
-	            this._npnPortalService.activePage = next.routeName;
-	            return true;
-	        }
-	        else if (!this.isDateRangeValid())
-	            return false;
-	        else {
-	            this.submitDateRange();
-	            this._npnPortalService.activePage = next.routeName;
-	            return true;
-	        }
-	    };
-	    DateRangeComponent.prototype.continueWithoutSavingDate = function () {
-	        this._npnPortalService.activePage = '';
-	    };
-	    DateRangeComponent.prototype.ngOnInit = function () {
-	        this.startDate = this._dateService.startDate;
-	        this.endDate = this._dateService.endDate;
-	        this.rangeType = this._dateService.rangeType;
-	        this.startDay = this._dateService.startDay;
-	        this.endDay = this._dateService.endDay;
-	        this.startMonth = this._dateService.startMonth;
-	        this.endMonth = this._dateService.endMonth;
-	        this.startYear = this._dateService.startYear;
-	        this.endYear = this._dateService.endYear;
-	        this.dataPrecision = this._dateService.dataPrecision;
-	        if (!this.rangeType) {
-	            this.setRangeType('calendar');
-	        }
-	        if (!this.dataPrecision) {
-	            this.dataPrecision = 30;
-	        }
-	    };
-	    DateRangeComponent.prototype.ngAfterViewInit = function () {
-	        this.cdr.detectChanges();
-	    };
-	    __decorate([
-	        core_1.ViewChild('invalidDateRangeModal'), 
-	        __metadata('design:type', ng2_bs3_modal_1.ModalComponent)
-	    ], DateRangeComponent.prototype, "invalidDateRangeModal", void 0);
-	    DateRangeComponent = __decorate([
-	        core_1.Component({
-	            templateUrl: 'app/date-range/date-range.html',
-	            styleUrls: ['app/date-range/date-range.component.css'],
-	            directives: [router_deprecated_1.ROUTER_DIRECTIVES, ng2_bs3_modal_1.MODAL_DIRECTIVES, DatePicker]
-	        }), 
-	        __metadata('design:paramtypes', [npn_portal_service_1.NpnPortalService, date_service_1.DateService, router_deprecated_1.Router, common_1.FormBuilder, core_1.ChangeDetectorRef])
-	    ], DateRangeComponent);
-	    return DateRangeComponent;
-	}());
-	exports.DateRangeComponent = DateRangeComponent;
-
-
-/***/ },
-/* 599 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata = (this && this.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	var core_1 = __webpack_require__(7);
 	var DateService = (function () {
 	    function DateService() {
 	        // for summarized
@@ -60446,103 +60267,110 @@
 
 
 /***/ },
-/* 600 */
-/***/ function(module, exports) {
+/* 599 */
+/***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	// Examples
-	// // SINGLE FIELD VALIDATORS
-	// export function emailValidator(control: Control): {[key: string]: any} {
-	//     var emailRegexp = /^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i;
-	//     if (control.value && !emailRegexp.test(control.value)) {
-	//         return {invalidEmail: true};
-	//     }
-	// }
-	//
-	// //CONTROL GROUP VALIDATORS
-	// export function matchingPasswords(passwordKey: string, confirmPasswordKey: string) {
-	//     return (group: ControlGroup): {[key: string]: any} => {
-	//         let password = group.controls[passwordKey];
-	//         let confirmPassword = group.controls[confirmPasswordKey];
-	//
-	//         if (password.value !== confirmPassword.value) {
-	//             return {
-	//                 mismatchedPasswords: true
-	//             };
-	//         }
-	//     }
-	// }
-	function validateRawDateRange(group) {
-	    var startDate = group.controls['startDate'];
-	    var endDate = group.controls['endDate'];
-	    if (endDate.value <= startDate.value) {
-	        return { invalidDateRange: true };
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(7);
+	var IntegratedDatasetService = (function () {
+	    function IntegratedDatasetService() {
+	        this.datasets = [{
+	                id: 12,
+	                name: 'NYBG',
+	                description: "New York Botanical Garden forest phenology using old Nature's Notebook protocols, 2009-2013",
+	                selected: false
+	            },
+	            {
+	                id: 7,
+	                name: 'Legacy Lilac/Honeysuckle Data',
+	                description: 'Legacy lilac phenology data for Eastern US (SCSV) and Western US',
+	                selected: false
+	            },
+	            {
+	                id: 11,
+	                name: 'ADF Nature Log',
+	                description: "Mail-in data program using modified Nature's Notebook protocols, 2010-2012",
+	                selected: false
+	            }];
+	        this.datasetRemoved$ = new core_1.EventEmitter();
+	        this.submitDatasets$ = new core_1.EventEmitter();
 	    }
-	}
-	exports.validateRawDateRange = validateRawDateRange;
-	function validateDateRange(group) {
-	    var startYear = group.controls['startDateGroup']['controls']['year'];
-	    var startMonth = group.controls['startDateGroup']['controls']['month'];
-	    var startDay = group.controls['startDateGroup']['controls']['day'];
-	    var endYear = group.controls['endDateGroup']['controls']['year'];
-	    var endMonth = group.controls['endDateGroup']['controls']['month'];
-	    var endDay = group.controls['endDateGroup']['controls']['day'];
-	    if (!startYear || !startMonth || !startDay || !endYear || !endMonth || !endDay) {
-	        return { invalidDate: true };
-	    }
-	    var months = [
-	        "January",
-	        "February",
-	        "March",
-	        "April",
-	        "May",
-	        "June",
-	        "July",
-	        "August",
-	        "September",
-	        "October",
-	        "November",
-	        "December"
-	    ];
-	    var startDate = new Date(startYear.value, months.indexOf(startMonth.value), startDay.value);
-	    var endDate = new Date(endYear.value, months.indexOf(endMonth.value), endDay.value);
-	    if (startDate > endDate) {
-	        return {
-	            invalidDate: true
-	        };
-	    }
-	}
-	exports.validateDateRange = validateDateRange;
-	function validateDay(group) {
-	    var dayControl = group.controls['day'];
-	    var monthControl = group.controls['month'];
-	    if (!dayControl || !dayControl.value) {
-	        return { invalidDay: true };
-	    }
-	    if (monthControl.value === "September" ||
-	        monthControl.value === "April" ||
-	        monthControl.value === "June" ||
-	        monthControl.value === "November") {
-	        if (dayControl.value < 1 || dayControl.value > 30) {
-	            dayControl.setErrors({ invalidDay: true });
-	            return { invalidDay: true };
+	    IntegratedDatasetService.prototype.removeDataset = function (dataset) {
+	        this.datasetRemoved$.emit(dataset);
+	    };
+	    IntegratedDatasetService.prototype.submitDatasets = function () {
+	        this.submitDatasets$.emit({});
+	    };
+	    IntegratedDatasetService.prototype.reset = function () {
+	        for (var _i = 0, _a = this.datasets; _i < _a.length; _i++) {
+	            var dataset = _a[_i];
+	            dataset.selected = false;
 	        }
+	    };
+	    IntegratedDatasetService = __decorate([
+	        core_1.Injectable(), 
+	        __metadata('design:paramtypes', [])
+	    ], IntegratedDatasetService);
+	    return IntegratedDatasetService;
+	}());
+	exports.IntegratedDatasetService = IntegratedDatasetService;
+
+
+/***/ },
+/* 600 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(7);
+	var AncillaryDataService = (function () {
+	    function AncillaryDataService() {
+	        this.datasheets = [
+	            { id: 1, name: 'Sites', description: '', selected: false },
+	            { id: 2, name: 'Individual Plants', description: '', selected: false },
+	            { id: 3, name: 'Observers', description: '', selected: false },
+	            { id: 4, name: 'Observation Details', description: '', selected: false },
+	            { id: 5, name: 'Protocols', description: '', selected: false }
+	        ];
+	        this.ancillaryDataRemoved$ = new core_1.EventEmitter();
+	        this.submitAncillaryData$ = new core_1.EventEmitter();
 	    }
-	    if (monthControl.value === "February") {
-	        if (dayControl.value < 1 || dayControl.value > 29) {
-	            dayControl.setErrors({ invalidDay: true });
-	            return { invalidDay: true };
+	    AncillaryDataService.prototype.removeAncillaryData = function (datasheet) {
+	        this.ancillaryDataRemoved$.emit(datasheet);
+	    };
+	    AncillaryDataService.prototype.submitAncillaryData = function () {
+	        this.submitAncillaryData$.emit({});
+	    };
+	    AncillaryDataService.prototype.reset = function () {
+	        for (var _i = 0, _a = this.datasheets; _i < _a.length; _i++) {
+	            var datasheet = _a[_i];
+	            datasheet.selected = false;
 	        }
-	    }
-	    if (dayControl.value < 1 || dayControl.value > 31) {
-	        dayControl.setErrors({ invalidDay: true });
-	        return { invalidDay: true };
-	    }
-	    if (dayControl.value >= 1 && dayControl.value <= 31) {
-	        dayControl.setErrors(null);
-	    }
-	}
-	exports.validateDay = validateDay;
+	    };
+	    AncillaryDataService = __decorate([
+	        core_1.Injectable(), 
+	        __metadata('design:paramtypes', [])
+	    ], AncillaryDataService);
+	    return AncillaryDataService;
+	}());
+	exports.AncillaryDataService = AncillaryDataService;
 
 
 /***/ },
@@ -60983,6 +60811,384 @@
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(7);
+	var common_1 = __webpack_require__(181);
+	var router_deprecated_1 = __webpack_require__(280);
+	var npn_portal_service_1 = __webpack_require__(592);
+	var date_service_1 = __webpack_require__(598);
+	var validators_1 = __webpack_require__(609);
+	var ng2_bs3_modal_1 = __webpack_require__(601);
+	var DatePicker = (function () {
+	    function DatePicker(element) {
+	        this.dateChange = new core_1.EventEmitter();
+	        this.element = element;
+	    }
+	    DatePicker.prototype.ngOnInit = function () {
+	        var that = this;
+	        $(this.element.nativeElement).datetimepicker({ format: 'YYYY-MM-DD', ignoreReadonly: true });
+	        $(this.element.nativeElement).on("dp.change", function (e) {
+	            that.dateChange.emit({
+	                value: e
+	            });
+	        });
+	    };
+	    __decorate([
+	        core_1.Output(), 
+	        __metadata('design:type', Object)
+	    ], DatePicker.prototype, "dateChange", void 0);
+	    DatePicker = __decorate([
+	        core_1.Directive({
+	            selector: '[datePicker]'
+	        }), 
+	        __metadata('design:paramtypes', [core_1.ElementRef])
+	    ], DatePicker);
+	    return DatePicker;
+	}());
+	exports.DatePicker = DatePicker;
+	var DateRangeComponent = (function () {
+	    function DateRangeComponent(_npnPortalService, _dateService, _router, builder, cdr) {
+	        // this.dateForm = builder.group({
+	        //     startDateGroup:  builder.group({
+	        //         year: ['', Validators.required],
+	        //         month: ['', Validators.required],
+	        //         day: ['', Validators.required]
+	        //     },  {validator: validateDay}),
+	        //     endDateGroup:  builder.group({
+	        //         year: ['', Validators.required],
+	        //         month: ['', Validators.required],
+	        //         day: ['', Validators.required]
+	        //     },  {validator: validateDay})
+	        // },  {validator: validateDateRange});
+	        //
+	        // this.rawDateForm = builder.group({
+	        //     startDate: ['', Validators.required],
+	        //     endDate: ['', Validators.required]
+	        // }, {validator: validateRawDateRange});
+	        //
+	        // this.startDateGroup = <ControlGroup> this.dateForm.controls['startDateGroup'];
+	        // this.endDateGroup = <ControlGroup> this.dateForm.controls['endDateGroup'];
+	        this._npnPortalService = _npnPortalService;
+	        this._dateService = _dateService;
+	        this._router = _router;
+	        this.builder = builder;
+	        this.cdr = cdr;
+	        this.startMonth = "June";
+	    }
+	    DateRangeComponent.prototype.startDateChange = function (event) {
+	        if (event.value && event.value.target && event.value.target.children[0])
+	            this.startDate = event.value.target.children[0].value;
+	        this.cdr.detectChanges();
+	    };
+	    DateRangeComponent.prototype.endDateChange = function (event) {
+	        if (event.value && event.value.target && event.value.target.children[0])
+	            this.endDate = event.value.target.children[0].value;
+	        this.cdr.detectChanges();
+	    };
+	    DateRangeComponent.prototype.isSelected = function (button) {
+	        return button == this.rangeType;
+	    };
+	    DateRangeComponent.prototype.setRangeDates = function () {
+	        if (this.rangeType == 'calendar') {
+	            this.startMonth = 'January';
+	            this.endMonth = 'December';
+	            this.startDay = 1;
+	            this.endDay = 31;
+	        }
+	        else if (this.rangeType == 'water') {
+	            this.startMonth = 'October';
+	            this.endMonth = 'September';
+	            this.startDay = 1;
+	            this.endDay = 30;
+	        }
+	        else if (this.rangeType == 'summer') {
+	            this.startMonth = 'July';
+	            this.endMonth = 'June';
+	            this.startDay = 1;
+	            this.endDay = 30;
+	        }
+	    };
+	    DateRangeComponent.prototype.setRangeType = function (type) {
+	        this.rangeType = type;
+	        this.setRangeDates();
+	        // this.cdr.detectChanges();
+	    };
+	    DateRangeComponent.prototype.getDownloadType = function () {
+	        return this._npnPortalService.downloadType;
+	    };
+	    DateRangeComponent.prototype.getMonths = function () {
+	        return this._dateService.months;
+	    };
+	    DateRangeComponent.prototype.getYears = function () {
+	        var today = new Date();
+	        var year = today.getFullYear();
+	        var years = [];
+	        for (var i = 1950; i <= year; i++) {
+	            years.push(i);
+	        }
+	        return years;
+	    };
+	    DateRangeComponent.prototype.isDateRangeValid = function () {
+	        if (this.getDownloadType() === 'raw') {
+	            if (!this.startDate) {
+	                this.modalErrorMessage = "You have entered an invalid date range. Please enter a start date.";
+	                this.invalidDateRangeModal.open();
+	                return false;
+	            }
+	            if (!this.endDate) {
+	                this.modalErrorMessage = "You have entered an invalid date range. Please enter an end date.";
+	                this.invalidDateRangeModal.open();
+	                return false;
+	            }
+	            if (this.endDate <= this.startDate) {
+	                this.modalErrorMessage = "Please make the end date come after the start date.";
+	                this.invalidDateRangeModal.open();
+	                return false;
+	            }
+	        }
+	        else {
+	            if (!this.dateForm.valid || !this.startDateGroup.valid || !this.endDateGroup.valid) {
+	                if (!this.startDateGroup.valid && !this.endDateGroup.valid)
+	                    this.modalErrorMessage = "You have entered an invalid date range. Please enter a valid start and end days.";
+	                if (!this.startDateGroup.valid)
+	                    this.modalErrorMessage = "You have entered an invalid date range. Please enter a valid start day.";
+	                else if (!this.endDateGroup.valid)
+	                    this.modalErrorMessage = "You have entered an invalid date range. Please enter a valid end day.";
+	                else
+	                    this.modalErrorMessage = "Please make the end date come after the start date.";
+	                this.invalidDateRangeModal.open();
+	                return false;
+	            }
+	        }
+	        return true;
+	    };
+	    DateRangeComponent.prototype.submitDateRange = function () {
+	        if (this.getDownloadType() === 'raw' && !this.startDate && !this.endDate) {
+	            return;
+	        }
+	        if (!this.isDateRangeValid())
+	            return;
+	        if (this.getDownloadType() != 'raw') {
+	            this._dateService.rangeType = this.rangeType;
+	            this._dateService.startDate = this.startDate;
+	            this._dateService.endDate = this.endDate;
+	            this._dateService.startDay = this.startDay;
+	            this._dateService.endDay = this.endDay;
+	            this._dateService.startMonth = this.startMonth;
+	            this._dateService.endMonth = this.endMonth;
+	            this._dateService.startYear = this.startYear;
+	            this._dateService.endYear = this.endYear;
+	            this._dateService.startDate = new Date(this.startYear, this._dateService.months.indexOf(this.startMonth), this.startDay).toISOString().split('T')[0];
+	            this._dateService.endDate = new Date(this.endYear, this._dateService.months.indexOf(this.endMonth), this.endDay).toISOString().split('T')[0];
+	            if (this.getDownloadType() === 'siteLevelSummarized') {
+	                this._dateService.dataPrecision = this.dataPrecision;
+	                this._npnPortalService.dataPrecision = this.dataPrecision;
+	            }
+	            else {
+	                this._dateService.dataPrecision = null;
+	                this._npnPortalService.dataPrecision = null;
+	            }
+	        }
+	        if (this.getDownloadType() === 'raw') {
+	            this._dateService.startDate = this.startDate;
+	            this._dateService.endDate = this.endDate;
+	        }
+	        this._npnPortalService.startDate = this._dateService.startDate;
+	        this._npnPortalService.endDate = this._dateService.endDate;
+	        this._npnPortalService.setObservationCount();
+	    };
+	    DateRangeComponent.prototype.onSelect = function (page) {
+	        this._router.navigate([page]);
+	    };
+	    DateRangeComponent.prototype.routerCanDeactivate = function (next, prev) {
+	        if (this._npnPortalService.resettingFilters) {
+	            this._npnPortalService.activePage = next.routeName;
+	            return true;
+	        }
+	        if (this.getDownloadType() === 'raw' && !this.startDate && !this.endDate) {
+	            this._npnPortalService.activePage = next.routeName;
+	            return true;
+	        }
+	        else if (!this.isDateRangeValid())
+	            return false;
+	        else {
+	            this.submitDateRange();
+	            this._npnPortalService.activePage = next.routeName;
+	            return true;
+	        }
+	    };
+	    DateRangeComponent.prototype.continueWithoutSavingDate = function () {
+	        this._npnPortalService.activePage = '';
+	    };
+	    DateRangeComponent.prototype.ngOnInit = function () {
+	        this.startDate = this._dateService.startDate;
+	        this.endDate = this._dateService.endDate;
+	        this.rangeType = this._dateService.rangeType;
+	        this.startDay = this._dateService.startDay;
+	        this.endDay = this._dateService.endDay;
+	        this.startMonth = this._dateService.startMonth;
+	        this.endMonth = this._dateService.endMonth;
+	        this.startYear = this._dateService.startYear;
+	        this.endYear = this._dateService.endYear;
+	        this.dataPrecision = this._dateService.dataPrecision;
+	        if (!this.rangeType) {
+	            this.setRangeType('calendar');
+	        }
+	        if (!this.dataPrecision) {
+	            this.dataPrecision = 30;
+	        }
+	        this.dateForm = this.builder.group({
+	            startDateGroup: this.builder.group({
+	                year: ['', common_1.Validators.required],
+	                month: ['', common_1.Validators.required],
+	                day: ['', common_1.Validators.required]
+	            }, { validator: validators_1.validateDay }),
+	            endDateGroup: this.builder.group({
+	                year: ['', common_1.Validators.required],
+	                month: ['', common_1.Validators.required],
+	                day: ['', common_1.Validators.required]
+	            }, { validator: validators_1.validateDay })
+	        }, { validator: validators_1.validateDateRange });
+	        this.rawDateForm = this.builder.group({
+	            startDate: ['', common_1.Validators.required],
+	            endDate: ['', common_1.Validators.required]
+	        }, { validator: validators_1.validateRawDateRange });
+	        this.startDateGroup = this.dateForm.controls['startDateGroup'];
+	        this.endDateGroup = this.dateForm.controls['endDateGroup'];
+	    };
+	    DateRangeComponent.prototype.ngAfterViewInit = function () {
+	        this.cdr.detectChanges();
+	    };
+	    __decorate([
+	        core_1.ViewChild('invalidDateRangeModal'), 
+	        __metadata('design:type', ng2_bs3_modal_1.ModalComponent)
+	    ], DateRangeComponent.prototype, "invalidDateRangeModal", void 0);
+	    DateRangeComponent = __decorate([
+	        core_1.Component({
+	            templateUrl: 'app/date-range/date-range.html',
+	            styleUrls: ['app/date-range/date-range.component.css'],
+	            directives: [router_deprecated_1.ROUTER_DIRECTIVES, ng2_bs3_modal_1.MODAL_DIRECTIVES, DatePicker]
+	        }), 
+	        __metadata('design:paramtypes', [npn_portal_service_1.NpnPortalService, date_service_1.DateService, router_deprecated_1.Router, common_1.FormBuilder, core_1.ChangeDetectorRef])
+	    ], DateRangeComponent);
+	    return DateRangeComponent;
+	}());
+	exports.DateRangeComponent = DateRangeComponent;
+
+
+/***/ },
+/* 609 */
+/***/ function(module, exports) {
+
+	"use strict";
+	// Examples
+	// // SINGLE FIELD VALIDATORS
+	// export function emailValidator(control: Control): {[key: string]: any} {
+	//     var emailRegexp = /^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i;
+	//     if (control.value && !emailRegexp.test(control.value)) {
+	//         return {invalidEmail: true};
+	//     }
+	// }
+	//
+	// //CONTROL GROUP VALIDATORS
+	// export function matchingPasswords(passwordKey: string, confirmPasswordKey: string) {
+	//     return (group: ControlGroup): {[key: string]: any} => {
+	//         let password = group.controls[passwordKey];
+	//         let confirmPassword = group.controls[confirmPasswordKey];
+	//
+	//         if (password.value !== confirmPassword.value) {
+	//             return {
+	//                 mismatchedPasswords: true
+	//             };
+	//         }
+	//     }
+	// }
+	function validateRawDateRange(group) {
+	    var startDate = group.controls['startDate'];
+	    var endDate = group.controls['endDate'];
+	    if (endDate.value && endDate.value <= startDate.value) {
+	        return { invalidDateRange: true };
+	    }
+	}
+	exports.validateRawDateRange = validateRawDateRange;
+	function validateDateRange(group) {
+	    var startYear = group.controls['startDateGroup']['controls']['year'];
+	    var startMonth = group.controls['startDateGroup']['controls']['month'];
+	    var startDay = group.controls['startDateGroup']['controls']['day'];
+	    var endYear = group.controls['endDateGroup']['controls']['year'];
+	    var endMonth = group.controls['endDateGroup']['controls']['month'];
+	    var endDay = group.controls['endDateGroup']['controls']['day'];
+	    if (!startYear || !startMonth || !startDay || !endYear || !endMonth || !endDay) {
+	        return { invalidDate: true };
+	    }
+	    var months = [
+	        "January",
+	        "February",
+	        "March",
+	        "April",
+	        "May",
+	        "June",
+	        "July",
+	        "August",
+	        "September",
+	        "October",
+	        "November",
+	        "December"
+	    ];
+	    var startDate = new Date(startYear.value, months.indexOf(startMonth.value), startDay.value);
+	    var endDate = new Date(endYear.value, months.indexOf(endMonth.value), endDay.value);
+	    if (startDate > endDate) {
+	        return {
+	            invalidDate: true
+	        };
+	    }
+	}
+	exports.validateDateRange = validateDateRange;
+	function validateDay(group) {
+	    var dayControl = group.controls['day'];
+	    var monthControl = group.controls['month'];
+	    if (!dayControl || !dayControl.value) {
+	        return { invalidDay: true };
+	    }
+	    if (monthControl.value === "September" ||
+	        monthControl.value === "April" ||
+	        monthControl.value === "June" ||
+	        monthControl.value === "November") {
+	        if (dayControl.value < 1 || dayControl.value > 30) {
+	            dayControl.setErrors({ invalidDay: true });
+	            return { invalidDay: true };
+	        }
+	    }
+	    if (monthControl.value === "February") {
+	        if (dayControl.value < 1 || dayControl.value > 29) {
+	            dayControl.setErrors({ invalidDay: true });
+	            return { invalidDay: true };
+	        }
+	    }
+	    if (dayControl.value < 1 || dayControl.value > 31) {
+	        dayControl.setErrors({ invalidDay: true });
+	        return { invalidDay: true };
+	    }
+	    if (dayControl.value >= 1 && dayControl.value <= 31) {
+	        dayControl.setErrors(null);
+	    }
+	}
+	exports.validateDay = validateDay;
+
+
+/***/ },
+/* 610 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(7);
 	var router_deprecated_1 = __webpack_require__(280);
 	var npn_portal_service_1 = __webpack_require__(592);
 	var locations_service_1 = __webpack_require__(593);
@@ -61066,7 +61272,7 @@
 
 
 /***/ },
-/* 609 */
+/* 611 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -61082,8 +61288,8 @@
 	var core_1 = __webpack_require__(7);
 	var router_deprecated_1 = __webpack_require__(280);
 	var npn_portal_service_1 = __webpack_require__(592);
-	var search_pipe_1 = __webpack_require__(610);
-	var sort_pipe_1 = __webpack_require__(611);
+	var search_pipe_1 = __webpack_require__(612);
+	var sort_pipe_1 = __webpack_require__(613);
 	var species_service_1 = __webpack_require__(595);
 	var SpeciesComponent = (function () {
 	    function SpeciesComponent(_router, _npnPortalService, _speciesService, _searchPipe) {
@@ -61166,7 +61372,7 @@
 
 
 /***/ },
-/* 610 */
+/* 612 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -61232,7 +61438,7 @@
 
 
 /***/ },
-/* 611 */
+/* 613 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -61274,7 +61480,7 @@
 
 
 /***/ },
-/* 612 */
+/* 614 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -61290,7 +61496,7 @@
 	var core_1 = __webpack_require__(7);
 	var router_deprecated_1 = __webpack_require__(280);
 	var npn_portal_service_1 = __webpack_require__(592);
-	var phenophase_pipe_1 = __webpack_require__(613);
+	var phenophase_pipe_1 = __webpack_require__(615);
 	var phenophases_service_1 = __webpack_require__(594);
 	var PhenophasesComponent = (function () {
 	    function PhenophasesComponent(_npnPortalService, _phenophasesService, _router) {
@@ -61342,7 +61548,7 @@
 
 
 /***/ },
-/* 613 */
+/* 615 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -61389,7 +61595,7 @@
 
 
 /***/ },
-/* 614 */
+/* 616 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -61405,7 +61611,7 @@
 	var core_1 = __webpack_require__(7);
 	var router_deprecated_1 = __webpack_require__(280);
 	var npn_portal_service_1 = __webpack_require__(592);
-	var search_pipe_1 = __webpack_require__(615);
+	var search_pipe_1 = __webpack_require__(617);
 	var partner_groups_service_1 = __webpack_require__(596);
 	var PartnerGroupsComponent = (function () {
 	    function PartnerGroupsComponent(_npnPortalService, _partnerGroupsService, _router) {
@@ -61620,7 +61826,7 @@
 
 
 /***/ },
-/* 615 */
+/* 617 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -61720,7 +61926,7 @@
 
 
 /***/ },
-/* 616 */
+/* 618 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -61736,7 +61942,7 @@
 	var core_1 = __webpack_require__(7);
 	var router_deprecated_1 = __webpack_require__(280);
 	var npn_portal_service_1 = __webpack_require__(592);
-	var integrated_datasets_service_1 = __webpack_require__(617);
+	var integrated_datasets_service_1 = __webpack_require__(599);
 	var IntegratedDatasetsComponent = (function () {
 	    function IntegratedDatasetsComponent(_router, _npnPortalService, _integratedDatasetService) {
 	        this._router = _router;
@@ -61785,66 +61991,7 @@
 
 
 /***/ },
-/* 617 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata = (this && this.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	var core_1 = __webpack_require__(7);
-	var IntegratedDatasetService = (function () {
-	    function IntegratedDatasetService() {
-	        this.datasets = [{
-	                id: 12,
-	                name: 'NYBG',
-	                description: "New York Botanical Garden forest phenology using old Nature's Notebook protocols, 2009-2013",
-	                selected: false
-	            },
-	            {
-	                id: 7,
-	                name: 'Legacy Lilac/Honeysuckle Data',
-	                description: 'Legacy lilac phenology data for Eastern US (SCSV) and Western US',
-	                selected: false
-	            },
-	            {
-	                id: 11,
-	                name: 'ADF Nature Log',
-	                description: "Mail-in data program using modified Nature's Notebook protocols, 2010-2012",
-	                selected: false
-	            }];
-	        this.datasetRemoved$ = new core_1.EventEmitter();
-	        this.submitDatasets$ = new core_1.EventEmitter();
-	    }
-	    IntegratedDatasetService.prototype.removeDataset = function (dataset) {
-	        this.datasetRemoved$.emit(dataset);
-	    };
-	    IntegratedDatasetService.prototype.submitDatasets = function () {
-	        this.submitDatasets$.emit({});
-	    };
-	    IntegratedDatasetService.prototype.reset = function () {
-	        for (var _i = 0, _a = this.datasets; _i < _a.length; _i++) {
-	            var dataset = _a[_i];
-	            dataset.selected = false;
-	        }
-	    };
-	    IntegratedDatasetService = __decorate([
-	        core_1.Injectable(), 
-	        __metadata('design:paramtypes', [])
-	    ], IntegratedDatasetService);
-	    return IntegratedDatasetService;
-	}());
-	exports.IntegratedDatasetService = IntegratedDatasetService;
-
-
-/***/ },
-/* 618 */
+/* 619 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -61962,7 +62109,7 @@
 
 
 /***/ },
-/* 619 */
+/* 620 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -61978,7 +62125,7 @@
 	var core_1 = __webpack_require__(7);
 	var router_deprecated_1 = __webpack_require__(280);
 	var npn_portal_service_1 = __webpack_require__(592);
-	var ancillary_data_service_1 = __webpack_require__(620);
+	var ancillary_data_service_1 = __webpack_require__(600);
 	var ng2_bs3_modal_1 = __webpack_require__(601);
 	var output_fields_service_1 = __webpack_require__(597);
 	var availability_pipe_1 = __webpack_require__(621);
@@ -62082,54 +62229,6 @@
 	    return AncillaryDataComponent;
 	}());
 	exports.AncillaryDataComponent = AncillaryDataComponent;
-
-
-/***/ },
-/* 620 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata = (this && this.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	var core_1 = __webpack_require__(7);
-	var AncillaryDataService = (function () {
-	    function AncillaryDataService() {
-	        this.datasheets = [
-	            { id: 1, name: 'Sites', description: '', selected: false },
-	            { id: 2, name: 'Individual Plants', description: '', selected: false },
-	            { id: 3, name: 'Observers', description: '', selected: false },
-	            { id: 4, name: 'Observation Details', description: '', selected: false },
-	            { id: 5, name: 'Protocols', description: '', selected: false }
-	        ];
-	        this.ancillaryDataRemoved$ = new core_1.EventEmitter();
-	        this.submitAncillaryData$ = new core_1.EventEmitter();
-	    }
-	    AncillaryDataService.prototype.removeAncillaryData = function (datasheet) {
-	        this.ancillaryDataRemoved$.emit(datasheet);
-	    };
-	    AncillaryDataService.prototype.submitAncillaryData = function () {
-	        this.submitAncillaryData$.emit({});
-	    };
-	    AncillaryDataService.prototype.reset = function () {
-	        for (var _i = 0, _a = this.datasheets; _i < _a.length; _i++) {
-	            var datasheet = _a[_i];
-	            datasheet.selected = false;
-	        }
-	    };
-	    AncillaryDataService = __decorate([
-	        core_1.Injectable(), 
-	        __metadata('design:paramtypes', [])
-	    ], AncillaryDataService);
-	    return AncillaryDataService;
-	}());
-	exports.AncillaryDataService = AncillaryDataService;
 
 
 /***/ },
@@ -62258,9 +62357,9 @@
 	var species_service_1 = __webpack_require__(595);
 	var phenophases_service_1 = __webpack_require__(594);
 	var output_fields_service_1 = __webpack_require__(597);
-	var integrated_datasets_service_1 = __webpack_require__(617);
-	var ancillary_data_service_1 = __webpack_require__(620);
-	var date_service_1 = __webpack_require__(599);
+	var integrated_datasets_service_1 = __webpack_require__(599);
+	var ancillary_data_service_1 = __webpack_require__(600);
+	var date_service_1 = __webpack_require__(598);
 	var DownloadComponent = (function () {
 	    function DownloadComponent(_npnPortalService, _dateService, _locationService, _speciesService, _phenophaseService, _partnerGroupsService, _integratedDatasetService, _outputFieldsService, _ancillaryDataService, _router) {
 	        this._npnPortalService = _npnPortalService;
@@ -62373,6 +62472,7 @@
 	        this._npnPortalService.download();
 	    };
 	    DownloadComponent.prototype.resetFilters = function (page) {
+	        this._npnPortalService.resettingFilters = true;
 	        this._dateService.reset();
 	        this._locationService.reset();
 	        this._speciesService.reset();

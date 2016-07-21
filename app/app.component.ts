@@ -45,8 +45,8 @@ import {AncillaryDataService} from "./ancillary-data/ancillary-data.service";
           <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('IntegratedDatasets')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('IntegratedDatasets')">Integrated Datasets</button>
           <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('OutputFields')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('OutputFields')">Output Fields</button>
           <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('AncillaryData')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('AncillaryData')">Ancillary Data</button>
-          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('Metadata')" (click)="onSelect('Metadata')">Metadata</button>
-          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('Help')" (click)="onSelect('Help')">Help</button>
+          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('Metadata')" [class.disabled]="!allDataLoaded()" (click)="onSelect('Metadata')">Metadata</button>
+          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('Help')" [class.disabled]="!allDataLoaded()" (click)="onSelect('Help')">Help</button>
         </div>
 
       </section>
@@ -97,21 +97,22 @@ export class AppComponent {
     }
 
     onSelect(page) {
-        if(page == "GetStarted" || page == "Metadata" || page == "Help") {
-            this._npnPortalService.activePage = page;
-            this._router.navigate( [page] );
-        }
-        else {
-            if (page === "DateRange" && this.reportTypeSelected()) {
+        if(this.allDataLoaded()) {
+            if(page == "GetStarted" || page == "Metadata" || page == "Help") {
                 this._npnPortalService.activePage = page;
                 this._router.navigate( [page] );
             }
-            if (this.reportTypeSelected() && this.validDateRange()) {
-                this._npnPortalService.activePage = page;
-                this._router.navigate( [page] );
+            else {
+                if (page === "DateRange" && this.reportTypeSelected()) {
+                    this._npnPortalService.activePage = page;
+                    this._router.navigate( [page] );
+                }
+                if (this.reportTypeSelected() && this.validDateRange()) {
+                    this._npnPortalService.activePage = page;
+                    this._router.navigate( [page] );
+                }
             }
         }
-
     }
 
     reportTypeSelected() {
@@ -124,6 +125,16 @@ export class AppComponent {
 
     isSelected(page) {
         return page == this._npnPortalService.activePage
+    }
+
+    allDataLoaded() {
+        return this._locationsService.ready
+            && this._phenophasesService.ready
+            && this._speciesService.ready
+            && this._partnerGroupsService.ready
+            && this._outputFieldsService.rawFieldsReady
+            && this._outputFieldsService.summarizedFieldsReady
+            && this._outputFieldsService.siteLevelSummarizedFieldsReady
     }
 
     ngOnInit() {
