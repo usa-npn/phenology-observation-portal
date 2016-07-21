@@ -59674,8 +59674,6 @@
 	            .catch(this.handleError);
 	    };
 	    LocationsService.prototype.handleError = function (error) {
-	        // in a real world app, we may send the server to some remote logging infrastructure
-	        // instead of just logging it to the console
 	        console.error(error);
 	        return Observable_1.Observable.throw(error.json().error || 'Server error');
 	    };
@@ -59738,8 +59736,6 @@
 	            .catch(this.handleError);
 	    };
 	    PhenophasesService.prototype.handleError = function (error) {
-	        // in a real world app, we may send the server to some remote logging infrastructure
-	        // instead of just logging it to the console
 	        console.error(error);
 	        return Observable_1.Observable.throw(error.json().error || 'Server error');
 	    };
@@ -59884,8 +59880,6 @@
 	            .catch(this.handleError);
 	    };
 	    SpeciesService.prototype.handleError = function (error) {
-	        // in a real world app, we may send the server to some remote logging infrastructure
-	        // instead of just logging it to the console
 	        console.error(error);
 	        return Observable_1.Observable.throw(error.json().error || 'Server error');
 	    };
@@ -59948,8 +59942,6 @@
 	            .catch(this.handleError);
 	    };
 	    PartnerGroupsService.prototype.handleError = function (error) {
-	        // in a real world app, we may send the server to some remote logging infrastructure
-	        // instead of just logging it to the console
 	        console.error(error);
 	        return Observable_1.Observable.throw(error.json().error || 'Server error');
 	    };
@@ -60089,8 +60081,6 @@
 	            .catch(this.handleError);
 	    };
 	    OutputFieldsService.prototype.handleError = function (error) {
-	        // in a real world app, we may send the server to some remote logging infrastructure
-	        // instead of just logging it to the console
 	        console.error(error);
 	        return Observable_1.Observable.throw(error.json().error || 'Server error');
 	    };
@@ -62196,7 +62186,7 @@
 	    function MetadataComponent() {
 	    }
 	    MetadataComponent.prototype.downloadFile = function (fileLocation) {
-	        window.location.assign(fileLocation);
+	        window.location.replace(window.location.origin + fileLocation);
 	    };
 	    MetadataComponent = __decorate([
 	        core_1.Component({

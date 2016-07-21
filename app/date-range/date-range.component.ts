@@ -1,11 +1,10 @@
 import {Component, OnInit, AfterViewInit, ChangeDetectorRef, ViewChild, Directive, ElementRef, Input, Output, EventEmitter} from "@angular/core";
-import {Control, ControlGroup, FormBuilder, Validators, DefaultValueAccessor, NgControl} from "@angular/common";
+import {Control, ControlGroup, FormBuilder, Validators} from "@angular/common";
 import {Router, ROUTER_DIRECTIVES, CanDeactivate, ComponentInstruction} from "@angular/router-deprecated";
 import {NpnPortalService} from "../npn-portal.service";
 import {DateService} from "./date.service";
 import {validateRawDateRange, validateDateRange, validateDay} from './validators';
 import { MODAL_DIRECTIVES, ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { } from 'eonasdan-bootstrap-datetimepicker/src/js';
 
 declare var $: any;
 

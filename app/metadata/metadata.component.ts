@@ -10,6 +10,6 @@ export class MetadataComponent {
     constructor() {}
     
     downloadFile(fileLocation) {
-        window.location.assign(fileLocation);
+        window.location.replace(window.location.origin + fileLocation);
     }
 }
