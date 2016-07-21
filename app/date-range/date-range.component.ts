@@ -257,6 +257,8 @@ export class DateRangeComponent implements CanDeactivate, OnInit, AfterViewInit 
     }
     
   ngOnInit() {
+      this._npnPortalService.resettingFilters = false;
+      
       this.startDate = this._dateService.startDate;
       this.endDate = this._dateService.endDate;
       
