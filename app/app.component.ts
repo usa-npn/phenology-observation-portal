@@ -135,6 +135,7 @@ export class AppComponent {
             && this._outputFieldsService.rawFieldsReady
             && this._outputFieldsService.summarizedFieldsReady
             && this._outputFieldsService.siteLevelSummarizedFieldsReady
+            && this._integratedDatasetService.ready
     }
 
     ngOnInit() {
@@ -146,5 +147,6 @@ export class AppComponent {
         this._outputFieldsService.initRawFields();
         this._outputFieldsService.initSummarizedFields();
         this._outputFieldsService.initSiteLevelSummarizedFields();
+        this._integratedDatasetService.initDatasets();
     }
 }

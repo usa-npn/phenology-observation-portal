@@ -44,19 +44,21 @@ export class GetStartedComponent implements OnInit {
   dataLoaded() {
     var numLoaded:number = 5;
     if(this._locationsService.ready)
-      numLoaded = numLoaded + 15;
+      numLoaded = numLoaded + 12;
     if(this._phenophasesService.ready)
-      numLoaded = numLoaded + 15;
+      numLoaded = numLoaded + 12;
     if(this._speciesService.ready)
-      numLoaded = numLoaded + 15;
+      numLoaded = numLoaded + 12;
     if(this._partnerGroupsService.ready)
-      numLoaded = numLoaded + 15;
+      numLoaded = numLoaded + 12;
     if(this._outputFieldsService.rawFieldsReady)
-      numLoaded = numLoaded + 15;
+      numLoaded = numLoaded + 12;
     if(this._outputFieldsService.summarizedFieldsReady)
-      numLoaded = numLoaded + 15;
+      numLoaded = numLoaded + 12;
     if(this._outputFieldsService.siteLevelSummarizedFieldsReady)
-      numLoaded = numLoaded + 15;
+      numLoaded = numLoaded + 12;
+    if(this._integratedDatasetService.ready)
+      numLoaded = numLoaded + 12;
     return numLoaded;
   }
 

@@ -45,7 +45,7 @@ export class NpnPortalService {
         || this.getSelectedPhenophases().length > 0
         || this.getSelectedPartnerGroups().length > 0
         || this.getSelectedOptionalFields().length > 0 
-        || this.getSelectedDatasetIds().length > 0
+        || this.getSelectedDatasets().length > 0
         || this.getSelectedDatasheets().length > 0)
         return true;
     else
@@ -132,18 +132,18 @@ export class NpnPortalService {
     return this.datasets.filter((dataset) => dataset.selected);
   }
 
-  // this function is here because there are two lilac datasets combined into one checkbox for lilac
-  getSelectedDatasetIds() {
-    let datasetIds = [];
-    let selectedSets: Dataset[] = this.datasets.filter((dataset) => dataset.selected);
-    for(var set of selectedSets) {
-      datasetIds.push(set.id);
-      // east and west lilac are combined
-      if(set.id == 7)
-        datasetIds.push(8);
-    }
-    return datasetIds;
-  }
+  // // this function is here because there are two lilac datasets combined into one checkbox for lilac
+  // getSelectedDatasetIds() {
+  //   let datasetIds = [];
+  //   let selectedSets: Dataset[] = this.datasets.filter((dataset) => dataset.selected);
+  //   for(var set of selectedSets) {
+  //     datasetIds.push(set.dataset_id);
+  //     // east and west lilac are combined
+  //     if(set.dataset_id == 7)
+  //       datasetIds.push(8);
+  //   }
+  //   return datasetIds;
+  // }
 
   getSelectedOptionalFields() {
     return this.optionalFields.filter(function(f) {
@@ -244,6 +244,7 @@ export class NpnPortalService {
       upper_right_y2: this.extent.upper_right_y2,
       species_id: this.getSelectedSpecies().map(function(s) { return s.species_id; }),
       phenophase_category: this.getSelectedPhenophases().map(function(p) { return p.phenophase_category; }),
+      dataset_ids: this.getSelectedDatasets().map((dataset) => dataset.dataset_id),
       network: this.getSelectedPartnerGroups().map(function(p) { return p.network_name; })
     });
 
@@ -284,8 +285,8 @@ export class NpnPortalService {
       partnerGroups: this.getSelectedPartnerGroups().map((partnerGroup) => partnerGroup.network_name),
       additionalFields: this.getSelectedOptionalFields().map((optionalField) => optionalField.machine_name),
       additionalFieldsDisplay: this.getSelectedOptionalFields().map((optionalField) => optionalField.field_name),
-      dataset_ids: this.getSelectedDatasetIds(),
-      integrated_datasets: this.getSelectedDatasets().map((dataset) => dataset.name),
+      dataset_ids: this.getSelectedDatasets().map((dataset) => dataset.dataset_id),
+      integrated_datasets: this.getSelectedDatasets().map((dataset) => dataset.dataset_name),
       ancillary_data: this.getSelectedDatasheets().map((datasheet) => datasheet.name),
       qualityFlags: this.dataQualityChecksSelected() ? null : 'ignored'
     });

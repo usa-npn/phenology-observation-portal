@@ -43958,7 +43958,8 @@
 	            && this._partnerGroupsService.ready
 	            && this._outputFieldsService.rawFieldsReady
 	            && this._outputFieldsService.summarizedFieldsReady
-	            && this._outputFieldsService.siteLevelSummarizedFieldsReady;
+	            && this._outputFieldsService.siteLevelSummarizedFieldsReady
+	            && this._integratedDatasetService.ready;
 	    };
 	    AppComponent.prototype.ngOnInit = function () {
 	        this._locationsService.initStates();
@@ -43969,6 +43970,7 @@
 	        this._outputFieldsService.initRawFields();
 	        this._outputFieldsService.initSummarizedFields();
 	        this._outputFieldsService.initSiteLevelSummarizedFields();
+	        this._integratedDatasetService.initDatasets();
 	    };
 	    AppComponent = __decorate([
 	        core_1.Component({
@@ -59322,19 +59324,21 @@
 	    GetStartedComponent.prototype.dataLoaded = function () {
 	        var numLoaded = 5;
 	        if (this._locationsService.ready)
-	            numLoaded = numLoaded + 15;
+	            numLoaded = numLoaded + 12;
 	        if (this._phenophasesService.ready)
-	            numLoaded = numLoaded + 15;
+	            numLoaded = numLoaded + 12;
 	        if (this._speciesService.ready)
-	            numLoaded = numLoaded + 15;
+	            numLoaded = numLoaded + 12;
 	        if (this._partnerGroupsService.ready)
-	            numLoaded = numLoaded + 15;
+	            numLoaded = numLoaded + 12;
 	        if (this._outputFieldsService.rawFieldsReady)
-	            numLoaded = numLoaded + 15;
+	            numLoaded = numLoaded + 12;
 	        if (this._outputFieldsService.summarizedFieldsReady)
-	            numLoaded = numLoaded + 15;
+	            numLoaded = numLoaded + 12;
 	        if (this._outputFieldsService.siteLevelSummarizedFieldsReady)
-	            numLoaded = numLoaded + 15;
+	            numLoaded = numLoaded + 12;
+	        if (this._integratedDatasetService.ready)
+	            numLoaded = numLoaded + 12;
 	        return numLoaded;
 	    };
 	    GetStartedComponent.prototype.resetFilters = function () {
@@ -59441,19 +59445,6 @@
 	        this.downloadStatus = 'testing';
 	    }
 	    NpnPortalService.prototype.filtersAreSet = function () {
-	        // if(this.startDate !== null )
-	        //   console.log("boom" + this.startDate)
-	        // console.log(this.endDate)
-	        // if(this.extent.bottom_left_x1 !== null)
-	        //   console.log("bam" + this.extent.bottom_left_x1)
-	        // if(this.getSelectedSpecies().length > 0)
-	        //   console.log("beem" + this.getSelectedSpecies().length)
-	        // console.log(this.getSelectedStates())
-	        // console.log(this.getSelectedPhenophases())
-	        // console.log(this.getSelectedPartnerGroups())
-	        // console.log(this.getSelectedOptionalFields())
-	        // console.log(this.getSelectedDatasetIds())
-	        // console.log(this.getSelectedDatasheets())
 	        if (this.startDate !== null
 	            || this.endDate !== null
 	            || this.getSelectedStates().length > 0
@@ -59462,7 +59453,7 @@
 	            || this.getSelectedPhenophases().length > 0
 	            || this.getSelectedPartnerGroups().length > 0
 	            || this.getSelectedOptionalFields().length > 0
-	            || this.getSelectedDatasetIds().length > 0
+	            || this.getSelectedDatasets().length > 0
 	            || this.getSelectedDatasheets().length > 0)
 	            return true;
 	        else
@@ -59542,19 +59533,18 @@
 	    NpnPortalService.prototype.getSelectedDatasets = function () {
 	        return this.datasets.filter(function (dataset) { return dataset.selected; });
 	    };
-	    // this function is here because there are two lilac datasets combined into one checkbox for lilac
-	    NpnPortalService.prototype.getSelectedDatasetIds = function () {
-	        var datasetIds = [];
-	        var selectedSets = this.datasets.filter(function (dataset) { return dataset.selected; });
-	        for (var _i = 0, selectedSets_1 = selectedSets; _i < selectedSets_1.length; _i++) {
-	            var set = selectedSets_1[_i];
-	            datasetIds.push(set.id);
-	            // east and west lilac are combined
-	            if (set.id == 7)
-	                datasetIds.push(8);
-	        }
-	        return datasetIds;
-	    };
+	    // // this function is here because there are two lilac datasets combined into one checkbox for lilac
+	    // getSelectedDatasetIds() {
+	    //   let datasetIds = [];
+	    //   let selectedSets: Dataset[] = this.datasets.filter((dataset) => dataset.selected);
+	    //   for(var set of selectedSets) {
+	    //     datasetIds.push(set.dataset_id);
+	    //     // east and west lilac are combined
+	    //     if(set.dataset_id == 7)
+	    //       datasetIds.push(8);
+	    //   }
+	    //   return datasetIds;
+	    // }
 	    NpnPortalService.prototype.getSelectedOptionalFields = function () {
 	        return this.optionalFields.filter(function (f) {
 	            return f.selected;
@@ -59643,6 +59633,7 @@
 	            upper_right_y2: this.extent.upper_right_y2,
 	            species_id: this.getSelectedSpecies().map(function (s) { return s.species_id; }),
 	            phenophase_category: this.getSelectedPhenophases().map(function (p) { return p.phenophase_category; }),
+	            dataset_ids: this.getSelectedDatasets().map(function (dataset) { return dataset.dataset_id; }),
 	            network: this.getSelectedPartnerGroups().map(function (p) { return p.network_name; })
 	        });
 	        return this.http.post(this.server_url + '/npn_portal/observations/getObservationsCount.json', data, { headers: headers })
@@ -59678,8 +59669,8 @@
 	            partnerGroups: this.getSelectedPartnerGroups().map(function (partnerGroup) { return partnerGroup.network_name; }),
 	            additionalFields: this.getSelectedOptionalFields().map(function (optionalField) { return optionalField.machine_name; }),
 	            additionalFieldsDisplay: this.getSelectedOptionalFields().map(function (optionalField) { return optionalField.field_name; }),
-	            dataset_ids: this.getSelectedDatasetIds(),
-	            integrated_datasets: this.getSelectedDatasets().map(function (dataset) { return dataset.name; }),
+	            dataset_ids: this.getSelectedDatasets().map(function (dataset) { return dataset.dataset_id; }),
+	            integrated_datasets: this.getSelectedDatasets().map(function (dataset) { return dataset.dataset_name; }),
 	            ancillary_data: this.getSelectedDatasheets().map(function (datasheet) { return datasheet.name; }),
 	            qualityFlags: this.dataQualityChecksSelected() ? null : 'ignored'
 	        });
@@ -60281,26 +60272,15 @@
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(7);
+	var http_1 = __webpack_require__(313);
+	var Observable_1 = __webpack_require__(41);
 	var IntegratedDatasetService = (function () {
-	    function IntegratedDatasetService() {
-	        this.datasets = [{
-	                id: 12,
-	                name: 'NYBG',
-	                description: "New York Botanical Garden forest phenology using old Nature's Notebook protocols, 2009-2013",
-	                selected: false
-	            },
-	            {
-	                id: 7,
-	                name: 'Legacy Lilac/Honeysuckle Data',
-	                description: 'Legacy lilac phenology data for Eastern US (SCSV) and Western US',
-	                selected: false
-	            },
-	            {
-	                id: 11,
-	                name: 'ADF Nature Log',
-	                description: "Mail-in data program using modified Nature's Notebook protocols, 2010-2012",
-	                selected: false
-	            }];
+	    function IntegratedDatasetService(http) {
+	        this.http = http;
+	        this.server_url = location.protocol + '//' + location.hostname;
+	        this._datasetUrl = this.server_url + '/npn_portal/observations/getDatasetDetails.json';
+	        this.ready = false;
+	        this.datasets = [];
 	        this.datasetRemoved$ = new core_1.EventEmitter();
 	        this.submitDatasets$ = new core_1.EventEmitter();
 	    }
@@ -60310,6 +60290,19 @@
 	    IntegratedDatasetService.prototype.submitDatasets = function () {
 	        this.submitDatasets$.emit({});
 	    };
+	    IntegratedDatasetService.prototype.initDatasets = function () {
+	        var _this = this;
+	        this.getDatasets().subscribe(function (datasets) { _this.datasets = datasets.filter(function (d) { return d.dataset_id === 7 || d.dataset_id === 8 || d.dataset_id === 11 || d.dataset_id === 12; }); console.log('datasets have been set'); _this.ready = true; }, function (error) { return _this.errorMessage = error; });
+	    };
+	    IntegratedDatasetService.prototype.getDatasets = function () {
+	        return this.http.get(this._datasetUrl)
+	            .map(function (res) { return res.json(); })
+	            .catch(this.handleError);
+	    };
+	    IntegratedDatasetService.prototype.handleError = function (error) {
+	        console.error(error);
+	        return Observable_1.Observable.throw(error.json().error || 'Server error');
+	    };
 	    IntegratedDatasetService.prototype.reset = function () {
 	        for (var _i = 0, _a = this.datasets; _i < _a.length; _i++) {
 	            var dataset = _a[_i];
@@ -60318,7 +60311,7 @@
 	    };
 	    IntegratedDatasetService = __decorate([
 	        core_1.Injectable(), 
-	        __metadata('design:paramtypes', [])
+	        __metadata('design:paramtypes', [http_1.Http])
 	    ], IntegratedDatasetService);
 	    return IntegratedDatasetService;
 	}());
@@ -61019,6 +61012,7 @@
 	        this._npnPortalService.activePage = '';
 	    };
 	    DateRangeComponent.prototype.ngOnInit = function () {
+	        this._npnPortalService.resettingFilters = false;
 	        this.startDate = this._dateService.startDate;
 	        this.endDate = this._dateService.endDate;
 	        this.rangeType = this._dateService.rangeType;
@@ -61943,24 +61937,35 @@
 	var router_deprecated_1 = __webpack_require__(280);
 	var npn_portal_service_1 = __webpack_require__(592);
 	var integrated_datasets_service_1 = __webpack_require__(599);
+	var output_fields_service_1 = __webpack_require__(597);
 	var IntegratedDatasetsComponent = (function () {
-	    function IntegratedDatasetsComponent(_router, _npnPortalService, _integratedDatasetService) {
+	    function IntegratedDatasetsComponent(_router, _npnPortalService, _integratedDatasetService, _outputFieldsService) {
 	        this._router = _router;
 	        this._npnPortalService = _npnPortalService;
 	        this._integratedDatasetService = _integratedDatasetService;
+	        this._outputFieldsService = _outputFieldsService;
 	    }
 	    IntegratedDatasetsComponent.prototype.toggleDataset = function (dataset) {
 	        dataset.selected = !dataset.selected;
+	        if (dataset.selected) {
+	            for (var _i = 0, _a = this.optionalFields; _i < _a.length; _i++) {
+	                var field = _a[_i];
+	                if ("dataset_id" === field.machine_name) {
+	                    field.selected = true;
+	                }
+	            }
+	        }
 	    };
 	    IntegratedDatasetsComponent.prototype.removeDataset = function (dataset) {
 	        for (var _i = 0, _a = this.datasets; _i < _a.length; _i++) {
 	            var d = _a[_i];
-	            if (dataset.id === d.id)
+	            if (dataset.dataset_id === d.dataset_id)
 	                d.selected = false;
 	        }
 	    };
 	    IntegratedDatasetsComponent.prototype.submitDatasets = function () {
 	        this._npnPortalService.datasets = this.datasets.map(function (obj) { return Object.assign({}, obj); });
+	        this._npnPortalService.optionalFields = this.optionalFields.concat(this.climateFields).map(function (obj) { return Object.assign({}, obj); });
 	        this._npnPortalService.setObservationCount();
 	    };
 	    IntegratedDatasetsComponent.prototype.onSelect = function (page) {
@@ -61974,6 +61979,8 @@
 	    IntegratedDatasetsComponent.prototype.ngOnInit = function () {
 	        var _this = this;
 	        this.datasets = this._integratedDatasetService.datasets;
+	        this.optionalFields = this._npnPortalService.downloadType === "raw" ? this._outputFieldsService.optionalFieldsRaw : (this._npnPortalService.downloadType === "summarized" ? this._outputFieldsService.optionalFieldsSummarized : this._outputFieldsService.optionalFieldsSiteLevelSummarized);
+	        this.climateFields = this._npnPortalService.downloadType === "raw" ? this._outputFieldsService.climateFieldsRaw : (this._npnPortalService.downloadType === "summarized" ? this._outputFieldsService.climateFieldsSummarized : this._outputFieldsService.climateFieldsSiteLevelSummarized);
 	        this._integratedDatasetService.datasetRemoved$.subscribe(function (dataset) { _this.removeDataset(dataset); _this.submitDatasets(); });
 	        this._integratedDatasetService.submitDatasets$.subscribe(function () { return _this.submitDatasets(); });
 	    };
@@ -61983,7 +61990,7 @@
 	            styleUrls: ['app/integrated-datasets/integrated-datasets.component.css'],
 	            directives: [router_deprecated_1.ROUTER_DIRECTIVES]
 	        }), 
-	        __metadata('design:paramtypes', [router_deprecated_1.Router, npn_portal_service_1.NpnPortalService, integrated_datasets_service_1.IntegratedDatasetService])
+	        __metadata('design:paramtypes', [router_deprecated_1.Router, npn_portal_service_1.NpnPortalService, integrated_datasets_service_1.IntegratedDatasetService, output_fields_service_1.OutputFieldsService])
 	    ], IntegratedDatasetsComponent);
 	    return IntegratedDatasetsComponent;
 	}());
