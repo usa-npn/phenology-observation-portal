@@ -27,7 +27,7 @@ export class IntegratedDatasetService {
 
     initDatasets() {
         this.getDatasets().subscribe(
-            datasets => {this.datasets = datasets.filter((d) => d.dataset_id === 7 || d.dataset_id === 8 || d.dataset_id === 11 || d.dataset_id === 12); console.log('datasets have been set'); this.ready = true;},
+            datasets => {this.datasets = datasets.filter((d) => d.dataset_id === 7 || d.dataset_id === 8 || d.dataset_id === 11 || d.dataset_id === 13); console.log('datasets have been set'); this.ready = true;},
             error => this.errorMessage = <any>error)
     }
 
