@@ -1,3 +1,7 @@
 .glyphicon {
     font-size: 30px;
 }
+
+a {
+    cursor: pointer;
+}
