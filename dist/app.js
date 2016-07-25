@@ -60292,7 +60292,7 @@
 	    };
 	    IntegratedDatasetService.prototype.initDatasets = function () {
 	        var _this = this;
-	        this.getDatasets().subscribe(function (datasets) { _this.datasets = datasets.filter(function (d) { return d.dataset_id === 7 || d.dataset_id === 8 || d.dataset_id === 11 || d.dataset_id === 12; }); console.log('datasets have been set'); _this.ready = true; }, function (error) { return _this.errorMessage = error; });
+	        this.getDatasets().subscribe(function (datasets) { _this.datasets = datasets.filter(function (d) { return d.dataset_id === 7 || d.dataset_id === 8 || d.dataset_id === 11 || d.dataset_id === 13; }); console.log('datasets have been set'); _this.ready = true; }, function (error) { return _this.errorMessage = error; });
 	    };
 	    IntegratedDatasetService.prototype.getDatasets = function () {
 	        return this.http.get(this._datasetUrl)
