@@ -22,8 +22,18 @@ export class OutputFieldsService {
     public selectAllOptional:boolean = false;
     public selectAllClimate:boolean = false;
 
-    server_url = location.protocol + '//' + location.hostname;
-    private _metadataFieldsUrl = this.server_url + '/npn_portal/metadata/getMetadataFields.json';
+    //server_url = location.protocol + '//' + location.hostname;
+
+    public getNpnPortalUrl() {
+        if(location.hostname.includes('local'))
+            return location.protocol + '//' + location.hostname;
+        if(location.hostname.includes('dev'))
+            return location.protocol + "//www-dev.usanpn.org";
+        else
+            return location.protocol + "//www.usanpn.org";
+    }
+    
+    private _metadataFieldsUrl = this.getNpnPortalUrl() + '/npn_portal/metadata/getMetadataFields.json';
     public rawFieldsReady: boolean = false;
     public summarizedFieldsReady: boolean = false;
     public siteLevelSummarizedFieldsReady: boolean = false;

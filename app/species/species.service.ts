@@ -10,9 +10,19 @@
      
      constructor (private http: Http) {}
      
-     server_url = location.protocol + '//' + location.hostname;
-     private _speciesUrl = this.server_url + '/npn_portal/species/getSpecies.json';
-     private _functionalTypesUrl = this.server_url + '/npn_portal/species/getSpeciesFunctionalTypes.json';
+     //server_url = location.protocol + '//' + location.hostname;
+
+     public getNpnPortalUrl() {
+         if(location.hostname.includes('local'))
+             return location.protocol + '//' + location.hostname;
+         if(location.hostname.includes('dev'))
+             return location.protocol + "//www-dev.usanpn.org";
+         else
+             return location.protocol + "//www.usanpn.org";
+     }
+     
+     private _speciesUrl = this.getNpnPortalUrl() + '/npn_portal/species/getSpecies.json';
+     private _functionalTypesUrl = this.getNpnPortalUrl() + '/npn_portal/species/getSpeciesFunctionalTypes.json';
      errorMessage: string;
 
      public speciesRemoved$ = new EventEmitter();

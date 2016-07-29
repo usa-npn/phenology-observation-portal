@@ -8,8 +8,18 @@ export class PartnerGroupsService {
 
     constructor (private http: Http) {}
 
-    server_url = location.protocol + '//' + location.hostname;
-    private _partnerGroupsUrl = this.server_url + '/npn_portal/networks/getNetworkTree.json';
+    //server_url = location.protocol + '//' + location.hostname;
+
+    public getNpnPortalUrl() {
+        if(location.hostname.includes('local'))
+            return location.protocol + '//' + location.hostname;
+        if(location.hostname.includes('dev'))
+            return location.protocol + "//www-dev.usanpn.org";
+        else
+            return location.protocol + "//www.usanpn.org";
+    }
+    
+    private _partnerGroupsUrl = this.getNpnPortalUrl() + '/npn_portal/networks/getNetworkTree.json';
     errorMessage: string;
     public ready:boolean = false;
     public nameFilter:string = "";

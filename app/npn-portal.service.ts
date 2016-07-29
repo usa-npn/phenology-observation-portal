@@ -15,7 +15,7 @@ export class NpnPortalService {
   constructor (private http: Http) {}
 
   activePage = "GetStarted";
-  server_url = location.protocol + '//' + location.hostname;
+  //server_url = location.protocol + '//' + location.hostname;
   // server_url = "http://www-dev.usanpn.org";
 
   downloadType:string;
@@ -248,7 +248,7 @@ export class NpnPortalService {
       network: this.getSelectedPartnerGroups().map(function(p) { return p.network_name; })
     });
 
-    return this.http.post(this.server_url + '/npn_portal/observations/getObservationsCount.json', data, { headers: headers })
+    return this.http.post(this.getNpnPortalUrl() + '/npn_portal/observations/getObservationsCount.json', data, { headers: headers })
         .map(res => res.json())
         .catch(this.handleError);
   }
@@ -258,6 +258,15 @@ export class NpnPortalService {
     // instead of just logging it to the console
     console.error(error);
     return Observable.throw(error.json().error || 'Server error');
+  }
+
+  public getNpnPortalUrl() {
+    if(location.hostname.includes('local'))
+        return location.protocol + '//' + location.hostname;
+    if(location.hostname.includes('dev'))
+        return location.protocol + "//www-dev.usanpn.org";
+    else
+        return location.protocol + "//www.usanpn.org";
   }
 
   //called when download is pressed //////////////////////////////////////
@@ -292,7 +301,7 @@ export class NpnPortalService {
     });
 
     //always use https on dev/prod servers, but not necessarily locally
-    this.http.post(this.server_url.replace("http://www-dev", "https://www-dev").replace("http://www.usanpn", "https://www.usanpn") + ':3002/dot/download', data, { headers: headers })
+    this.http.post(this.getNpnPortalUrl().replace("http://www-dev", "https://www-dev").replace("http://www.usanpn", "https://www.usanpn") + ':3002/dot/download', data, { headers: headers })
         .subscribe((res:Response) => {
           console.log(res.json().download_path);
           if(res.json().download_path === "error") {

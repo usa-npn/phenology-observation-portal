@@ -8,8 +8,18 @@ export class PhenophasesService {
 
     constructor (private http: Http) {}
 
-    server_url = location.protocol + '//' + location.hostname;
-    private _phenophasesUrl = this.server_url + '/npn_portal/phenophases/getPhenophases.json';
+    //server_url = location.protocol + '//' + location.hostname;
+
+    public getNpnPortalUrl() {
+        if(location.hostname.includes('local'))
+            return location.protocol + '//' + location.hostname;
+        if(location.hostname.includes('dev'))
+            return location.protocol + "//www-dev.usanpn.org";
+        else
+            return location.protocol + "//www.usanpn.org";
+    }
+    
+    private _phenophasesUrl = this.getNpnPortalUrl() + '/npn_portal/phenophases/getPhenophases.json';
     errorMessage: string;
     public ready:boolean = false;
     public phenophases:Phenophase[] = [];
