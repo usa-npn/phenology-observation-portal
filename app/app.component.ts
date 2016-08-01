@@ -24,6 +24,7 @@ import {OutputFieldsService} from "./output-fields/output-fields.service";
 import {PartnerGroupsService} from "./partner-groups/partner-groups.service";
 import {IntegratedDatasetService} from "./integrated-datasets/integrated-datasets.service";
 import {AncillaryDataService} from "./ancillary-data/ancillary-data.service";
+import {Config} from "./config.service";
 
 @Component({
   selector: 'my-app',
@@ -66,7 +67,7 @@ import {AncillaryDataService} from "./ancillary-data/ancillary-data.service";
 
     </div>
   `,
-  providers: [NpnPortalService, DateService, LocationsService, SpeciesService, PhenophasesService, PartnerGroupsService, IntegratedDatasetService, OutputFieldsService, AncillaryDataService, HTTP_PROVIDERS],
+  providers: [NpnPortalService, DateService, LocationsService, SpeciesService, PhenophasesService, PartnerGroupsService, IntegratedDatasetService, OutputFieldsService, AncillaryDataService, Config, HTTP_PROVIDERS],
   directives: [ROUTER_DIRECTIVES, DownloadComponent]
 })
 @RouteConfig([

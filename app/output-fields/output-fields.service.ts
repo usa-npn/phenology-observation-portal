@@ -2,11 +2,12 @@ import {Injectable, EventEmitter} from '@angular/core';
 import {OutputField} from './output-field';
 import {Http, Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
+import {Config} from '../config.service';
 
 @Injectable()
 export class OutputFieldsService {
 
-    constructor (private http: Http) {}
+    constructor (private http: Http, private config: Config) {}
 
     public optionalFieldRemoved$ = new EventEmitter();
     public submitOptionalFields$ = new EventEmitter();
@@ -22,18 +23,7 @@ export class OutputFieldsService {
     public selectAllOptional:boolean = false;
     public selectAllClimate:boolean = false;
 
-    //server_url = location.protocol + '//' + location.hostname;
-
-    public getNpnPortalUrl() {
-        if(location.hostname.includes('local'))
-            return location.protocol + '//' + location.hostname;
-        if(location.hostname.includes('dev'))
-            return location.protocol + "//www-dev.usanpn.org";
-        else
-            return location.protocol + "//www.usanpn.org";
-    }
-    
-    private _metadataFieldsUrl = this.getNpnPortalUrl() + '/npn_portal/metadata/getMetadataFields.json';
+    private _metadataFieldsUrl = this.config.getNpnPortalUrl() + '/npn_portal/metadata/getMetadataFields.json';
     public rawFieldsReady: boolean = false;
     public summarizedFieldsReady: boolean = false;
     public siteLevelSummarizedFieldsReady: boolean = false;

@@ -2,27 +2,17 @@
  import {SpeciesType} from './species-type';
  import {Http, Response, Headers} from '@angular/http';
  import {Observable} from 'rxjs/Observable';
- import {FunctionalType} from './functional-type'
- import {Species} from './species'
+ import {FunctionalType} from './functional-type';
+ import {Species} from './species';
+ import {Config} from '../config.service'
 
  @Injectable()
  export class SpeciesService {
      
-     constructor (private http: Http) {}
+     constructor (private http: Http, private config: Config) {}
      
-     //server_url = location.protocol + '//' + location.hostname;
-
-     public getNpnPortalUrl() {
-         if(location.hostname.includes('local'))
-             return location.protocol + '//' + location.hostname;
-         if(location.hostname.includes('dev'))
-             return location.protocol + "//www-dev.usanpn.org";
-         else
-             return location.protocol + "//www.usanpn.org";
-     }
-     
-     private _speciesUrl = this.getNpnPortalUrl() + '/npn_portal/species/getSpecies.json';
-     private _functionalTypesUrl = this.getNpnPortalUrl() + '/npn_portal/species/getSpeciesFunctionalTypes.json';
+     private _speciesUrl = this.config.getNpnPortalUrl() + '/npn_portal/species/getSpecies.json';
+     private _functionalTypesUrl = this.config.getNpnPortalUrl() + '/npn_portal/species/getSpeciesFunctionalTypes.json';
      errorMessage: string;
 
      public speciesRemoved$ = new EventEmitter();

@@ -2,24 +2,14 @@ import {Injectable, EventEmitter} from '@angular/core';
 import {State} from './state';
 import {Http, Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
+import {Config} from '../config.service';
 
 @Injectable()
 export class LocationsService {
 
-    constructor (private http: Http) {}
+    constructor (private http: Http, private config: Config) {}
     
-    //server_url = location.protocol + '//' + location.hostname;
-
-    public getNpnPortalUrl() {
-        if(location.hostname.includes('local'))
-            return location.protocol + '//' + location.hostname;
-        if(location.hostname.includes('dev'))
-            return location.protocol + "//www-dev.usanpn.org";
-        else
-            return location.protocol + "//www.usanpn.org";
-    }
-    
-    private _statesUrl = this.getNpnPortalUrl() + '/npn_portal/stations/getStates.json';
+    private _statesUrl = this.config.getNpnPortalUrl() + '/npn_portal/stations/getStates.json';
     errorMessage: string;
     public ready:boolean = false;
     public states:State[] = [];
