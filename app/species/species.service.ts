@@ -11,8 +11,8 @@
      
      constructor (private http: Http, private config: Config) {}
      
-     private _speciesUrl = this.config.getNpnPortalUrl() + '/npn_portal/species/getSpecies.json';
-     private _functionalTypesUrl = this.config.getNpnPortalUrl() + '/npn_portal/species/getSpeciesFunctionalTypes.json';
+     private _speciesUrl = this.config.getServerUrl() + '/npn_portal/species/getSpecies.json';
+     private _functionalTypesUrl = this.config.getServerUrl() + '/npn_portal/species/getSpeciesFunctionalTypes.json';
      errorMessage: string;
 
      public speciesRemoved$ = new EventEmitter();

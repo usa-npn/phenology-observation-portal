@@ -247,7 +247,7 @@ export class NpnPortalService {
       network: this.getSelectedPartnerGroups().map(function(p) { return p.network_name; })
     });
 
-    return this.http.post(this.config.getNpnPortalUrl() + '/npn_portal/observations/getObservationsCount.json', data, { headers: headers })
+    return this.http.post(this.config.getServerUrl() + '/npn_portal/observations/getObservationsCount.json', data, { headers: headers })
         .map(res => res.json())
         .catch(this.handleError);
   }
@@ -291,7 +291,9 @@ export class NpnPortalService {
     });
 
     //always use https on dev/prod servers, but not necessarily locally
-    this.http.post(this.config.getNpnPortalUrl().replace("http://www-dev", "https://www-dev").replace("http://www.usanpn", "https://www.usanpn") + ':3002/dot/download', data, { headers: headers })
+    this.http.post(this.config.getServerUrl()
+            .replace("http://www-dev", "https://www-dev")
+            .replace("http://www.usanpn", "https://www.usanpn") + this.config.getPopDownloadEndpoint(), data, { headers: headers })
         .subscribe((res:Response) => {
           console.log(res.json().download_path);
           if(res.json().download_path === "error") {

@@ -59638,7 +59638,7 @@
 	            dataset_ids: this.getSelectedDatasets().map(function (dataset) { return dataset.dataset_id; }),
 	            network: this.getSelectedPartnerGroups().map(function (p) { return p.network_name; })
 	        });
-	        return this.http.post(this.config.getNpnPortalUrl() + '/npn_portal/observations/getObservationsCount.json', data, { headers: headers })
+	        return this.http.post(this.config.getServerUrl() + '/npn_portal/observations/getObservationsCount.json', data, { headers: headers })
 	            .map(function (res) { return res.json(); })
 	            .catch(this.handleError);
 	    };
@@ -59677,7 +59677,9 @@
 	            qualityFlags: this.dataQualityChecksSelected() ? null : 'ignored'
 	        });
 	        //always use https on dev/prod servers, but not necessarily locally
-	        this.http.post(this.config.getNpnPortalUrl().replace("http://www-dev", "https://www-dev").replace("http://www.usanpn", "https://www.usanpn") + ':3002/dot/download', data, { headers: headers })
+	        this.http.post(this.config.getServerUrl()
+	            .replace("http://www-dev", "https://www-dev")
+	            .replace("http://www.usanpn", "https://www.usanpn") + this.config.getPopDownloadEndpoint(), data, { headers: headers })
 	            .subscribe(function (res) {
 	            console.log(res.json().download_path);
 	            if (res.json().download_path === "error") {
@@ -59716,13 +59718,16 @@
 	var Config = (function () {
 	    function Config() {
 	    }
-	    Config.prototype.getNpnPortalUrl = function () {
+	    Config.prototype.getServerUrl = function () {
 	        if (location.hostname.includes('local'))
 	            return location.protocol + '//' + location.hostname;
 	        if (location.hostname.includes('dev'))
 	            return location.protocol + "//www-dev.usanpn.org";
 	        else
 	            return location.protocol + "//www.usanpn.org";
+	    };
+	    Config.prototype.getPopDownloadEndpoint = function () {
+	        return ':3002/dot/download';
 	    };
 	    Config = __decorate([
 	        core_1.Injectable(), 
@@ -59755,7 +59760,7 @@
 	    function LocationsService(http, config) {
 	        this.http = http;
 	        this.config = config;
-	        this._statesUrl = this.config.getNpnPortalUrl() + '/npn_portal/stations/getStates.json';
+	        this._statesUrl = this.config.getServerUrl() + '/npn_portal/stations/getStates.json';
 	        this.ready = false;
 	        this.states = [];
 	        this.currentTab = 'statesView';
@@ -59819,7 +59824,7 @@
 	    function PhenophasesService(http, config) {
 	        this.http = http;
 	        this.config = config;
-	        this._phenophasesUrl = this.config.getNpnPortalUrl() + '/npn_portal/phenophases/getPhenophases.json';
+	        this._phenophasesUrl = this.config.getServerUrl() + '/npn_portal/phenophases/getPhenophases.json';
 	        this.ready = false;
 	        this.phenophases = [];
 	        this.phenophaseRemoved$ = new core_1.EventEmitter();
@@ -59881,8 +59886,8 @@
 	    function SpeciesService(http, config) {
 	        this.http = http;
 	        this.config = config;
-	        this._speciesUrl = this.config.getNpnPortalUrl() + '/npn_portal/species/getSpecies.json';
-	        this._functionalTypesUrl = this.config.getNpnPortalUrl() + '/npn_portal/species/getSpeciesFunctionalTypes.json';
+	        this._speciesUrl = this.config.getServerUrl() + '/npn_portal/species/getSpecies.json';
+	        this._functionalTypesUrl = this.config.getServerUrl() + '/npn_portal/species/getSpeciesFunctionalTypes.json';
 	        this.speciesRemoved$ = new core_1.EventEmitter();
 	        this.submitSpecies$ = new core_1.EventEmitter();
 	        this.ready = false;
@@ -60026,7 +60031,7 @@
 	    function PartnerGroupsService(http, config) {
 	        this.http = http;
 	        this.config = config;
-	        this._partnerGroupsUrl = this.config.getNpnPortalUrl() + '/npn_portal/networks/getNetworkTree.json';
+	        this._partnerGroupsUrl = this.config.getServerUrl() + '/npn_portal/networks/getNetworkTree.json';
 	        this.ready = false;
 	        this.nameFilter = "";
 	        this.partnerGroups = [];
@@ -60108,7 +60113,7 @@
 	        this.submitOptionalFields$ = new core_1.EventEmitter();
 	        this.selectAllOptional = false;
 	        this.selectAllClimate = false;
-	        this._metadataFieldsUrl = this.config.getNpnPortalUrl() + '/npn_portal/metadata/getMetadataFields.json';
+	        this._metadataFieldsUrl = this.config.getServerUrl() + '/npn_portal/metadata/getMetadataFields.json';
 	        this.rawFieldsReady = false;
 	        this.summarizedFieldsReady = false;
 	        this.siteLevelSummarizedFieldsReady = false;
@@ -60321,7 +60326,7 @@
 	    function IntegratedDatasetService(http, config) {
 	        this.http = http;
 	        this.config = config;
-	        this._datasetUrl = this.config.getNpnPortalUrl() + '/npn_portal/observations/getDatasetDetails.json';
+	        this._datasetUrl = this.config.getServerUrl() + '/npn_portal/observations/getDatasetDetails.json';
 	        this.ready = false;
 	        this.datasets = [];
 	        this.datasetRemoved$ = new core_1.EventEmitter();

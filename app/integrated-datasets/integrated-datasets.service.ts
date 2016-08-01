@@ -9,7 +9,7 @@ export class IntegratedDatasetService {
 
     constructor (private http: Http, private config: Config) {}
     
-    private _datasetUrl = this.config.getNpnPortalUrl() + '/npn_portal/observations/getDatasetDetails.json';
+    private _datasetUrl = this.config.getServerUrl() + '/npn_portal/observations/getDatasetDetails.json';
     errorMessage: string;
     public ready:boolean = false;
     public datasets:Dataset[] = [];

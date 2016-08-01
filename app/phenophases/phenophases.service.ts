@@ -9,7 +9,7 @@ export class PhenophasesService {
 
     constructor (private http: Http, private config: Config) {}
 
-    private _phenophasesUrl = this.config.getNpnPortalUrl() + '/npn_portal/phenophases/getPhenophases.json';
+    private _phenophasesUrl = this.config.getServerUrl() + '/npn_portal/phenophases/getPhenophases.json';
     errorMessage: string;
     public ready:boolean = false;
     public phenophases:Phenophase[] = [];

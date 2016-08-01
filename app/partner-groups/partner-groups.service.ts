@@ -9,7 +9,7 @@ export class PartnerGroupsService {
 
     constructor (private http: Http, private config: Config) {}
 
-    private _partnerGroupsUrl = this.config.getNpnPortalUrl() + '/npn_portal/networks/getNetworkTree.json';
+    private _partnerGroupsUrl = this.config.getServerUrl() + '/npn_portal/networks/getNetworkTree.json';
     errorMessage: string;
     public ready:boolean = false;
     public nameFilter:string = "";

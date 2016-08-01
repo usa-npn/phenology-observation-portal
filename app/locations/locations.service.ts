@@ -9,7 +9,7 @@ export class LocationsService {
 
     constructor (private http: Http, private config: Config) {}
     
-    private _statesUrl = this.config.getNpnPortalUrl() + '/npn_portal/stations/getStates.json';
+    private _statesUrl = this.config.getServerUrl() + '/npn_portal/stations/getStates.json';
     errorMessage: string;
     public ready:boolean = false;
     public states:State[] = [];
