@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {Router, ROUTER_DIRECTIVES, CanDeactivate, ComponentInstruction} from "@angular/router-deprecated";
+import {Router, ROUTER_DIRECTIVES} from "@angular/router";
 import {NpnPortalService} from "../npn-portal.service";
 import {OutputField} from "./output-field";
 import {OutputFieldsService} from "./output-fields.service";
@@ -10,7 +10,7 @@ import {OutputFieldsService} from "./output-fields.service";
     styleUrls: ['app/output-fields/output-fields.component.css'],
     directives: [ROUTER_DIRECTIVES]
 })
-export class OutputFieldsComponent implements OnInit, CanDeactivate {
+export class OutputFieldsComponent implements OnInit {
     constructor(private _npnPortalService: NpnPortalService,
                 private _outputFieldsService: OutputFieldsService,
                 private _router: Router) {}
@@ -86,7 +86,7 @@ export class OutputFieldsComponent implements OnInit, CanDeactivate {
         return this.optionalFields.filter((field) => !field.quality_check );
     }
 
-    submitOutputFields() {
+    submit() {
         this._npnPortalService.optionalFields = this.optionalFields.concat(this.climateFields).map(obj => Object.assign({}, obj));
         this._npnPortalService.setObservationCount();
     }
@@ -95,11 +95,11 @@ export class OutputFieldsComponent implements OnInit, CanDeactivate {
         this._router.navigate( [page] );
     }
 
-    routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
-        this.submitOutputFields();
-        this._npnPortalService.activePage = next.routeName;
-        return true;
-    }
+    // routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
+    //     this.submit();
+    //     this._npnPortalService.activePage = next.routeName;
+    //     return true;
+    // }
 
     ngOnInit() {
         this.selectAllOptional = this._outputFieldsService.selectAllOptional;
@@ -108,7 +108,7 @@ export class OutputFieldsComponent implements OnInit, CanDeactivate {
         this.climateFields = this._npnPortalService.downloadType === "raw" ? this._outputFieldsService.climateFieldsRaw : (this._npnPortalService.downloadType === "summarized" ? this._outputFieldsService.climateFieldsSummarized : this._outputFieldsService.climateFieldsSiteLevelSummarized);
         this.defaultFields = this._npnPortalService.downloadType === "raw" ? this._outputFieldsService.defaultFieldsRaw : (this._npnPortalService.downloadType === "summarized" ? this._outputFieldsService.defaultFieldsSummarized : this._outputFieldsService.defaultFieldsSiteLevelSummarized);
 
-        this._outputFieldsService.optionalFieldRemoved$.subscribe(optionalField => {this.removeOptionalField(optionalField); this.submitOutputFields()});
-        this._outputFieldsService.submitOptionalFields$.subscribe(() => this.submitOutputFields());
+        this._outputFieldsService.optionalFieldRemoved$.subscribe(optionalField => {this.removeOptionalField(optionalField); this.submit()});
+        this._outputFieldsService.submitOptionalFields$.subscribe(() => this.submit());
     }
 }

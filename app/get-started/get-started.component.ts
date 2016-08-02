@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from "@angular/core";
-import {Router, ROUTER_DIRECTIVES} from "@angular/router-deprecated";
+import {Router, ROUTER_DIRECTIVES} from "@angular/router";
 import {NpnPortalService} from "../npn-portal.service";
 import {LocationsService} from "../locations/locations.service";
 import {PhenophasesService} from "../phenophases/phenophases.service";
@@ -105,14 +105,14 @@ export class GetStartedComponent implements OnInit {
   }
 
   onSelect(page) {
-    if(page == "GetStarted" || page == "Metadata" || page == "Help") {
-      this._npnPortalService.activePage = page;
+    if(page == "get-started" || page == "metadata" || page == "help") {
+      // this._npnPortalService.activePage = page;
       this._router.navigate( [page] );
     }
     else {
       if (this._npnPortalService.reportTypeSelected()) {
-        this._npnPortalService.activePage = page;
-        this._router.navigate( ['/'+page] );
+        // this._npnPortalService.activePage = page;
+        this._router.navigate( [page] );
       }
     }
   }

@@ -1,22 +1,9 @@
-import {Component, ViewContainerRef} from "@angular/core";
-import {Router, RouteConfig, ROUTER_DIRECTIVES} from "@angular/router-deprecated";
-import {HTTP_PROVIDERS} from "@angular/http";
+import {Component} from "@angular/core";
+import {Router, ROUTER_DIRECTIVES} from '@angular/router';
 import "rxjs/Rx";
-import {GetStartedComponent} from "./get-started/get-started.component";
-import {DateRangeComponent} from "./date-range/date-range.component";
-import {LocationsComponent} from "./locations/locations.component";
-import {SpeciesComponent} from "./species/species.component";
-import {PhenophasesComponent} from "./phenophases/phenophases.component";
-import {PartnerGroupsComponent} from "./partner-groups/partner-groups.component";
-import {IntegratedDatasetsComponent} from "./integrated-datasets/integrated-datasets.component";
-import {OutputFieldsComponent} from "./output-fields/output-fields.component";
-import {AncillaryDataComponent} from "./ancillary-data/ancillary-data.component";
-import {MetadataComponent} from "./metadata/metadata.component";
-import {HelpComponent} from "./help/help.component";
 import {DownloadComponent} from "./download/download.component";
 import {NpnPortalService} from "./npn-portal.service";
 import {DateService} from "./date-range/date.service";
-// import {Modal, MODAL_PROVIDERS} from 'angular2-modal';
 import {LocationsService} from "./locations/locations.service";
 import {SpeciesService} from "./species/species.service";
 import {PhenophasesService} from "./phenophases/phenophases.service";
@@ -24,7 +11,6 @@ import {OutputFieldsService} from "./output-fields/output-fields.service";
 import {PartnerGroupsService} from "./partner-groups/partner-groups.service";
 import {IntegratedDatasetService} from "./integrated-datasets/integrated-datasets.service";
 import {AncillaryDataService} from "./ancillary-data/ancillary-data.service";
-import {Config} from "./config.service";
 
 @Component({
   selector: 'my-app',
@@ -37,17 +23,17 @@ import {Config} from "./config.service";
 
       <section id="content1">
         <div class="btn-group-vertical btn-block" role="group" aria-label="...">
-          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('GetStarted')" (click)="onSelect('GetStarted')">Get Started</button>
-          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('DateRange')" [class.disabled]="!reportTypeSelected()" (click)="onSelect('DateRange')">Date Range</button>
-          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('Locations')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('Locations')">Locations</button>
-          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('Species')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('Species')">Species</button>
-          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('Phenophases')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('Phenophases')">Phenophases</button>
-          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('PartnerGroups')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('PartnerGroups')">Partner Groups</button>
-          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('IntegratedDatasets')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('IntegratedDatasets')">Integrated Datasets</button>
-          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('OutputFields')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('OutputFields')">Output Fields</button>
-          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('AncillaryData')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('AncillaryData')">Ancillary Data</button>
-          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('Metadata')" [class.disabled]="!allDataLoaded()" (click)="onSelect('Metadata')">Metadata</button>
-          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('Help')" [class.disabled]="!allDataLoaded()" (click)="onSelect('Help')">Help</button>
+          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('get-started')" (click)="onSelect('/get-started')">Get Started</button>
+          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('date-range')" [class.disabled]="!reportTypeSelected()" (click)="onSelect('date-range')">Date Range</button>
+          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('locations')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('locations')">Locations</button>
+          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('species')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('species')">Species</button>
+          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('phenophases')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('phenophases')">Phenophases</button>
+          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('partner-groups')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('partner-groups')">Partner Groups</button>
+          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('integrated-datasets')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('integrated-datasets')">Integrated Datasets</button>
+          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('output-fields')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('output-fields')">Output Fields</button>
+          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('ancillary-data')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('ancillary-data')">Ancillary Data</button>
+          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('metadata')" [class.disabled]="!allDataLoaded()" (click)="onSelect('metadata')">Metadata</button>
+          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('help')" [class.disabled]="!allDataLoaded()" (click)="onSelect('help')">Help</button>
         </div>
 
       </section>
@@ -67,23 +53,9 @@ import {Config} from "./config.service";
 
     </div>
   `,
-  providers: [NpnPortalService, DateService, LocationsService, SpeciesService, PhenophasesService, PartnerGroupsService, IntegratedDatasetService, OutputFieldsService, AncillaryDataService, Config, HTTP_PROVIDERS],
+  providers: [DateService, LocationsService, SpeciesService, PhenophasesService, PartnerGroupsService, IntegratedDatasetService, OutputFieldsService, AncillaryDataService],
   directives: [ROUTER_DIRECTIVES, DownloadComponent]
 })
-@RouteConfig([
-
-  {path: '/get-started', name: 'GetStarted', component: GetStartedComponent, useAsDefault: true},
-  {path: '/date-range',  name: 'DateRange',  component: DateRangeComponent},
-  {path: '/locations',   name: 'Locations',  component: LocationsComponent},
-  {path: '/species',   name: 'Species',  component: SpeciesComponent},
-  {path: '/phenophases',   name: 'Phenophases',  component: PhenophasesComponent},
-  {path: '/partner-groups',   name: 'PartnerGroups',  component: PartnerGroupsComponent},
-  {path: '/integrated-datasets',   name: 'IntegratedDatasets',  component: IntegratedDatasetsComponent},
-  {path: '/output-fields',   name: 'OutputFields',  component: OutputFieldsComponent},
-  {path: '/ancillary-data',   name: 'AncillaryData',  component: AncillaryDataComponent},
-  {path: '/metadata',   name: 'Metadata',  component: MetadataComponent},
-  {path: '/help',   name: 'Help',  component: HelpComponent}
-])
 export class AppComponent {
     constructor(private _npnPortalService: NpnPortalService, 
                 private _dateService: DateService,
@@ -99,12 +71,12 @@ export class AppComponent {
 
     onSelect(page) {
         if(this.allDataLoaded()) {
-            if(page == "GetStarted" || page == "Metadata" || page == "Help") {
+            if(page == "get-started" || page == "metadata" || page == "help") {
                 this._npnPortalService.activePage = page;
                 this._router.navigate( [page] );
             }
             else {
-                if (page === "DateRange" && this.reportTypeSelected()) {
+                if (page === "date-range" && this.reportTypeSelected()) {
                     this._npnPortalService.activePage = page;
                     this._router.navigate( [page] );
                 }

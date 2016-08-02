@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {Router, ROUTER_DIRECTIVES, CanDeactivate, ComponentInstruction} from "@angular/router-deprecated";
+import {Router, ROUTER_DIRECTIVES} from "@angular/router";
 import {NpnPortalService} from "../npn-portal.service";
 import {PartnerGroup} from "./partner-group";
 import {SearchPipe} from "./search-pipe";
@@ -11,7 +11,7 @@ import {PartnerGroupsService} from "./partner-groups.service";
     styleUrls: ['app/partner-groups/partner-groups.component.css'],
     directives: [ROUTER_DIRECTIVES]
 })
-export class PartnerGroupsComponent implements OnInit, CanDeactivate {
+export class PartnerGroupsComponent implements OnInit {
     constructor(private _npnPortalService: NpnPortalService,
                 private _partnerGroupsService: PartnerGroupsService,
                 private _router: Router) {}
@@ -188,23 +188,23 @@ export class PartnerGroupsComponent implements OnInit, CanDeactivate {
             }
     }
     
-    submitPartnerGroups() {
+    submit() {
         this._npnPortalService.partnerGroups = JSON.parse(JSON.stringify(this.partnerGroups));
         this._partnerGroupsService.partnerGroups = JSON.parse(JSON.stringify(this.partnerGroups));
         this._npnPortalService.setObservationCount();
     }
 
-    routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
-        this.submitPartnerGroups();
-        this._npnPortalService.activePage = next.routeName;
-        return true;
-    }
+    // routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
+    //     this.submit();
+    //     this._npnPortalService.activePage = next.routeName;
+    //     return true;
+    // }
 
     ngOnInit() {
         this.partnerGroups = this._partnerGroupsService.partnerGroups;
         this.setAllCollapsed('');
         //this is called when removing a group from the view filters page
-        this._partnerGroupsService.groupRemoved$.subscribe(group => {this.removeGroup(group); this.submitPartnerGroups();});
-        this._partnerGroupsService.submitGroups$.subscribe(() => this.submitPartnerGroups());
+        this._partnerGroupsService.groupRemoved$.subscribe(group => {this.removeGroup(group); this.submit();});
+        this._partnerGroupsService.submitGroups$.subscribe(() => this.submit());
     }
 }

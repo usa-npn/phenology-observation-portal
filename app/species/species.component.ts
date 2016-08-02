@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {Router, ROUTER_DIRECTIVES, CanDeactivate, ComponentInstruction} from "@angular/router-deprecated";
+import {Router, ROUTER_DIRECTIVES} from "@angular/router";
 import {NpnPortalService} from "../npn-portal.service";
 import {Species} from "./species";
 import {FunctionalType} from "./functional-type";
@@ -15,7 +15,7 @@ import {SpeciesType} from "./species-type";
     directives: [ROUTER_DIRECTIVES],
     providers: [SearchPipe]
 })
-export class SpeciesComponent implements OnInit, CanDeactivate {
+export class SpeciesComponent implements OnInit {
     constructor(private _router: Router,
                 private _npnPortalService: NpnPortalService,
                 private _speciesService: SpeciesService,
@@ -60,7 +60,7 @@ export class SpeciesComponent implements OnInit, CanDeactivate {
         }
     }
 
-    submitSpecies() {
+    submit() {
         this._npnPortalService.species = this.species.map(obj => Object.assign({}, obj));
         this._npnPortalService.setObservationCount();
     }
@@ -83,13 +83,13 @@ export class SpeciesComponent implements OnInit, CanDeactivate {
         this.functionalTypes =  this._speciesService.functionalTypes;
         this.species = this._speciesService.species;
 
-        this._speciesService.speciesRemoved$.subscribe(species => {this.removeSpecies(species); this.submitSpecies()});
-        this._speciesService.submitSpecies$.subscribe(() => this.submitSpecies());
+        this._speciesService.speciesRemoved$.subscribe(species => {this.removeSpecies(species); this.submit()});
+        this._speciesService.submitSpecies$.subscribe(() => this.submit());
     }
     
-    routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
-        this.submitSpecies();
-        this._npnPortalService.activePage = next.routeName;
-        return true;
-    }
+    // routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
+    //     this.submit();
+    //     this._npnPortalService.activePage = next.routeName;
+    //     return true;
+    // }
 }

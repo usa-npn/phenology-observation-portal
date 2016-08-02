@@ -1,6 +1,6 @@
 import {Component, OnInit, AfterViewInit, ChangeDetectorRef, ViewChild, Directive, ElementRef, Input, Output, EventEmitter} from "@angular/core";
-import {Control, ControlGroup, FormBuilder, Validators} from "@angular/common";
-import {Router, ROUTER_DIRECTIVES, CanDeactivate, ComponentInstruction} from "@angular/router-deprecated";
+import {ControlGroup, FormBuilder, Validators} from "@angular/common";
+import {Router, ROUTER_DIRECTIVES} from "@angular/router";
 import {NpnPortalService} from "../npn-portal.service";
 import {DateService} from "./date.service";
 import {validateRawDateRange, validateDateRange, validateDay} from './validators';
@@ -35,7 +35,7 @@ export class DatePicker implements OnInit {
   styleUrls: ['app/date-range/date-range.component.css'],
   directives: [ROUTER_DIRECTIVES, MODAL_DIRECTIVES, DatePicker]
 })
-export class DateRangeComponent implements CanDeactivate, OnInit, AfterViewInit {
+export class DateRangeComponent implements OnInit, AfterViewInit {
 
     startDateChange(event) {
         if (event.value && event.value.target && event.value.target.children[0])
@@ -187,7 +187,7 @@ export class DateRangeComponent implements CanDeactivate, OnInit, AfterViewInit 
         return true;
     }
 
-  submitDateRange() {
+  submit() {
       if(this.getDownloadType() === 'raw' && !this.startDate && !this.endDate) {
           return;
       }
@@ -234,23 +234,23 @@ export class DateRangeComponent implements CanDeactivate, OnInit, AfterViewInit 
       this._router.navigate( [page] );
   }
 
-  routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
-      if(this._npnPortalService.resettingFilters) {
-          this._npnPortalService.activePage = next.routeName;
-          return true;
-      }
-      if(this.getDownloadType() === 'raw' && !this.startDate && !this.endDate) {
-          this._npnPortalService.activePage = next.routeName;
-          return true;
-      }
-      else if (!this.isDateRangeValid())
-          return false;
-      else {
-          this.submitDateRange();
-          this._npnPortalService.activePage = next.routeName;
-          return true;
-      }
-  }
+  // routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
+  //     if(this._npnPortalService.resettingFilters) {
+  //         this._npnPortalService.activePage = next.routeName;
+  //         return true;
+  //     }
+  //     if(this.getDownloadType() === 'raw' && !this.startDate && !this.endDate) {
+  //         this._npnPortalService.activePage = next.routeName;
+  //         return true;
+  //     }
+  //     else if (!this.isDateRangeValid())
+  //         return false;
+  //     else {
+  //         this.submit();
+  //         this._npnPortalService.activePage = next.routeName;
+  //         return true;
+  //     }
+  // }
   
     continueWithoutSavingDate() {
         this._npnPortalService.activePage = '';

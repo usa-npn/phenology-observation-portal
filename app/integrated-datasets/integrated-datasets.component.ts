@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {Router, ROUTER_DIRECTIVES, CanDeactivate, ComponentInstruction} from "@angular/router-deprecated";
+import {Router, ROUTER_DIRECTIVES} from "@angular/router";
 import {NpnPortalService} from "../npn-portal.service";
 import {Dataset} from "./dataset";
 import {IntegratedDatasetService} from "./integrated-datasets.service";
@@ -11,7 +11,7 @@ import {OutputField} from "../output-fields/output-field";
     styleUrls: ['app/integrated-datasets/integrated-datasets.component.css'],
     directives: [ROUTER_DIRECTIVES]
 })
-export class IntegratedDatasetsComponent implements OnInit, CanDeactivate {
+export class IntegratedDatasetsComponent implements OnInit {
     constructor(private _router: Router,
                 private _npnPortalService: NpnPortalService,
                 private _integratedDatasetService: IntegratedDatasetService,
@@ -39,7 +39,7 @@ export class IntegratedDatasetsComponent implements OnInit, CanDeactivate {
         }
     }
 
-    submitDatasets() {
+    submit() {
         this._npnPortalService.datasets = this.datasets.map(obj => Object.assign({}, obj));
         this._npnPortalService.optionalFields = this.optionalFields.concat(this.climateFields).map(obj => Object.assign({}, obj));
         this._npnPortalService.setObservationCount();
@@ -49,17 +49,17 @@ export class IntegratedDatasetsComponent implements OnInit, CanDeactivate {
         this._router.navigate( [page] );
     }
 
-    routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
-        this.submitDatasets();
-        this._npnPortalService.activePage = next.routeName;
-        return true;
-    }
+    // routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
+    //     this.submit();
+    //     this._npnPortalService.activePage = next.routeName;
+    //     return true;
+    // }
 
     ngOnInit() {
         this.datasets =  this._integratedDatasetService.datasets;
         this.optionalFields = this._npnPortalService.downloadType === "raw" ? this._outputFieldsService.optionalFieldsRaw : (this._npnPortalService.downloadType === "summarized" ? this._outputFieldsService.optionalFieldsSummarized : this._outputFieldsService.optionalFieldsSiteLevelSummarized);
         this.climateFields = this._npnPortalService.downloadType === "raw" ? this._outputFieldsService.climateFieldsRaw : (this._npnPortalService.downloadType === "summarized" ? this._outputFieldsService.climateFieldsSummarized : this._outputFieldsService.climateFieldsSiteLevelSummarized);
-        this._integratedDatasetService.datasetRemoved$.subscribe(dataset => {this.removeDataset(dataset); this.submitDatasets()});
-        this._integratedDatasetService.submitDatasets$.subscribe(() => this.submitDatasets());
+        this._integratedDatasetService.datasetRemoved$.subscribe(dataset => {this.removeDataset(dataset); this.submit()});
+        this._integratedDatasetService.submitDatasets$.subscribe(() => this.submit());
     }
 }

@@ -15,7 +15,7 @@ import {Config} from "./config.service";
 export class NpnPortalService {
   constructor (private http: Http, private config: Config) {}
 
-  activePage = "GetStarted";
+  activePage = "get-started";
 
   downloadType:string;
   errorMessage: string;

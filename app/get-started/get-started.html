@@ -30,7 +30,7 @@
         <strong>Site Level Summarized Data: </strong>This data type includes estimates of the overall onset and end of phenophase activity for plant and animal species at a site over a user-defined time period. Each row represents the duration of activity of a given phenophase on a given species, beginning with the date of the first observed “yes” and ending with the date of the last observed “yes” of the user-defined time period. For plant species, where multiple individuals are monitored at a site, the dates given are means for the dates of first and last “yes” for each individual plant. Note that a phenophase may have ended and restarted during the overall period of its activity at the site. These more fine-scale patterns can be explored from the individual-level summarized data.
     </div>
   </div>
-  <button type="button" class="btn btn-default" [class.hide]="!downloadTypeIsSet()" (click)="onSelect('DateRange')">Next</button>
+  <button type="button" class="btn btn-default" [class.hide]="!downloadTypeIsSet()" (click)="onSelect('date-range')">Next</button>
 </div>
 
 <modal #resetFiltersModal>

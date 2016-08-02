@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {Router, ROUTER_DIRECTIVES, CanDeactivate, ComponentInstruction} from "@angular/router-deprecated";
+import {Router, ROUTER_DIRECTIVES} from "@angular/router";
 import {NpnPortalService} from "../npn-portal.service";
 import {Phenophase} from "./phenophase";
 import {PhenophasePipe} from "./phenophase-pipe";
@@ -11,7 +11,7 @@ import {PhenophasesService} from "./phenophases.service";
     styleUrls: ['app/phenophases/phenophases.component.css'],
     directives: [ROUTER_DIRECTIVES]
 })
-export class PhenophasesComponent implements OnInit, CanDeactivate {
+export class PhenophasesComponent implements OnInit {
     constructor(private _npnPortalService: NpnPortalService,
                 private _phenophasesService: PhenophasesService,
                 private _router: Router) {}
@@ -29,7 +29,7 @@ export class PhenophasesComponent implements OnInit, CanDeactivate {
         }
     }
 
-    submitPhenophases() {
+    submit() {
         this._npnPortalService.phenophases = this.phenophases.map(obj => Object.assign({}, obj));
         this._npnPortalService.setObservationCount();
     }
@@ -38,15 +38,15 @@ export class PhenophasesComponent implements OnInit, CanDeactivate {
         this._router.navigate( [page] );
     }
 
-    routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
-        this.submitPhenophases();
-        this._npnPortalService.activePage = next.routeName;
-        return true;
-    }
+    // routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
+    //     this.submit();
+    //     this._npnPortalService.activePage = next.routeName;
+    //     return true;
+    // }
 
     ngOnInit() {
         this.phenophases =  this._phenophasesService.phenophases;
-        this._phenophasesService.phenophaseRemoved$.subscribe(phenophase => {this.removePhenophase(phenophase); this.submitPhenophases()});
-        this._phenophasesService.submitPhenophases$.subscribe(() => this.submitPhenophases());
+        this._phenophasesService.phenophaseRemoved$.subscribe(phenophase => {this.removePhenophase(phenophase); this.submit()});
+        this._phenophasesService.submitPhenophases$.subscribe(() => this.submit());
     }
 }

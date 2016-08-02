@@ -1,5 +1,5 @@
 import {Component, ViewChild}     from '@angular/core';
-import {Router, ROUTER_DIRECTIVES} from "@angular/router-deprecated";
+import {Router, ROUTER_DIRECTIVES} from "@angular/router";
 import {NpnPortalService} from '../npn-portal.service';
 import { MODAL_DIRECTIVES, ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import {LocationsService} from "../locations/locations.service";
@@ -185,19 +185,19 @@ export class DownloadComponent {
     }
 
     submitActivePage() {
-        if(this._npnPortalService.activePage === 'Locations')
+        if(this._npnPortalService.activePage === 'locations')
             this._locationService.submitLocations();
-        else if(this._npnPortalService.activePage === 'Species')
+        else if(this._npnPortalService.activePage === 'species')
             this._speciesService.submitSpecies();
-        else if(this._npnPortalService.activePage === 'Phenophases')
+        else if(this._npnPortalService.activePage === 'phenophases')
             this._phenophaseService.submitPhenophases();
-        else if(this._npnPortalService.activePage === 'PartnerGroups')
+        else if(this._npnPortalService.activePage === 'partner-groups')
             this._partnerGroupsService.submitGroups();
-        else if(this._npnPortalService.activePage === 'IntegratedDatasets')
+        else if(this._npnPortalService.activePage === 'integrated-datasets')
             this._integratedDatasetService.submitDatasets();
-        else if(this._npnPortalService.activePage === 'OutputFields')
+        else if(this._npnPortalService.activePage === 'output-fields')
             this._outputFieldsService.submitOptionalFields();
-        else if(this._npnPortalService.activePage === 'AncillaryData')
+        else if(this._npnPortalService.activePage === 'ancillary-data')
             this._ancillaryDataService.submitAncillaryData();
     }
 }

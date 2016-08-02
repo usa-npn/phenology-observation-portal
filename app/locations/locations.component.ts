@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {State} from "./state";
-import {Router, ROUTER_DIRECTIVES, CanDeactivate, ComponentInstruction} from "@angular/router-deprecated";
+import {Router, ROUTER_DIRECTIVES} from "@angular/router";
 import {NpnPortalService} from "../npn-portal.service";
 import {LocationsService} from "./locations.service";
 
@@ -11,7 +11,7 @@ declare function initMap() : void;
   styleUrls: ['app/locations/locations.component.css'],
   directives: [ROUTER_DIRECTIVES]
 })
-export class LocationsComponent implements OnInit, CanDeactivate{
+export class LocationsComponent implements OnInit {
   constructor(private _npnPortalService: NpnPortalService,
               private _locationsService: LocationsService,
               private _router: Router) {}
@@ -50,7 +50,7 @@ export class LocationsComponent implements OnInit, CanDeactivate{
         }
     }
 
-    submitLocation() {
+    submit() {
         if (this.isActiveTab('statesView')) {
             this._npnPortalService.extent = {bottom_left_x1: null, bottom_left_y1: null, upper_right_x2: null, upper_right_y2: null};
             this._npnPortalService.states = this.states.map(obj => Object.assign({}, obj));
@@ -70,11 +70,11 @@ export class LocationsComponent implements OnInit, CanDeactivate{
         this._router.navigate( [page] );
     }
 
-    routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
-        this.submitLocation();
-        this._npnPortalService.activePage = next.routeName;
-        return true;
-    }
+    // routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
+    //     this.submitLocation();
+    //     this._npnPortalService.activePage = next.routeName;
+    //     return true;
+    // }
 
     ngOnInit() {
         this.states =  this._locationsService.states;
@@ -82,7 +82,7 @@ export class LocationsComponent implements OnInit, CanDeactivate{
         if(this.isActiveTab('regionView')) {
             initMap();
         }
-        this._locationsService.stateRemoved$.subscribe(state => {this.removeState(state); this.submitLocation()});
-        this._locationsService.submitLocations$.subscribe(() => this.submitLocation());
+        this._locationsService.stateRemoved$.subscribe(state => {this.removeState(state); this.submit()});
+        this._locationsService.submitLocations$.subscribe(() => this.submit());
     }
 }

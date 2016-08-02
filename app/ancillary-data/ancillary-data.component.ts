@@ -1,5 +1,5 @@
 import {Component, ViewChild, OnInit}   from '@angular/core';
-import {Router, ROUTER_DIRECTIVES, CanDeactivate, ComponentInstruction} from '@angular/router-deprecated';
+import {Router, ROUTER_DIRECTIVES} from '@angular/router';
 import {NpnPortalService} from '../npn-portal.service';
 import {AncillaryData} from './ancillaryData';
 import {AncillaryDataService} from "./ancillary-data.service";
@@ -14,9 +14,9 @@ import {AvailabilityPipe} from "./availability-pipe";
     styleUrls: ['app/ancillary-data/ancillary-data.component.css'],
     directives: [ROUTER_DIRECTIVES, MODAL_DIRECTIVES]
 })
-export class AncillaryDataComponent implements OnInit, CanDeactivate{
+export class AncillaryDataComponent implements OnInit {
     constructor(private _router: Router,
-                private _npnPortalService: NpnPortalService,
+                public _npnPortalService: NpnPortalService,
                 private _ancillaryDataService: AncillaryDataService,
                 private _outputFieldsService: OutputFieldsService) {}
 
@@ -64,7 +64,7 @@ export class AncillaryDataComponent implements OnInit, CanDeactivate{
         }
     }
     
-    submitAncillaryData() {
+    submit() {
         this._npnPortalService.datasheets = this.datasheets.map(obj => Object.assign({}, obj));
         this._npnPortalService.optionalFields = this.optionalFields.concat(this.climateFields).map(obj => Object.assign({}, obj));
         this._npnPortalService.setObservationCount();
@@ -91,18 +91,23 @@ export class AncillaryDataComponent implements OnInit, CanDeactivate{
         this.downloadModal.open('lg');
         this._npnPortalService.download();
     }
+    
+    
 
-    routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
-        this.submitAncillaryData();
-        this._npnPortalService.activePage = next.routeName;
-        return true;
-    }
+
+    //routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
+    // canDeactivate(, route: ActivatedRouteSnapshot, state: RouterStateSnapshot):boolean {
+    //     this.submit();
+    //     //this._npnPortalService.activePage = next.routeName;
+    //     this._npnPortalService.activePage = state.url;
+    //     return true;
+    // }
 
     ngOnInit() {
         this.datasheets =  this._ancillaryDataService.datasheets;
         this.optionalFields = this._npnPortalService.downloadType === "raw" ? this._outputFieldsService.optionalFieldsRaw : (this._npnPortalService.downloadType === "summarized" ? this._outputFieldsService.optionalFieldsSummarized : this._outputFieldsService.optionalFieldsSiteLevelSummarized);
         this.climateFields = this._npnPortalService.downloadType === "raw" ? this._outputFieldsService.climateFieldsRaw : (this._npnPortalService.downloadType === "summarized" ? this._outputFieldsService.climateFieldsSummarized : this._outputFieldsService.climateFieldsSiteLevelSummarized);
-        this._ancillaryDataService.ancillaryDataRemoved$.subscribe(dataset => {this.removeAncillaryData(dataset); this.submitAncillaryData()});
-        this._ancillaryDataService.submitAncillaryData$.subscribe(() => this.submitAncillaryData());
+        this._ancillaryDataService.ancillaryDataRemoved$.subscribe(dataset => {this.removeAncillaryData(dataset); this.submit()});
+        this._ancillaryDataService.submitAncillaryData$.subscribe(() => this.submit());
     }
 }
