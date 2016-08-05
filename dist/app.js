@@ -65050,8 +65050,9 @@
 	var ancillary_data_service_1 = __webpack_require__(643);
 	var date_service_1 = __webpack_require__(644);
 	var persistent_search_service_1 = __webpack_require__(637);
+	var config_service_1 = __webpack_require__(628);
 	var DownloadComponent = (function () {
-	    function DownloadComponent(_npnPortalService, _dateService, _locationService, _speciesService, _phenophaseService, _partnerGroupsService, _integratedDatasetService, _outputFieldsService, _ancillaryDataService, _router, _persistentSearchService) {
+	    function DownloadComponent(_npnPortalService, _dateService, _locationService, _speciesService, _phenophaseService, _partnerGroupsService, _integratedDatasetService, _outputFieldsService, _ancillaryDataService, _router, _persistentSearchService, _configService) {
 	        this._npnPortalService = _npnPortalService;
 	        this._dateService = _dateService;
 	        this._locationService = _locationService;
@@ -65063,6 +65064,7 @@
 	        this._ancillaryDataService = _ancillaryDataService;
 	        this._router = _router;
 	        this._persistentSearchService = _persistentSearchService;
+	        this._configService = _configService;
 	        this.hasAgreed = false;
 	        this.savedSearchUrl = "";
 	        this.showSavedSearch = false;
@@ -65223,7 +65225,7 @@
 	                console.log('error saving search');
 	            }
 	            else {
-	                _this.savedSearchUrl = window.location.origin + '?search=' + res.json().saved_search_hash;
+	                _this.savedSearchUrl = _this._configService.getPopUrl() + '?search=' + res.json().saved_search_hash;
 	                _this.showSavedSearch = true;
 	            }
 	        });
@@ -65251,7 +65253,7 @@
 	            styleUrls: ['app/download/download.css'],
 	            directives: [router_1.ROUTER_DIRECTIVES, ng2_bs3_modal_1.MODAL_DIRECTIVES]
 	        }), 
-	        __metadata('design:paramtypes', [npn_portal_service_1.NpnPortalService, date_service_1.DateService, locations_service_1.LocationsService, species_service_1.SpeciesService, phenophases_service_1.PhenophasesService, partner_groups_service_1.PartnerGroupsService, integrated_datasets_service_1.IntegratedDatasetService, output_fields_service_1.OutputFieldsService, ancillary_data_service_1.AncillaryDataService, router_1.Router, persistent_search_service_1.PersistentSearchService])
+	        __metadata('design:paramtypes', [npn_portal_service_1.NpnPortalService, date_service_1.DateService, locations_service_1.LocationsService, species_service_1.SpeciesService, phenophases_service_1.PhenophasesService, partner_groups_service_1.PartnerGroupsService, integrated_datasets_service_1.IntegratedDatasetService, output_fields_service_1.OutputFieldsService, ancillary_data_service_1.AncillaryDataService, router_1.Router, persistent_search_service_1.PersistentSearchService, config_service_1.Config])
 	    ], DownloadComponent);
 	    return DownloadComponent;
 	}());
@@ -68692,6 +68694,14 @@
 	            return location.protocol + "//www-dev.usanpn.org";
 	        else
 	            return location.protocol + "//www.usanpn.org";
+	    };
+	    Config.prototype.getPopUrl = function () {
+	        if (location.hostname.includes('local'))
+	            return window.location.origin;
+	        if (location.hostname.includes('dev'))
+	            return window.location.origin + "/observations";
+	        else
+	            return window.location.origin + "/observations";
 	    };
 	    Config.prototype.getPopDownloadEndpoint = function () {
 	        return ':3002/pop/download';

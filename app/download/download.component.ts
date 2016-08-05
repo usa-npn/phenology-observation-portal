@@ -12,6 +12,7 @@ import {AncillaryDataService} from "../ancillary-data/ancillary-data.service";
 import {DateService} from "../date-range/date.service";
 import {PersistentSearchService} from "../persistent-search.service";
 import {Response} from "@angular/http";
+import {Config} from "../config.service";
 
 @Component({
     selector: 'download',
@@ -30,7 +31,8 @@ export class DownloadComponent {
                 private _outputFieldsService: OutputFieldsService,
                 private _ancillaryDataService: AncillaryDataService,
                 private _router: Router,
-                private _persistentSearchService: PersistentSearchService
+                private _persistentSearchService: PersistentSearchService,
+                private _configService: Config
     ) {}
 
     @ViewChild('citationModal')
@@ -236,7 +238,7 @@ export class DownloadComponent {
                  console.log('error saving search');
              }
              else {
-                 this.savedSearchUrl = window.location.origin + '?search=' + res.json().saved_search_hash;
+                 this.savedSearchUrl = this._configService.getPopUrl() + '?search=' + res.json().saved_search_hash;
                  this.showSavedSearch = true;
              }
          });
