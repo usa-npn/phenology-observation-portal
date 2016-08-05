@@ -65168,6 +65168,7 @@
 	    };
 	    DownloadComponent.prototype.resetFilters = function (page) {
 	        this._npnPortalService.resettingFilters = true;
+	        this.closeSavedSearch();
 	        this._dateService.reset();
 	        this._locationService.reset();
 	        this._speciesService.reset();

@@ -179,6 +179,7 @@ export class DownloadComponent {
     
     resetFilters(page: string) {
         this._npnPortalService.resettingFilters = true;
+        this.closeSavedSearch();
         this._dateService.reset();
         this._locationService.reset();
         this._speciesService.reset();
