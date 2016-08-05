@@ -5,11 +5,16 @@
  import {FunctionalType} from './functional-type';
  import {Species} from './species';
  import {Config} from '../config.service'
+ import {PersistentSearchService} from "../persistent-search.service";
+ import {NpnPortalService} from "../npn-portal.service";
 
  @Injectable()
  export class SpeciesService {
      
-     constructor (private http: Http, private config: Config) {}
+     constructor (private http: Http, 
+                  private config: Config, 
+                  private _persistentSearchService: PersistentSearchService, 
+                  private _npnPortalService: NpnPortalService) {}
      
      private _speciesUrl = this.config.getServerUrl() + '/npn_portal/species/getSpecies.json';
      private _functionalTypesUrl = this.config.getServerUrl() + '/npn_portal/species/getSpeciesFunctionalTypes.json';
@@ -105,7 +110,21 @@
 
      initSpecies() {
          this.getSpecies().subscribe(
-             species => {console.log('species have been set'); this.species = species; this.ready = true;},
+             species => {
+                 console.log('species have been set');
+                 this.species = species;
+                 let speciesIds = this._persistentSearchService.species;
+                 if(speciesIds) {
+                     for(var speciesId of speciesIds) {
+                         for(var sp of this.species) {
+                             if(sp.species_id === speciesId)
+                                 sp.selected = true;
+                         }
+                     }
+                     this._npnPortalService.species = this.species.map(obj => Object.assign({}, obj));
+                 }
+                 this.ready = true;
+             },
              error => this.errorMessage = <any>error)
      }
 

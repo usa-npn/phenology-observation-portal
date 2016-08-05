@@ -1,10 +1,15 @@
 import {Injectable, EventEmitter} from '@angular/core';
 import {AncillaryData} from './ancillaryData';
+import {NpnPortalService} from "../npn-portal.service";
+import {PersistentSearchService} from "../persistent-search.service";
 
 @Injectable()
 export class AncillaryDataService {
 
-    constructor () {}
+    constructor (private _npnPortalService: NpnPortalService, 
+                 private _persistentSearchService: PersistentSearchService) {}
+
+    public ready:boolean = false;
     
     public datasheets:AncillaryData[] = [
         {id: 1, name: 'Sites', description: '', selected: false},
@@ -13,6 +18,20 @@ export class AncillaryDataService {
         {id: 4, name: 'Observation Details', description: '', selected: false},
         {id: 5, name: 'Protocols', description: '', selected: false}
     ];
+    
+    public initDatasheets() {
+        let datasheetIds = this._persistentSearchService.datasheets;
+        if(datasheetIds) {
+            for(var datasheetId of datasheetIds) {
+                for(var datasheet of this.datasheets) {
+                    if(datasheet.id === datasheetId)
+                        datasheet.selected = true;
+                }
+            }
+            this._npnPortalService.datasheets = this.datasheets.map(obj => Object.assign({}, obj));
+        }
+        this.ready = true;
+    }
     
     public ancillaryDataRemoved$ = new EventEmitter();
     public submitAncillaryData$ = new EventEmitter();

@@ -13,6 +13,10 @@ export class Config {
     }
     
     public getPopDownloadEndpoint() {
-        return ':3002/dot/download';
+        return ':3002/pop/download';
+    }
+    
+    public getPopSearchEndpoint() {
+        return ':3002/pop/search';
     }
 }

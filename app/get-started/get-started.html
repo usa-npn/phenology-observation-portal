@@ -15,7 +15,7 @@
     <button type="button" class="btn btn-default" [class.active]="isSelected('raw')" (click)="setDownloadType('raw')">Raw</button>
     <button type="button" class="btn btn-default" [class.active]="isSelected('summarized')" (click)="setDownloadType('summarized')">Individual<br/>Summarized</button>
     <button type="button" class="btn btn-default" [class.active]="isSelected('siteLevelSummarized')" (click)="setDownloadType('siteLevelSummarized')">Site Level<br/>Summarized</button>
-    <button type="button" class="btn btn-default" [class.active]="isSelected('savedSearch')">Saved Search</button>
+    <!--<button type="button" class="btn btn-default" [class.active]="isSelected('savedSearch')">Saved Search</button>-->
   </div>
   <br/><br/>
   <div class="panel panel-default" [class.hide]="!downloadTypeIsSet()">

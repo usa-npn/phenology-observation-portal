@@ -46,15 +46,14 @@
 
 	"use strict";
 	var platform_browser_dynamic_1 = __webpack_require__(1);
-	// import {ROUTER_PROVIDERS} from '@angular/router-deprecated';
 	var app_component_1 = __webpack_require__(328);
-	var app_routes_1 = __webpack_require__(644);
-	var deactivate_guard_1 = __webpack_require__(662);
-	var activate_guard_1 = __webpack_require__(663);
+	var app_routes_1 = __webpack_require__(645);
+	var deactivate_guard_1 = __webpack_require__(663);
+	var activate_guard_1 = __webpack_require__(664);
 	var npn_portal_service_1 = __webpack_require__(606);
 	var http_1 = __webpack_require__(607);
 	var config_service_1 = __webpack_require__(628);
-	var deactivate_date_range_gaurd_1 = __webpack_require__(664);
+	var deactivate_date_range_gaurd_1 = __webpack_require__(665);
 	platform_browser_dynamic_1.bootstrap(app_component_1.AppComponent, [
 	    http_1.HTTP_PROVIDERS,
 	    app_routes_1.appRouterProviders,
@@ -49241,17 +49240,19 @@
 	__webpack_require__(381);
 	var download_component_1 = __webpack_require__(605);
 	var npn_portal_service_1 = __webpack_require__(606);
-	var date_service_1 = __webpack_require__(643);
+	var date_service_1 = __webpack_require__(644);
 	var locations_service_1 = __webpack_require__(636);
-	var species_service_1 = __webpack_require__(638);
-	var phenophases_service_1 = __webpack_require__(639);
-	var output_fields_service_1 = __webpack_require__(640);
-	var partner_groups_service_1 = __webpack_require__(637);
-	var integrated_datasets_service_1 = __webpack_require__(641);
-	var ancillary_data_service_1 = __webpack_require__(642);
+	var species_service_1 = __webpack_require__(639);
+	var phenophases_service_1 = __webpack_require__(640);
+	var output_fields_service_1 = __webpack_require__(641);
+	var partner_groups_service_1 = __webpack_require__(638);
+	var integrated_datasets_service_1 = __webpack_require__(642);
+	var ancillary_data_service_1 = __webpack_require__(643);
+	var persistent_search_service_1 = __webpack_require__(637);
 	var AppComponent = (function () {
-	    function AppComponent(_npnPortalService, _dateService, _locationsService, _speciesService, _phenophasesService, _partnerGroupsService, _integratedDatasetService, _outputFieldsService, _ancillaryDataService, _router) {
+	    function AppComponent(_npnPortalService, _persistentSearchService, _dateService, _locationsService, _speciesService, _phenophasesService, _partnerGroupsService, _integratedDatasetService, _outputFieldsService, _ancillaryDataService, _router) {
 	        this._npnPortalService = _npnPortalService;
+	        this._persistentSearchService = _persistentSearchService;
 	        this._dateService = _dateService;
 	        this._locationsService = _locationsService;
 	        this._speciesService = _speciesService;
@@ -49299,7 +49300,7 @@
 	            && this._outputFieldsService.siteLevelSummarizedFieldsReady
 	            && this._integratedDatasetService.ready;
 	    };
-	    AppComponent.prototype.ngOnInit = function () {
+	    AppComponent.prototype.initializeData = function () {
 	        this._locationsService.initStates();
 	        this._speciesService.initSpecies();
 	        this._speciesService.initFunctionalTypes();
@@ -49309,15 +49310,75 @@
 	        this._outputFieldsService.initSummarizedFields();
 	        this._outputFieldsService.initSiteLevelSummarizedFields();
 	        this._integratedDatasetService.initDatasets();
+	        this._ancillaryDataService.initDatasheets();
+	    };
+	    AppComponent.prototype.ngOnInit = function () {
+	        var _this = this;
+	        var searchId = this._persistentSearchService.getSearchId();
+	        if (searchId)
+	            this._persistentSearchService.getSearch(searchId).subscribe(function (res) {
+	                //set all our model data using the returned JSON
+	                var savedSearch = res.json();
+	                if (savedSearch.downloadType) {
+	                    _this._npnPortalService.downloadType = savedSearch.downloadType;
+	                    if (savedSearch.startDate) {
+	                        _this._dateService.startDate = savedSearch.startDate;
+	                        _this._npnPortalService.startDate = savedSearch.startDate;
+	                    }
+	                    if (savedSearch.endDate) {
+	                        _this._dateService.endDate = savedSearch.endDate;
+	                        _this._npnPortalService.endDate = savedSearch.endDate;
+	                    }
+	                    if (savedSearch.dataPrecision) {
+	                        _this._dateService.dataPrecision = savedSearch.dataPrecision;
+	                        _this._npnPortalService.dataPrecision = savedSearch.dataPrecision;
+	                    }
+	                    if (savedSearch.startYear) {
+	                        _this._dateService.startYear = savedSearch.startYear;
+	                        _this._npnPortalService.startYear = savedSearch.startYear;
+	                    }
+	                    if (savedSearch.startMonth) {
+	                        _this._dateService.startMonth = savedSearch.startMonth;
+	                        _this._npnPortalService.startMonth = savedSearch.startMonth;
+	                    }
+	                    if (savedSearch.startDay) {
+	                        _this._dateService.startDay = savedSearch.startDay;
+	                        _this._npnPortalService.startDay = savedSearch.startDay;
+	                    }
+	                    if (savedSearch.endYear) {
+	                        _this._dateService.endYear = savedSearch.endYear;
+	                        _this._npnPortalService.endYear = savedSearch.endYear;
+	                    }
+	                    if (savedSearch.endMonth) {
+	                        _this._dateService.endMonth = savedSearch.endMonth;
+	                        _this._npnPortalService.endMonth = savedSearch.endMonth;
+	                    }
+	                    if (savedSearch.endDay) {
+	                        _this._dateService.endDay = savedSearch.endDay;
+	                        _this._npnPortalService.endDay = savedSearch.endDay;
+	                    }
+	                    _this._persistentSearchService.states = savedSearch.states;
+	                    _this._persistentSearchService.species = savedSearch.species;
+	                    _this._persistentSearchService.phenophases = savedSearch.phenophases;
+	                    _this._persistentSearchService.partnerGroups = savedSearch.partnerGroups;
+	                    _this._persistentSearchService.datasets = savedSearch.datasets;
+	                    _this._persistentSearchService.optionalFields = savedSearch.optionalFields;
+	                    _this._persistentSearchService.datasheets = savedSearch.datasheets;
+	                }
+	                //initialize our components data
+	                _this.initializeData();
+	            });
+	        else
+	            this.initializeData();
 	    };
 	    AppComponent = __decorate([
 	        core_1.Component({
 	            selector: 'my-app',
 	            template: "\n      <div id=\"pagewrap1\">\n      <header>\n        <h1>Phenology Observation Portal</h1>\n      </header>\n     \n\n      <section id=\"content1\">\n        <div class=\"btn-group-vertical btn-block\" role=\"group\" aria-label=\"...\">\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('get-started')\" (click)=\"onSelect('/get-started')\">Get Started</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('date-range')\" [class.disabled]=\"!reportTypeSelected()\" (click)=\"onSelect('date-range')\">Date Range</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('locations')\" [class.disabled]=\"!(reportTypeSelected() && validDateRange())\" (click)=\"onSelect('locations')\">Locations</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('species')\" [class.disabled]=\"!(reportTypeSelected() && validDateRange())\" (click)=\"onSelect('species')\">Species</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('phenophases')\" [class.disabled]=\"!(reportTypeSelected() && validDateRange())\" (click)=\"onSelect('phenophases')\">Phenophases</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('partner-groups')\" [class.disabled]=\"!(reportTypeSelected() && validDateRange())\" (click)=\"onSelect('partner-groups')\">Partner Groups</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('integrated-datasets')\" [class.disabled]=\"!(reportTypeSelected() && validDateRange())\" (click)=\"onSelect('integrated-datasets')\">Integrated Datasets</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('output-fields')\" [class.disabled]=\"!(reportTypeSelected() && validDateRange())\" (click)=\"onSelect('output-fields')\">Output Fields</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('ancillary-data')\" [class.disabled]=\"!(reportTypeSelected() && validDateRange())\" (click)=\"onSelect('ancillary-data')\">Ancillary Data</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('metadata')\" [class.disabled]=\"!allDataLoaded()\" (click)=\"onSelect('metadata')\">Metadata</button>\n          <button type=\"button\" class=\"btn btn-block btn-default\" [class.active]=\"isSelected('help')\" [class.disabled]=\"!allDataLoaded()\" (click)=\"onSelect('help')\">Help</button>\n        </div>\n\n      </section>\n\n      <section id=\"middle1\">\n        <router-outlet></router-outlet>\n      </section>\n\n      <aside id=\"sidebar1\">\n        <download></download>\n      </aside>\n\n      <footer>\n        <!--<h4>Footer</h4>-->\n        <!--<p>Do we want this footer for anything or remove it?</p>-->\n      </footer>\n\n    </div>\n  ",
-	            providers: [date_service_1.DateService, locations_service_1.LocationsService, species_service_1.SpeciesService, phenophases_service_1.PhenophasesService, partner_groups_service_1.PartnerGroupsService, integrated_datasets_service_1.IntegratedDatasetService, output_fields_service_1.OutputFieldsService, ancillary_data_service_1.AncillaryDataService],
+	            providers: [persistent_search_service_1.PersistentSearchService, date_service_1.DateService, locations_service_1.LocationsService, species_service_1.SpeciesService, phenophases_service_1.PhenophasesService, partner_groups_service_1.PartnerGroupsService, integrated_datasets_service_1.IntegratedDatasetService, output_fields_service_1.OutputFieldsService, ancillary_data_service_1.AncillaryDataService],
 	            directives: [router_1.ROUTER_DIRECTIVES, download_component_1.DownloadComponent]
 	        }), 
-	        __metadata('design:paramtypes', [npn_portal_service_1.NpnPortalService, date_service_1.DateService, locations_service_1.LocationsService, species_service_1.SpeciesService, phenophases_service_1.PhenophasesService, partner_groups_service_1.PartnerGroupsService, integrated_datasets_service_1.IntegratedDatasetService, output_fields_service_1.OutputFieldsService, ancillary_data_service_1.AncillaryDataService, router_1.Router])
+	        __metadata('design:paramtypes', [npn_portal_service_1.NpnPortalService, persistent_search_service_1.PersistentSearchService, date_service_1.DateService, locations_service_1.LocationsService, species_service_1.SpeciesService, phenophases_service_1.PhenophasesService, partner_groups_service_1.PartnerGroupsService, integrated_datasets_service_1.IntegratedDatasetService, output_fields_service_1.OutputFieldsService, ancillary_data_service_1.AncillaryDataService, router_1.Router])
 	    ], AppComponent);
 	    return AppComponent;
 	}());
@@ -64981,15 +65042,16 @@
 	var npn_portal_service_1 = __webpack_require__(606);
 	var ng2_bs3_modal_1 = __webpack_require__(629);
 	var locations_service_1 = __webpack_require__(636);
-	var partner_groups_service_1 = __webpack_require__(637);
-	var species_service_1 = __webpack_require__(638);
-	var phenophases_service_1 = __webpack_require__(639);
-	var output_fields_service_1 = __webpack_require__(640);
-	var integrated_datasets_service_1 = __webpack_require__(641);
-	var ancillary_data_service_1 = __webpack_require__(642);
-	var date_service_1 = __webpack_require__(643);
+	var partner_groups_service_1 = __webpack_require__(638);
+	var species_service_1 = __webpack_require__(639);
+	var phenophases_service_1 = __webpack_require__(640);
+	var output_fields_service_1 = __webpack_require__(641);
+	var integrated_datasets_service_1 = __webpack_require__(642);
+	var ancillary_data_service_1 = __webpack_require__(643);
+	var date_service_1 = __webpack_require__(644);
+	var persistent_search_service_1 = __webpack_require__(637);
 	var DownloadComponent = (function () {
-	    function DownloadComponent(_npnPortalService, _dateService, _locationService, _speciesService, _phenophaseService, _partnerGroupsService, _integratedDatasetService, _outputFieldsService, _ancillaryDataService, _router) {
+	    function DownloadComponent(_npnPortalService, _dateService, _locationService, _speciesService, _phenophaseService, _partnerGroupsService, _integratedDatasetService, _outputFieldsService, _ancillaryDataService, _router, _persistentSearchService) {
 	        this._npnPortalService = _npnPortalService;
 	        this._dateService = _dateService;
 	        this._locationService = _locationService;
@@ -65000,7 +65062,10 @@
 	        this._outputFieldsService = _outputFieldsService;
 	        this._ancillaryDataService = _ancillaryDataService;
 	        this._router = _router;
+	        this._persistentSearchService = _persistentSearchService;
 	        this.hasAgreed = false;
+	        this.savedSearchUrl = "";
+	        this.showSavedSearch = false;
 	    }
 	    DownloadComponent.prototype.getDownloadStatus = function () {
 	        return this._npnPortalService.downloadStatus;
@@ -65128,6 +65193,41 @@
 	        else if (this._npnPortalService.activePage === 'ancillary-data')
 	            this._ancillaryDataService.submitAncillaryData();
 	    };
+	    DownloadComponent.prototype.closeSavedSearch = function () {
+	        this.showSavedSearch = false;
+	    };
+	    DownloadComponent.prototype.saveSearch = function () {
+	        var _this = this;
+	        var savedSearch = {
+	            downloadType: this._npnPortalService.downloadType,
+	            startDate: this._npnPortalService.startDate,
+	            endDate: this._npnPortalService.endDate,
+	            species: this._npnPortalService.getSelectedSpecies().map(function (species) { return species.species_id; }),
+	            states: this._npnPortalService.getSelectedStates().map(function (state) { return state.state_id; }),
+	            phenophases: this._npnPortalService.getSelectedPhenophases().map(function (phenophase) { return phenophase.phenophase_id; }),
+	            partnerGroups: this._npnPortalService.getSelectedPartnerGroups().map(function (group) { return group.network_id; }),
+	            datasets: this._npnPortalService.getSelectedDatasets().map(function (dataset) { return dataset.dataset_id; }),
+	            optionalFields: this._npnPortalService.getSelectedOptionalFields().map(function (field) { return field.metadata_field_id; }),
+	            datasheets: this._npnPortalService.getSelectedDatasheets().map(function (datasheet) { return datasheet.id; }),
+	            dataPrecision: this._npnPortalService.dataPrecision,
+	            rangeType: this._npnPortalService.rangeType,
+	            startDay: this._npnPortalService.startDay,
+	            endDay: this._npnPortalService.endDay,
+	            startMonth: this._npnPortalService.startMonth,
+	            endMonth: this._npnPortalService.endMonth,
+	            startYear: this._npnPortalService.startYear,
+	            endYear: this._npnPortalService.endYear
+	        };
+	        this._persistentSearchService.saveSearch(savedSearch).subscribe(function (res) {
+	            if (res.json().download_path === "error") {
+	                console.log('error saving search');
+	            }
+	            else {
+	                _this.savedSearchUrl = window.location.origin + '?search=' + res.json().saved_search_hash;
+	                _this.showSavedSearch = true;
+	            }
+	        });
+	    };
 	    __decorate([
 	        core_1.ViewChild('citationModal'), 
 	        __metadata('design:type', ng2_bs3_modal_1.ModalComponent)
@@ -65151,7 +65251,7 @@
 	            styleUrls: ['app/download/download.css'],
 	            directives: [router_1.ROUTER_DIRECTIVES, ng2_bs3_modal_1.MODAL_DIRECTIVES]
 	        }), 
-	        __metadata('design:paramtypes', [npn_portal_service_1.NpnPortalService, date_service_1.DateService, locations_service_1.LocationsService, species_service_1.SpeciesService, phenophases_service_1.PhenophasesService, partner_groups_service_1.PartnerGroupsService, integrated_datasets_service_1.IntegratedDatasetService, output_fields_service_1.OutputFieldsService, ancillary_data_service_1.AncillaryDataService, router_1.Router])
+	        __metadata('design:paramtypes', [npn_portal_service_1.NpnPortalService, date_service_1.DateService, locations_service_1.LocationsService, species_service_1.SpeciesService, phenophases_service_1.PhenophasesService, partner_groups_service_1.PartnerGroupsService, integrated_datasets_service_1.IntegratedDatasetService, output_fields_service_1.OutputFieldsService, ancillary_data_service_1.AncillaryDataService, router_1.Router, persistent_search_service_1.PersistentSearchService])
 	    ], DownloadComponent);
 	    return DownloadComponent;
 	}());
@@ -65180,7 +65280,7 @@
 	    function NpnPortalService(http, config) {
 	        this.http = http;
 	        this.config = config;
-	        this.activePage = "/get-started";
+	        this.activePage = "get-started";
 	        this.extent = { bottom_left_x1: null, bottom_left_y1: null, upper_right_x2: null, upper_right_y2: null };
 	        this.states = [];
 	        this.species = [];
@@ -68594,7 +68694,10 @@
 	            return location.protocol + "//www.usanpn.org";
 	    };
 	    Config.prototype.getPopDownloadEndpoint = function () {
-	        return ':3002/dot/download';
+	        return ':3002/pop/download';
+	    };
+	    Config.prototype.getPopSearchEndpoint = function () {
+	        return ':3002/pop/search';
 	    };
 	    Config = __decorate([
 	        core_1.Injectable(), 
@@ -69046,10 +69149,14 @@
 	var http_1 = __webpack_require__(607);
 	var Observable_1 = __webpack_require__(38);
 	var config_service_1 = __webpack_require__(628);
+	var persistent_search_service_1 = __webpack_require__(637);
+	var npn_portal_service_1 = __webpack_require__(606);
 	var LocationsService = (function () {
-	    function LocationsService(http, config) {
+	    function LocationsService(http, config, _persistentSearchService, _npnPortalService) {
 	        this.http = http;
 	        this.config = config;
+	        this._persistentSearchService = _persistentSearchService;
+	        this._npnPortalService = _npnPortalService;
 	        this._statesUrl = this.config.getServerUrl() + '/npn_portal/stations/getStates.json';
 	        this.ready = false;
 	        this.states = [];
@@ -69065,7 +69172,23 @@
 	    };
 	    LocationsService.prototype.initStates = function () {
 	        var _this = this;
-	        this.getStates().subscribe(function (states) { _this.states = states; console.log('states have been set'); _this.ready = true; }, function (error) { return _this.errorMessage = error; });
+	        this.getStates().subscribe(function (states) {
+	            _this.states = states;
+	            console.log('states have been set');
+	            var stateIds = _this._persistentSearchService.states;
+	            if (stateIds) {
+	                for (var _i = 0, stateIds_1 = stateIds; _i < stateIds_1.length; _i++) {
+	                    var stateId = stateIds_1[_i];
+	                    for (var _a = 0, _b = _this.states; _a < _b.length; _a++) {
+	                        var state = _b[_a];
+	                        if (state.state_id === stateId)
+	                            state.selected = true;
+	                    }
+	                }
+	                _this._npnPortalService.states = _this.states.map(function (obj) { return Object.assign({}, obj); });
+	            }
+	            _this.ready = true;
+	        }, function (error) { return _this.errorMessage = error; });
 	    };
 	    LocationsService.prototype.getStates = function () {
 	        return this.http.get(this._statesUrl)
@@ -69085,7 +69208,7 @@
 	    };
 	    LocationsService = __decorate([
 	        core_1.Injectable(), 
-	        __metadata('design:paramtypes', [http_1.Http, config_service_1.Config])
+	        __metadata('design:paramtypes', [http_1.Http, config_service_1.Config, persistent_search_service_1.PersistentSearchService, npn_portal_service_1.NpnPortalService])
 	    ], LocationsService);
 	    return LocationsService;
 	}());
@@ -69108,12 +69231,136 @@
 	};
 	var core_1 = __webpack_require__(5);
 	var http_1 = __webpack_require__(607);
-	var Observable_1 = __webpack_require__(38);
 	var config_service_1 = __webpack_require__(628);
-	var PartnerGroupsService = (function () {
-	    function PartnerGroupsService(http, config) {
+	var PersistentSearchService = (function () {
+	    function PersistentSearchService(http, config) {
 	        this.http = http;
 	        this.config = config;
+	        this.states = [];
+	        this.species = [];
+	        this.phenophases = [];
+	        this.partnerGroups = [];
+	        this.datasets = [];
+	        this.optionalFields = [];
+	        this.datasheets = [];
+	        this.startMonth = "June";
+	        this.getQueryStringKey = function (key) {
+	            return this.getQueryStringAsObject()[key];
+	        };
+	        this.getQueryStringAsObject = function () {
+	            var b, cv, e, k, ma, sk, v, r = {}, d = function (v) { return decodeURIComponent(v).replace(/\+/g, " "); }, //# d(ecode) the v(alue)
+	            q = window.location.search.substring(1), s = /([^&;=]+)=?([^&;]*)/g;
+	            //# ma(make array) out of the v(alue)
+	            ma = function (v) {
+	                //# If the passed v(alue) hasn't been setup as an object
+	                if (typeof v != "object") {
+	                    //# Grab the cv(current value) then setup the v(alue) as an object
+	                    cv = v;
+	                    v = {};
+	                    v.length = 0;
+	                    //# If there was a cv(current value), .push it into the new v(alue)'s array
+	                    //#     NOTE: This may or may not be 100% logical to do... but it's better than loosing the original value
+	                    if (cv) {
+	                        Array.prototype.push.call(v, cv);
+	                    }
+	                }
+	                return v;
+	            };
+	            //# While we still have key-value e(ntries) from the q(uerystring) via the s(earch regex)...
+	            while (e = s.exec(q)) {
+	                //# Collect the open b(racket) location (if any) then set the d(ecoded) v(alue) from the above split key-value e(ntry)
+	                b = e[1].indexOf("[");
+	                v = d(e[2]);
+	                //# As long as this is NOT a hash[]-style key-value e(ntry)
+	                if (b < 0) {
+	                    //# d(ecode) the simple k(ey)
+	                    k = d(e[1]);
+	                    //# If the k(ey) already exists
+	                    if (r[k]) {
+	                        //# ma(make array) out of the k(ey) then .push the v(alue) into the k(ey)'s array in the r(eturn value)
+	                        r[k] = ma(r[k]);
+	                        Array.prototype.push.call(r[k], v);
+	                    }
+	                    else {
+	                        r[k] = v;
+	                    }
+	                }
+	                else {
+	                    //# Collect the d(ecoded) k(ey) and the d(ecoded) sk(sub-key) based on the b(racket) locations
+	                    k = d(e[1].slice(0, b));
+	                    sk = d(e[1].slice(b + 1, e[1].indexOf("]", b)));
+	                    //# ma(make array) out of the k(ey)
+	                    r[k] = ma(r[k]);
+	                    //# If we have a sk(sub-key), plug the v(alue) into it
+	                    if (sk) {
+	                        r[k][sk] = v;
+	                    }
+	                    else {
+	                        Array.prototype.push.call(r[k], v);
+	                    }
+	                }
+	            }
+	            //# Return the r(eturn value)
+	            return r;
+	        };
+	    }
+	    PersistentSearchService.prototype.saveSearch = function (searchJson) {
+	        var headers = new http_1.Headers();
+	        headers.append('Content-Type', 'application/json');
+	        var data = JSON.stringify({
+	            searchJson: searchJson
+	        });
+	        //always use https on dev/prod servers, but not necessarily locally
+	        return this.http.post(this.config.getServerUrl()
+	            .replace("http://www-dev", "https://www-dev")
+	            .replace("http://www.usanpn", "https://www.usanpn") + this.config.getPopSearchEndpoint(), data, { headers: headers });
+	    };
+	    PersistentSearchService.prototype.getSearch = function (searchId) {
+	        var params = new http_1.URLSearchParams();
+	        params.set('searchId', searchId);
+	        return this.http.get(this.config.getServerUrl()
+	            .replace("http://www-dev", "https://www-dev")
+	            .replace("http://www.usanpn", "https://www.usanpn") + this.config.getPopSearchEndpoint(), { search: params });
+	    };
+	    // functions to parse query strings /////
+	    PersistentSearchService.prototype.getSearchId = function () {
+	        return this.getQueryStringKey("search");
+	    };
+	    PersistentSearchService = __decorate([
+	        core_1.Injectable(), 
+	        __metadata('design:paramtypes', [http_1.Http, config_service_1.Config])
+	    ], PersistentSearchService);
+	    return PersistentSearchService;
+	}());
+	exports.PersistentSearchService = PersistentSearchService;
+
+
+/***/ },
+/* 638 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(5);
+	var http_1 = __webpack_require__(607);
+	var Observable_1 = __webpack_require__(38);
+	var config_service_1 = __webpack_require__(628);
+	var persistent_search_service_1 = __webpack_require__(637);
+	var npn_portal_service_1 = __webpack_require__(606);
+	var PartnerGroupsService = (function () {
+	    function PartnerGroupsService(http, config, _persistentSearchService, _npnPortalService) {
+	        this.http = http;
+	        this.config = config;
+	        this._persistentSearchService = _persistentSearchService;
+	        this._npnPortalService = _npnPortalService;
 	        this._partnerGroupsUrl = this.config.getServerUrl() + '/npn_portal/networks/getNetworkTree.json';
 	        this.ready = false;
 	        this.nameFilter = "";
@@ -69129,7 +69376,41 @@
 	    };
 	    PartnerGroupsService.prototype.initPartnerGroups = function () {
 	        var _this = this;
-	        this.getPartnerGroups().subscribe(function (partnerGroups) { _this.partnerGroups = partnerGroups; console.log('partner groups have been set'); _this.ready = true; }, function (error) { return _this.errorMessage = error; });
+	        this.getPartnerGroups().subscribe(function (partnerGroups) {
+	            _this.partnerGroups = partnerGroups;
+	            console.log('partner groups have been set');
+	            var partnerGroupIds = _this._persistentSearchService.partnerGroups;
+	            if (partnerGroupIds) {
+	                for (var _i = 0, partnerGroupIds_1 = partnerGroupIds; _i < partnerGroupIds_1.length; _i++) {
+	                    var partnerGroupId = partnerGroupIds_1[_i];
+	                    for (var _a = 0, _b = _this.partnerGroups; _a < _b.length; _a++) {
+	                        var partnerGroup = _b[_a];
+	                        if (partnerGroup.network_id === partnerGroupId)
+	                            partnerGroup.selected = true;
+	                        if (partnerGroup.secondary_network)
+	                            for (var _c = 0, _d = partnerGroup.secondary_network; _c < _d.length; _c++) {
+	                                var secondaryGroup = _d[_c];
+	                                if (secondaryGroup.network_id === partnerGroupId)
+	                                    secondaryGroup.selected = true;
+	                                if (secondaryGroup.tertiary_network)
+	                                    for (var _e = 0, _f = secondaryGroup.tertiary_network; _e < _f.length; _e++) {
+	                                        var tertiaryGroup = _f[_e];
+	                                        if (tertiaryGroup.network_id === partnerGroupId)
+	                                            tertiaryGroup.selected = true;
+	                                        if (tertiaryGroup.quaternary_network)
+	                                            for (var _g = 0, _h = tertiaryGroup.quaternary_network; _g < _h.length; _g++) {
+	                                                var quaternaryGroup = _h[_g];
+	                                                if (quaternaryGroup.network_id === partnerGroupId)
+	                                                    quaternaryGroup.selected = true;
+	                                            }
+	                                    }
+	                            }
+	                    }
+	                }
+	                _this._npnPortalService.partnerGroups = JSON.parse(JSON.stringify(_this.partnerGroups));
+	            }
+	            _this.ready = true;
+	        }, function (error) { return _this.errorMessage = error; });
 	    };
 	    PartnerGroupsService.prototype.getPartnerGroups = function () {
 	        return this.http.get(this._partnerGroupsUrl)
@@ -69163,7 +69444,7 @@
 	    };
 	    PartnerGroupsService = __decorate([
 	        core_1.Injectable(), 
-	        __metadata('design:paramtypes', [http_1.Http, config_service_1.Config])
+	        __metadata('design:paramtypes', [http_1.Http, config_service_1.Config, persistent_search_service_1.PersistentSearchService, npn_portal_service_1.NpnPortalService])
 	    ], PartnerGroupsService);
 	    return PartnerGroupsService;
 	}());
@@ -69171,7 +69452,7 @@
 
 
 /***/ },
-/* 638 */
+/* 639 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -69188,10 +69469,14 @@
 	var http_1 = __webpack_require__(607);
 	var Observable_1 = __webpack_require__(38);
 	var config_service_1 = __webpack_require__(628);
+	var persistent_search_service_1 = __webpack_require__(637);
+	var npn_portal_service_1 = __webpack_require__(606);
 	var SpeciesService = (function () {
-	    function SpeciesService(http, config) {
+	    function SpeciesService(http, config, _persistentSearchService, _npnPortalService) {
 	        this.http = http;
 	        this.config = config;
+	        this._persistentSearchService = _persistentSearchService;
+	        this._npnPortalService = _npnPortalService;
 	        this._speciesUrl = this.config.getServerUrl() + '/npn_portal/species/getSpecies.json';
 	        this._functionalTypesUrl = this.config.getServerUrl() + '/npn_portal/species/getSpeciesFunctionalTypes.json';
 	        this.speciesRemoved$ = new core_1.EventEmitter();
@@ -69280,7 +69565,23 @@
 	    };
 	    SpeciesService.prototype.initSpecies = function () {
 	        var _this = this;
-	        this.getSpecies().subscribe(function (species) { console.log('species have been set'); _this.species = species; _this.ready = true; }, function (error) { return _this.errorMessage = error; });
+	        this.getSpecies().subscribe(function (species) {
+	            console.log('species have been set');
+	            _this.species = species;
+	            var speciesIds = _this._persistentSearchService.species;
+	            if (speciesIds) {
+	                for (var _i = 0, speciesIds_1 = speciesIds; _i < speciesIds_1.length; _i++) {
+	                    var speciesId = speciesIds_1[_i];
+	                    for (var _a = 0, _b = _this.species; _a < _b.length; _a++) {
+	                        var sp = _b[_a];
+	                        if (sp.species_id === speciesId)
+	                            sp.selected = true;
+	                    }
+	                }
+	                _this._npnPortalService.species = _this.species.map(function (obj) { return Object.assign({}, obj); });
+	            }
+	            _this.ready = true;
+	        }, function (error) { return _this.errorMessage = error; });
 	    };
 	    SpeciesService.prototype.getSpecies = function () {
 	        return this.http.get(this._speciesUrl)
@@ -69308,73 +69609,11 @@
 	    };
 	    SpeciesService = __decorate([
 	        core_1.Injectable(), 
-	        __metadata('design:paramtypes', [http_1.Http, config_service_1.Config])
+	        __metadata('design:paramtypes', [http_1.Http, config_service_1.Config, persistent_search_service_1.PersistentSearchService, npn_portal_service_1.NpnPortalService])
 	    ], SpeciesService);
 	    return SpeciesService;
 	}());
 	exports.SpeciesService = SpeciesService;
-
-
-/***/ },
-/* 639 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata = (this && this.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	var core_1 = __webpack_require__(5);
-	var http_1 = __webpack_require__(607);
-	var Observable_1 = __webpack_require__(38);
-	var config_service_1 = __webpack_require__(628);
-	var PhenophasesService = (function () {
-	    function PhenophasesService(http, config) {
-	        this.http = http;
-	        this.config = config;
-	        this._phenophasesUrl = this.config.getServerUrl() + '/npn_portal/phenophases/getPhenophases.json';
-	        this.ready = false;
-	        this.phenophases = [];
-	        this.phenophaseRemoved$ = new core_1.EventEmitter();
-	        this.submitPhenophases$ = new core_1.EventEmitter();
-	    }
-	    PhenophasesService.prototype.removePhenophase = function (phenophase) {
-	        this.phenophaseRemoved$.emit(phenophase);
-	    };
-	    PhenophasesService.prototype.submitPhenophases = function () {
-	        this.submitPhenophases$.emit({});
-	    };
-	    PhenophasesService.prototype.initPhenophases = function () {
-	        var _this = this;
-	        this.getPhenophases().subscribe(function (phenophases) { _this.phenophases = phenophases; console.log('phenophases have been set'); _this.ready = true; }, function (error) { return _this.errorMessage = error; });
-	    };
-	    PhenophasesService.prototype.getPhenophases = function () {
-	        return this.http.get(this._phenophasesUrl)
-	            .map(function (res) { return res.json(); })
-	            .catch(this.handleError);
-	    };
-	    PhenophasesService.prototype.handleError = function (error) {
-	        console.error(error);
-	        return Observable_1.Observable.throw(error.json().error || 'Server error');
-	    };
-	    PhenophasesService.prototype.reset = function () {
-	        for (var _i = 0, _a = this.phenophases; _i < _a.length; _i++) {
-	            var phenophase = _a[_i];
-	            phenophase.selected = false;
-	        }
-	    };
-	    PhenophasesService = __decorate([
-	        core_1.Injectable(), 
-	        __metadata('design:paramtypes', [http_1.Http, config_service_1.Config])
-	    ], PhenophasesService);
-	    return PhenophasesService;
-	}());
-	exports.PhenophasesService = PhenophasesService;
 
 
 /***/ },
@@ -69395,10 +69634,96 @@
 	var http_1 = __webpack_require__(607);
 	var Observable_1 = __webpack_require__(38);
 	var config_service_1 = __webpack_require__(628);
-	var OutputFieldsService = (function () {
-	    function OutputFieldsService(http, config) {
+	var persistent_search_service_1 = __webpack_require__(637);
+	var npn_portal_service_1 = __webpack_require__(606);
+	var PhenophasesService = (function () {
+	    function PhenophasesService(http, config, _persistentSearchService, _npnPortalService) {
 	        this.http = http;
 	        this.config = config;
+	        this._persistentSearchService = _persistentSearchService;
+	        this._npnPortalService = _npnPortalService;
+	        this._phenophasesUrl = this.config.getServerUrl() + '/npn_portal/phenophases/getPhenophases.json';
+	        this.ready = false;
+	        this.phenophases = [];
+	        this.phenophaseRemoved$ = new core_1.EventEmitter();
+	        this.submitPhenophases$ = new core_1.EventEmitter();
+	    }
+	    PhenophasesService.prototype.removePhenophase = function (phenophase) {
+	        this.phenophaseRemoved$.emit(phenophase);
+	    };
+	    PhenophasesService.prototype.submitPhenophases = function () {
+	        this.submitPhenophases$.emit({});
+	    };
+	    PhenophasesService.prototype.initPhenophases = function () {
+	        var _this = this;
+	        this.getPhenophases().subscribe(function (phenophases) {
+	            _this.phenophases = phenophases;
+	            console.log('phenophases have been set');
+	            var phenophaseIds = _this._persistentSearchService.phenophases;
+	            if (phenophaseIds) {
+	                for (var _i = 0, phenophaseIds_1 = phenophaseIds; _i < phenophaseIds_1.length; _i++) {
+	                    var phenophaseId = phenophaseIds_1[_i];
+	                    for (var _a = 0, _b = _this.phenophases; _a < _b.length; _a++) {
+	                        var phenophase = _b[_a];
+	                        if (phenophase.phenophase_id === phenophaseId)
+	                            phenophase.selected = true;
+	                    }
+	                }
+	                _this._npnPortalService.phenophases = _this.phenophases.map(function (obj) { return Object.assign({}, obj); });
+	            }
+	            _this.ready = true;
+	        }, function (error) { return _this.errorMessage = error; });
+	    };
+	    PhenophasesService.prototype.getPhenophases = function () {
+	        return this.http.get(this._phenophasesUrl)
+	            .map(function (res) { return res.json(); })
+	            .catch(this.handleError);
+	    };
+	    PhenophasesService.prototype.handleError = function (error) {
+	        console.error(error);
+	        return Observable_1.Observable.throw(error.json().error || 'Server error');
+	    };
+	    PhenophasesService.prototype.reset = function () {
+	        for (var _i = 0, _a = this.phenophases; _i < _a.length; _i++) {
+	            var phenophase = _a[_i];
+	            phenophase.selected = false;
+	        }
+	    };
+	    PhenophasesService = __decorate([
+	        core_1.Injectable(), 
+	        __metadata('design:paramtypes', [http_1.Http, config_service_1.Config, persistent_search_service_1.PersistentSearchService, npn_portal_service_1.NpnPortalService])
+	    ], PhenophasesService);
+	    return PhenophasesService;
+	}());
+	exports.PhenophasesService = PhenophasesService;
+
+
+/***/ },
+/* 641 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(5);
+	var http_1 = __webpack_require__(607);
+	var Observable_1 = __webpack_require__(38);
+	var config_service_1 = __webpack_require__(628);
+	var persistent_search_service_1 = __webpack_require__(637);
+	var npn_portal_service_1 = __webpack_require__(606);
+	var OutputFieldsService = (function () {
+	    function OutputFieldsService(http, config, _persistentSearchService, _npnPortalService) {
+	        this.http = http;
+	        this.config = config;
+	        this._persistentSearchService = _persistentSearchService;
+	        this._npnPortalService = _npnPortalService;
 	        this.optionalFieldRemoved$ = new core_1.EventEmitter();
 	        this.submitOptionalFields$ = new core_1.EventEmitter();
 	        this.selectAllOptional = false;
@@ -69438,9 +69763,24 @@
 	            // booleans are nicer to work with than numbers
 	            rawFields.map(_this.mapBooleans);
 	            _this.rawFields = rawFields;
+	            if (_this._npnPortalService.downloadType === "raw") {
+	                var fieldIds = _this._persistentSearchService.optionalFields;
+	                if (fieldIds) {
+	                    for (var _i = 0, fieldIds_1 = fieldIds; _i < fieldIds_1.length; _i++) {
+	                        var fieldId = fieldIds_1[_i];
+	                        for (var _a = 0, _b = _this.rawFields; _a < _b.length; _a++) {
+	                            var rawField = _b[_a];
+	                            if (rawField.metadata_field_id === fieldId)
+	                                rawField.selected = true;
+	                        }
+	                    }
+	                }
+	            }
 	            _this.optionalFieldsRaw = rawFields.filter(function (field) { return !field.climate && !field.required; });
 	            _this.climateFieldsRaw = rawFields.filter(function (field) { return field.climate && !field.required; });
 	            _this.defaultFieldsRaw = rawFields.filter(function (field) { return field.required; });
+	            if (_this._npnPortalService.downloadType === "raw")
+	                _this._npnPortalService.optionalFields = _this.optionalFieldsRaw.concat(_this.climateFieldsRaw).map(function (obj) { return Object.assign({}, obj); });
 	            _this.rawFieldsReady = true;
 	        }, function (error) { return _this.errorMessage = error; });
 	    };
@@ -69455,9 +69795,24 @@
 	            // booleans are nicer to work with than numbers
 	            summarizedFields.map(_this.mapBooleans);
 	            _this.summarizedFields = summarizedFields;
+	            if (_this._npnPortalService.downloadType === "summarized") {
+	                var fieldIds = _this._persistentSearchService.optionalFields;
+	                if (fieldIds) {
+	                    for (var _i = 0, fieldIds_2 = fieldIds; _i < fieldIds_2.length; _i++) {
+	                        var fieldId = fieldIds_2[_i];
+	                        for (var _a = 0, _b = _this.summarizedFields; _a < _b.length; _a++) {
+	                            var summarizedField = _b[_a];
+	                            if (summarizedField.metadata_field_id === fieldId)
+	                                summarizedField.selected = true;
+	                        }
+	                    }
+	                }
+	            }
 	            _this.optionalFieldsSummarized = summarizedFields.filter(function (field) { return !field.climate && !field.required; });
 	            _this.climateFieldsSummarized = summarizedFields.filter(function (field) { return field.climate && !field.required; });
 	            _this.defaultFieldsSummarized = summarizedFields.filter(function (field) { return field.required; });
+	            if (_this._npnPortalService.downloadType === "summarized")
+	                _this._npnPortalService.optionalFields = _this.optionalFieldsSummarized.concat(_this.climateFieldsSummarized).map(function (obj) { return Object.assign({}, obj); });
 	            _this.summarizedFieldsReady = true;
 	        }, function (error) { return _this.errorMessage = error; });
 	    };
@@ -69472,9 +69827,24 @@
 	            // booleans are nicer to work with than numbers
 	            siteLevelSummarizedFields.map(_this.mapBooleans);
 	            _this.siteLevelSummarizedFields = siteLevelSummarizedFields;
+	            if (_this._npnPortalService.downloadType === "siteLevelSummarized") {
+	                var fieldIds = _this._persistentSearchService.optionalFields;
+	                if (fieldIds) {
+	                    for (var _i = 0, fieldIds_3 = fieldIds; _i < fieldIds_3.length; _i++) {
+	                        var fieldId = fieldIds_3[_i];
+	                        for (var _a = 0, _b = _this.siteLevelSummarizedFields; _a < _b.length; _a++) {
+	                            var siteLevelSummarizedField = _b[_a];
+	                            if (siteLevelSummarizedField.metadata_field_id === fieldId)
+	                                siteLevelSummarizedField.selected = true;
+	                        }
+	                    }
+	                }
+	            }
 	            _this.optionalFieldsSiteLevelSummarized = siteLevelSummarizedFields.filter(function (field) { return !field.climate && !field.required; });
 	            _this.climateFieldsSiteLevelSummarized = siteLevelSummarizedFields.filter(function (field) { return field.climate && !field.required; });
 	            _this.defaultFieldsSiteLevelSummarized = siteLevelSummarizedFields.filter(function (field) { return field.required; });
+	            if (_this._npnPortalService.downloadType === "siteLevelSummarized")
+	                _this._npnPortalService.optionalFields = _this.optionalFieldsSiteLevelSummarized.concat(_this.climateFieldsSiteLevelSummarized).map(function (obj) { return Object.assign({}, obj); });
 	            _this.siteLevelSummarizedFieldsReady = true;
 	        }, function (error) { return _this.errorMessage = error; });
 	    };
@@ -69529,7 +69899,7 @@
 	    };
 	    OutputFieldsService = __decorate([
 	        core_1.Injectable(), 
-	        __metadata('design:paramtypes', [http_1.Http, config_service_1.Config])
+	        __metadata('design:paramtypes', [http_1.Http, config_service_1.Config, persistent_search_service_1.PersistentSearchService, npn_portal_service_1.NpnPortalService])
 	    ], OutputFieldsService);
 	    return OutputFieldsService;
 	}());
@@ -69537,7 +69907,7 @@
 
 
 /***/ },
-/* 641 */
+/* 642 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -69554,10 +69924,14 @@
 	var http_1 = __webpack_require__(607);
 	var Observable_1 = __webpack_require__(38);
 	var config_service_1 = __webpack_require__(628);
+	var persistent_search_service_1 = __webpack_require__(637);
+	var npn_portal_service_1 = __webpack_require__(606);
 	var IntegratedDatasetService = (function () {
-	    function IntegratedDatasetService(http, config) {
+	    function IntegratedDatasetService(http, config, _persistentSearchService, _npnPortalService) {
 	        this.http = http;
 	        this.config = config;
+	        this._persistentSearchService = _persistentSearchService;
+	        this._npnPortalService = _npnPortalService;
 	        this._datasetUrl = this.config.getServerUrl() + '/npn_portal/observations/getDatasetDetails.json';
 	        this.ready = false;
 	        this.datasets = [];
@@ -69572,7 +69946,26 @@
 	    };
 	    IntegratedDatasetService.prototype.initDatasets = function () {
 	        var _this = this;
-	        this.getDatasets().subscribe(function (datasets) { _this.datasets = datasets.filter(function (d) { return d.dataset_id === 7 || d.dataset_id === 8 || d.dataset_id === 11 || d.dataset_id === 13; }); console.log('datasets have been set'); _this.ready = true; }, function (error) { return _this.errorMessage = error; });
+	        this.getDatasets().subscribe(function (datasets) {
+	            _this.datasets = datasets.filter(function (d) { return d.dataset_id === 7
+	                || d.dataset_id === 8
+	                || d.dataset_id === 11
+	                || d.dataset_id === 13; });
+	            console.log('datasets have been set');
+	            var datasetIds = _this._persistentSearchService.datasets;
+	            if (datasetIds) {
+	                for (var _i = 0, datasetIds_1 = datasetIds; _i < datasetIds_1.length; _i++) {
+	                    var datasetId = datasetIds_1[_i];
+	                    for (var _a = 0, _b = _this.datasets; _a < _b.length; _a++) {
+	                        var dataset = _b[_a];
+	                        if (dataset.dataset_id === datasetId)
+	                            dataset.selected = true;
+	                    }
+	                }
+	                _this._npnPortalService.datasets = _this.datasets.map(function (obj) { return Object.assign({}, obj); });
+	            }
+	            _this.ready = true;
+	        }, function (error) { return _this.errorMessage = error; });
 	    };
 	    IntegratedDatasetService.prototype.getDatasets = function () {
 	        return this.http.get(this._datasetUrl)
@@ -69591,7 +69984,7 @@
 	    };
 	    IntegratedDatasetService = __decorate([
 	        core_1.Injectable(), 
-	        __metadata('design:paramtypes', [http_1.Http, config_service_1.Config])
+	        __metadata('design:paramtypes', [http_1.Http, config_service_1.Config, persistent_search_service_1.PersistentSearchService, npn_portal_service_1.NpnPortalService])
 	    ], IntegratedDatasetService);
 	    return IntegratedDatasetService;
 	}());
@@ -69599,7 +69992,7 @@
 
 
 /***/ },
-/* 642 */
+/* 643 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -69613,8 +70006,13 @@
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(5);
+	var npn_portal_service_1 = __webpack_require__(606);
+	var persistent_search_service_1 = __webpack_require__(637);
 	var AncillaryDataService = (function () {
-	    function AncillaryDataService() {
+	    function AncillaryDataService(_npnPortalService, _persistentSearchService) {
+	        this._npnPortalService = _npnPortalService;
+	        this._persistentSearchService = _persistentSearchService;
+	        this.ready = false;
 	        this.datasheets = [
 	            { id: 1, name: 'Sites', description: '', selected: false },
 	            { id: 2, name: 'Individual Plants', description: '', selected: false },
@@ -69625,6 +70023,21 @@
 	        this.ancillaryDataRemoved$ = new core_1.EventEmitter();
 	        this.submitAncillaryData$ = new core_1.EventEmitter();
 	    }
+	    AncillaryDataService.prototype.initDatasheets = function () {
+	        var datasheetIds = this._persistentSearchService.datasheets;
+	        if (datasheetIds) {
+	            for (var _i = 0, datasheetIds_1 = datasheetIds; _i < datasheetIds_1.length; _i++) {
+	                var datasheetId = datasheetIds_1[_i];
+	                for (var _a = 0, _b = this.datasheets; _a < _b.length; _a++) {
+	                    var datasheet = _b[_a];
+	                    if (datasheet.id === datasheetId)
+	                        datasheet.selected = true;
+	                }
+	            }
+	            this._npnPortalService.datasheets = this.datasheets.map(function (obj) { return Object.assign({}, obj); });
+	        }
+	        this.ready = true;
+	    };
 	    AncillaryDataService.prototype.removeAncillaryData = function (datasheet) {
 	        this.ancillaryDataRemoved$.emit(datasheet);
 	    };
@@ -69639,7 +70052,7 @@
 	    };
 	    AncillaryDataService = __decorate([
 	        core_1.Injectable(), 
-	        __metadata('design:paramtypes', [])
+	        __metadata('design:paramtypes', [npn_portal_service_1.NpnPortalService, persistent_search_service_1.PersistentSearchService])
 	    ], AncillaryDataService);
 	    return AncillaryDataService;
 	}());
@@ -69647,7 +70060,7 @@
 
 
 /***/ },
-/* 643 */
+/* 644 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -69705,25 +70118,25 @@
 
 
 /***/ },
-/* 644 */
+/* 645 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var router_1 = __webpack_require__(329);
-	var get_started_component_1 = __webpack_require__(645);
-	var date_range_component_1 = __webpack_require__(646);
-	var locations_component_1 = __webpack_require__(648);
-	var species_component_1 = __webpack_require__(649);
-	var phenophases_component_1 = __webpack_require__(652);
-	var partner_groups_component_1 = __webpack_require__(654);
-	var integrated_datasets_component_1 = __webpack_require__(656);
-	var output_fields_component_1 = __webpack_require__(657);
-	var ancillary_data_component_1 = __webpack_require__(658);
-	var metadata_component_1 = __webpack_require__(660);
-	var help_component_1 = __webpack_require__(661);
-	var deactivate_guard_1 = __webpack_require__(662);
-	var activate_guard_1 = __webpack_require__(663);
-	var deactivate_date_range_gaurd_1 = __webpack_require__(664);
+	var get_started_component_1 = __webpack_require__(646);
+	var date_range_component_1 = __webpack_require__(647);
+	var locations_component_1 = __webpack_require__(649);
+	var species_component_1 = __webpack_require__(650);
+	var phenophases_component_1 = __webpack_require__(653);
+	var partner_groups_component_1 = __webpack_require__(655);
+	var integrated_datasets_component_1 = __webpack_require__(657);
+	var output_fields_component_1 = __webpack_require__(658);
+	var ancillary_data_component_1 = __webpack_require__(659);
+	var metadata_component_1 = __webpack_require__(661);
+	var help_component_1 = __webpack_require__(662);
+	var deactivate_guard_1 = __webpack_require__(663);
+	var activate_guard_1 = __webpack_require__(664);
+	var deactivate_date_range_gaurd_1 = __webpack_require__(665);
 	var routes = [
 	    {
 	        path: '', redirectTo: 'get-started',
@@ -69797,7 +70210,7 @@
 
 
 /***/ },
-/* 645 */
+/* 646 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -69814,13 +70227,13 @@
 	var router_1 = __webpack_require__(329);
 	var npn_portal_service_1 = __webpack_require__(606);
 	var locations_service_1 = __webpack_require__(636);
-	var phenophases_service_1 = __webpack_require__(639);
-	var species_service_1 = __webpack_require__(638);
-	var partner_groups_service_1 = __webpack_require__(637);
-	var output_fields_service_1 = __webpack_require__(640);
-	var date_service_1 = __webpack_require__(643);
-	var integrated_datasets_service_1 = __webpack_require__(641);
-	var ancillary_data_service_1 = __webpack_require__(642);
+	var phenophases_service_1 = __webpack_require__(640);
+	var species_service_1 = __webpack_require__(639);
+	var partner_groups_service_1 = __webpack_require__(638);
+	var output_fields_service_1 = __webpack_require__(641);
+	var date_service_1 = __webpack_require__(644);
+	var integrated_datasets_service_1 = __webpack_require__(642);
+	var ancillary_data_service_1 = __webpack_require__(643);
 	var ng2_bs3_modal_1 = __webpack_require__(629);
 	var GetStartedComponent = (function () {
 	    function GetStartedComponent(_npnPortalService, _dateService, _locationsService, _phenophasesService, _speciesService, _partnerGroupsService, _outputFieldsService, _integratedDatasetService, _ancillaryDataService, _router) {
@@ -69932,7 +70345,7 @@
 
 
 /***/ },
-/* 646 */
+/* 647 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -69949,8 +70362,8 @@
 	var common_1 = __webpack_require__(2);
 	var router_1 = __webpack_require__(329);
 	var npn_portal_service_1 = __webpack_require__(606);
-	var date_service_1 = __webpack_require__(643);
-	var validators_1 = __webpack_require__(647);
+	var date_service_1 = __webpack_require__(644);
+	var validators_1 = __webpack_require__(648);
 	var ng2_bs3_modal_1 = __webpack_require__(629);
 	var DatePicker = (function () {
 	    function DatePicker(element) {
@@ -70111,6 +70524,13 @@
 	            this._dateService.endMonth = this.endMonth;
 	            this._dateService.startYear = this.startYear;
 	            this._dateService.endYear = this.endYear;
+	            this._npnPortalService.rangeType = this.rangeType;
+	            this._npnPortalService.startDay = this.startDay;
+	            this._npnPortalService.endDay = this.endDay;
+	            this._npnPortalService.startMonth = this.startMonth;
+	            this._npnPortalService.endMonth = this.endMonth;
+	            this._npnPortalService.startYear = this.startYear;
+	            this._npnPortalService.endYear = this.endYear;
 	            this._dateService.startDate = new Date(this.startYear, this._dateService.months.indexOf(this.startMonth), this.startDay).toISOString().split('T')[0];
 	            this._dateService.endDate = new Date(this.endYear, this._dateService.months.indexOf(this.endMonth), this.endDay).toISOString().split('T')[0];
 	            if (this.getDownloadType() === 'siteLevelSummarized') {
@@ -70133,23 +70553,6 @@
 	    DateRangeComponent.prototype.onSelect = function (page) {
 	        this._router.navigate([page]);
 	    };
-	    // routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
-	    //     if(this._npnPortalService.resettingFilters) {
-	    //         this._npnPortalService.activePage = next.routeName;
-	    //         return true;
-	    //     }
-	    //     if(this.getDownloadType() === 'raw' && !this.startDate && !this.endDate) {
-	    //         this._npnPortalService.activePage = next.routeName;
-	    //         return true;
-	    //     }
-	    //     else if (!this.isDateRangeValid())
-	    //         return false;
-	    //     else {
-	    //         this.submit();
-	    //         this._npnPortalService.activePage = next.routeName;
-	    //         return true;
-	    //     }
-	    // }
 	    DateRangeComponent.prototype.continueWithoutSavingDate = function () {
 	        this._npnPortalService.activePage = '';
 	    };
@@ -70211,7 +70614,7 @@
 
 
 /***/ },
-/* 647 */
+/* 648 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -70311,7 +70714,7 @@
 
 
 /***/ },
-/* 648 */
+/* 649 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -70361,6 +70764,10 @@
 	            this.states[i].selected = false;
 	        }
 	    };
+	    LocationsComponent.prototype.submitFromParams = function () {
+	        this.currentTab = 'statesView';
+	        this.submit();
+	    };
 	    LocationsComponent.prototype.submit = function () {
 	        if (this.isActiveTab('statesView')) {
 	            this._npnPortalService.extent = { bottom_left_x1: null, bottom_left_y1: null, upper_right_x2: null, upper_right_y2: null };
@@ -70379,11 +70786,6 @@
 	    LocationsComponent.prototype.onSelect = function (page) {
 	        this._router.navigate([page]);
 	    };
-	    // routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
-	    //     this.submitLocation();
-	    //     this._npnPortalService.activePage = next.routeName;
-	    //     return true;
-	    // }
 	    LocationsComponent.prototype.ngOnInit = function () {
 	        var _this = this;
 	        this.states = this._locationsService.states;
@@ -70408,7 +70810,7 @@
 
 
 /***/ },
-/* 649 */
+/* 650 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -70424,9 +70826,9 @@
 	var core_1 = __webpack_require__(5);
 	var router_1 = __webpack_require__(329);
 	var npn_portal_service_1 = __webpack_require__(606);
-	var search_pipe_1 = __webpack_require__(650);
-	var sort_pipe_1 = __webpack_require__(651);
-	var species_service_1 = __webpack_require__(638);
+	var search_pipe_1 = __webpack_require__(651);
+	var sort_pipe_1 = __webpack_require__(652);
+	var species_service_1 = __webpack_require__(639);
 	var SpeciesComponent = (function () {
 	    function SpeciesComponent(_router, _npnPortalService, _speciesService, _searchPipe) {
 	        this._router = _router;
@@ -70503,7 +70905,7 @@
 
 
 /***/ },
-/* 650 */
+/* 651 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -70569,7 +70971,7 @@
 
 
 /***/ },
-/* 651 */
+/* 652 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -70611,7 +71013,7 @@
 
 
 /***/ },
-/* 652 */
+/* 653 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -70627,8 +71029,8 @@
 	var core_1 = __webpack_require__(5);
 	var router_1 = __webpack_require__(329);
 	var npn_portal_service_1 = __webpack_require__(606);
-	var phenophase_pipe_1 = __webpack_require__(653);
-	var phenophases_service_1 = __webpack_require__(639);
+	var phenophase_pipe_1 = __webpack_require__(654);
+	var phenophases_service_1 = __webpack_require__(640);
 	var PhenophasesComponent = (function () {
 	    function PhenophasesComponent(_npnPortalService, _phenophasesService, _router) {
 	        this._npnPortalService = _npnPortalService;
@@ -70679,7 +71081,7 @@
 
 
 /***/ },
-/* 653 */
+/* 654 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -70726,7 +71128,7 @@
 
 
 /***/ },
-/* 654 */
+/* 655 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -70742,8 +71144,8 @@
 	var core_1 = __webpack_require__(5);
 	var router_1 = __webpack_require__(329);
 	var npn_portal_service_1 = __webpack_require__(606);
-	var search_pipe_1 = __webpack_require__(655);
-	var partner_groups_service_1 = __webpack_require__(637);
+	var search_pipe_1 = __webpack_require__(656);
+	var partner_groups_service_1 = __webpack_require__(638);
 	var PartnerGroupsComponent = (function () {
 	    function PartnerGroupsComponent(_npnPortalService, _partnerGroupsService, _router) {
 	        this._npnPortalService = _npnPortalService;
@@ -70929,11 +71331,6 @@
 	        this._partnerGroupsService.partnerGroups = JSON.parse(JSON.stringify(this.partnerGroups));
 	        this._npnPortalService.setObservationCount();
 	    };
-	    // routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
-	    //     this.submit();
-	    //     this._npnPortalService.activePage = next.routeName;
-	    //     return true;
-	    // }
 	    PartnerGroupsComponent.prototype.ngOnInit = function () {
 	        var _this = this;
 	        this.partnerGroups = this._partnerGroupsService.partnerGroups;
@@ -70957,7 +71354,7 @@
 
 
 /***/ },
-/* 655 */
+/* 656 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -71057,7 +71454,7 @@
 
 
 /***/ },
-/* 656 */
+/* 657 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -71073,8 +71470,8 @@
 	var core_1 = __webpack_require__(5);
 	var router_1 = __webpack_require__(329);
 	var npn_portal_service_1 = __webpack_require__(606);
-	var integrated_datasets_service_1 = __webpack_require__(641);
-	var output_fields_service_1 = __webpack_require__(640);
+	var integrated_datasets_service_1 = __webpack_require__(642);
+	var output_fields_service_1 = __webpack_require__(641);
 	var IntegratedDatasetsComponent = (function () {
 	    function IntegratedDatasetsComponent(_router, _npnPortalService, _integratedDatasetService, _outputFieldsService) {
 	        this._router = _router;
@@ -71135,7 +71532,7 @@
 
 
 /***/ },
-/* 657 */
+/* 658 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -71151,7 +71548,7 @@
 	var core_1 = __webpack_require__(5);
 	var router_1 = __webpack_require__(329);
 	var npn_portal_service_1 = __webpack_require__(606);
-	var output_fields_service_1 = __webpack_require__(640);
+	var output_fields_service_1 = __webpack_require__(641);
 	var OutputFieldsComponent = (function () {
 	    function OutputFieldsComponent(_npnPortalService, _outputFieldsService, _router) {
 	        this._npnPortalService = _npnPortalService;
@@ -71253,7 +71650,7 @@
 
 
 /***/ },
-/* 658 */
+/* 659 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -71269,10 +71666,10 @@
 	var core_1 = __webpack_require__(5);
 	var router_1 = __webpack_require__(329);
 	var npn_portal_service_1 = __webpack_require__(606);
-	var ancillary_data_service_1 = __webpack_require__(642);
+	var ancillary_data_service_1 = __webpack_require__(643);
 	var ng2_bs3_modal_1 = __webpack_require__(629);
-	var output_fields_service_1 = __webpack_require__(640);
-	var availability_pipe_1 = __webpack_require__(659);
+	var output_fields_service_1 = __webpack_require__(641);
+	var availability_pipe_1 = __webpack_require__(660);
 	var AncillaryDataComponent = (function () {
 	    function AncillaryDataComponent(_router, _npnPortalService, _ancillaryDataService, _outputFieldsService) {
 	        this._router = _router;
@@ -71378,7 +71775,7 @@
 
 
 /***/ },
-/* 659 */
+/* 660 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -71412,7 +71809,7 @@
 
 
 /***/ },
-/* 660 */
+/* 661 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -71447,7 +71844,7 @@
 
 
 /***/ },
-/* 661 */
+/* 662 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -71481,7 +71878,7 @@
 
 
 /***/ },
-/* 662 */
+/* 663 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -71519,7 +71916,7 @@
 
 
 /***/ },
-/* 663 */
+/* 664 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -71555,7 +71952,7 @@
 
 
 /***/ },
-/* 664 */
+/* 665 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";

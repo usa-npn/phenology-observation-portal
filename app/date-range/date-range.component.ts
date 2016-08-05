@@ -206,6 +206,14 @@ export class DateRangeComponent implements OnInit, AfterViewInit {
           this._dateService.startYear = this.startYear;
           this._dateService.endYear = this.endYear;
 
+          this._npnPortalService.rangeType = this.rangeType;
+          this._npnPortalService.startDay = this.startDay;
+          this._npnPortalService.endDay = this.endDay;
+          this._npnPortalService.startMonth = this.startMonth;
+          this._npnPortalService.endMonth = this.endMonth;
+          this._npnPortalService.startYear = this.startYear;
+          this._npnPortalService.endYear = this.endYear;
+
           this._dateService.startDate = new Date(this.startYear, this._dateService.months.indexOf(this.startMonth), this.startDay).toISOString().split('T')[0];
           this._dateService.endDate = new Date(this.endYear, this._dateService.months.indexOf(this.endMonth), this.endDay).toISOString().split('T')[0];
 
@@ -229,29 +237,12 @@ export class DateRangeComponent implements OnInit, AfterViewInit {
       
       this._npnPortalService.setObservationCount();
   }
+    
+    onSelect(page) {
+        this._router.navigate( [page] );
+    }
 
-  onSelect(page) {
-      this._router.navigate( [page] );
-  }
-
-  // routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
-  //     if(this._npnPortalService.resettingFilters) {
-  //         this._npnPortalService.activePage = next.routeName;
-  //         return true;
-  //     }
-  //     if(this.getDownloadType() === 'raw' && !this.startDate && !this.endDate) {
-  //         this._npnPortalService.activePage = next.routeName;
-  //         return true;
-  //     }
-  //     else if (!this.isDateRangeValid())
-  //         return false;
-  //     else {
-  //         this.submit();
-  //         this._npnPortalService.activePage = next.routeName;
-  //         return true;
-  //     }
-  // }
-  
+    
     continueWithoutSavingDate() {
         this._npnPortalService.activePage = '';
     }
