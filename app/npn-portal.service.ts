@@ -16,7 +16,6 @@ export class NpnPortalService {
   constructor (private http: Http, private config: Config) {}
 
   activePage = "get-started";
-
   downloadType:string;
   errorMessage: string;
   extent:Extent = {bottom_left_x1: null, bottom_left_y1: null, upper_right_x2: null, upper_right_y2: null};
@@ -30,8 +29,15 @@ export class NpnPortalService {
   observationCount;
   startDate = null;
   endDate = null;
-  startYear;
-  endYear;
+
+  rangeType:string;
+  startDay:number;
+  endDay:number;
+  startMonth:string;
+  endMonth:string;
+  startYear:number;
+  endYear:number;
+  
   dataPrecision:number;
   resettingFilters:boolean = false;
   

@@ -3,11 +3,16 @@ import {Phenophase} from './phenophase';
 import {Http, Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {Config} from '../config.service';
+import {PersistentSearchService} from "../persistent-search.service";
+import {NpnPortalService} from "../npn-portal.service";
 
 @Injectable()
 export class PhenophasesService {
 
-    constructor (private http: Http, private config: Config) {}
+    constructor (private http: Http, 
+                 private config: Config, 
+                 private _persistentSearchService: PersistentSearchService, 
+                 private _npnPortalService: NpnPortalService) {}
 
     private _phenophasesUrl = this.config.getServerUrl() + '/npn_portal/phenophases/getPhenophases.json';
     errorMessage: string;
@@ -26,7 +31,23 @@ export class PhenophasesService {
 
     initPhenophases() {
         this.getPhenophases().subscribe(
-            phenophases => {this.phenophases = phenophases; console.log('phenophases have been set'); this.ready = true;},
+            phenophases => {
+                this.phenophases = phenophases;
+                console.log('phenophases have been set');
+
+                let phenophaseIds = this._persistentSearchService.phenophases;
+                if(phenophaseIds) {
+                    for(var phenophaseId of phenophaseIds) {
+                        for(var phenophase of this.phenophases) {
+                            if(phenophase.phenophase_id === phenophaseId)
+                                phenophase.selected = true;
+                        }
+                    }
+                    this._npnPortalService.phenophases = this.phenophases.map(obj => Object.assign({}, obj));
+                }
+                
+                this.ready = true;
+            },
             error => this.errorMessage = <any>error)
     }
 

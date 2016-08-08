@@ -10,6 +10,19 @@
         </ul>
     </div>
 </div>
+
+<div class="input-group" [class.hide]="!showSavedSearch">
+    <input class="form-control" aria-label="Text input with segmented button dropdown" value="{{savedSearchUrl}}">
+    <div class="input-group-btn">
+        <button type="button" class="btn btn-xs btn-default" data-toggle="tooltip" data-placement="top" title="copy to clipboard">
+            <span class="glyphicon glyphicon-copy" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="btn btn-xs btn-default" data-toggle="tooltip" data-placement="top" title="close search url" (click)="closeSavedSearch()" >
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        </button>
+    </div>
+</div>
+
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="row">
@@ -21,7 +34,7 @@
                     <button type="button" class="btn btn-xs btn-default" aria-label="Right Align" data-toggle="tooltip" data-placement="top" title="view filters" (click)="submitActivePage();filterModal.open()">
                         <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
                     </button>
-                    <button type="button" class="btn btn-xs btn-default" aria-label="Right Align" data-toggle="tooltip" data-placement="top" title="save search" >
+                    <button type="button" class="btn btn-xs btn-default" aria-label="Right Align" data-toggle="tooltip" data-placement="top" title="save search" (click)="saveSearch()" >
                         <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>
                     </button>
                     <button type="button" class="btn btn-xs btn-default" aria-label="Right Align" data-toggle="tooltip" data-placement="top" title="delete search" (click)="deleteFiltersModal.open()">
@@ -314,7 +327,7 @@
 
 <div [class.hide]="!(downloadTypeIsSet() && dateRangeIsValid())">
     <div class="well">
-    <input type="checkbox" name="agree" value="agree" [(ngModel)]="hasAgreed"> I have read and acknowledged the USA-NPN data citation policy.
+    <label class="checkbox-inline"><input type="checkbox" name="agree" value="agree" [(ngModel)]="hasAgreed"> I have read and acknowledged the USA-NPN data citation policy.</label>
         <button type="button" class="btn btn-block btn-success" (click)="download()">Download</button>
     </div>
 </div>

@@ -49,6 +49,11 @@ export class LocationsComponent implements OnInit {
             this.states[i].selected = false;
         }
     }
+    
+    submitFromParams() {
+        this.currentTab = 'statesView';
+        this.submit();
+    }
 
     submit() {
         if (this.isActiveTab('statesView')) {
@@ -69,12 +74,6 @@ export class LocationsComponent implements OnInit {
     onSelect(page) {
         this._router.navigate( [page] );
     }
-
-    // routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
-    //     this.submitLocation();
-    //     this._npnPortalService.activePage = next.routeName;
-    //     return true;
-    // }
 
     ngOnInit() {
         this.states =  this._locationsService.states;

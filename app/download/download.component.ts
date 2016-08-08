@@ -10,6 +10,9 @@ import {OutputFieldsService} from "../output-fields/output-fields.service";
 import {IntegratedDatasetService} from "../integrated-datasets/integrated-datasets.service";
 import {AncillaryDataService} from "../ancillary-data/ancillary-data.service";
 import {DateService} from "../date-range/date.service";
+import {PersistentSearchService} from "../persistent-search.service";
+import {Response} from "@angular/http";
+import {Config} from "../config.service";
 
 @Component({
     selector: 'download',
@@ -27,7 +30,9 @@ export class DownloadComponent {
                 private _integratedDatasetService: IntegratedDatasetService,
                 private _outputFieldsService: OutputFieldsService,
                 private _ancillaryDataService: AncillaryDataService,
-                private _router: Router
+                private _router: Router,
+                private _persistentSearchService: PersistentSearchService,
+                private _configService: Config
     ) {}
 
     @ViewChild('citationModal')
@@ -43,6 +48,8 @@ export class DownloadComponent {
     downloadModal: ModalComponent;
     
     hasAgreed:boolean = false;
+    savedSearchUrl:string = "";
+    showSavedSearch:boolean = false;
     
     getDownloadStatus() {
         return this._npnPortalService.downloadStatus;
@@ -172,6 +179,7 @@ export class DownloadComponent {
     
     resetFilters(page: string) {
         this._npnPortalService.resettingFilters = true;
+        this.closeSavedSearch();
         this._dateService.reset();
         this._locationService.reset();
         this._speciesService.reset();
@@ -200,4 +208,40 @@ export class DownloadComponent {
         else if(this._npnPortalService.activePage === 'ancillary-data')
             this._ancillaryDataService.submitAncillaryData();
     }
+    
+    closeSavedSearch() {
+        this.showSavedSearch = false;
+    }
+    
+     saveSearch() {
+         let savedSearch = {
+             downloadType: this._npnPortalService.downloadType,
+             startDate: this._npnPortalService.startDate,
+             endDate: this._npnPortalService.endDate,
+             species: this._npnPortalService.getSelectedSpecies().map((species) => species.species_id),
+             states: this._npnPortalService.getSelectedStates().map((state) => state.state_id),
+             phenophases: this._npnPortalService.getSelectedPhenophases().map((phenophase) => phenophase.phenophase_id),
+             partnerGroups: this._npnPortalService.getSelectedPartnerGroups().map((group) => group.network_id),
+             datasets: this._npnPortalService.getSelectedDatasets().map((dataset) => dataset.dataset_id),
+             optionalFields: this._npnPortalService.getSelectedOptionalFields().map((field) => field.metadata_field_id),
+             datasheets: this._npnPortalService.getSelectedDatasheets().map((datasheet) => datasheet.id),
+             dataPrecision: this._npnPortalService.dataPrecision,
+             rangeType: this._npnPortalService.rangeType,
+             startDay: this._npnPortalService.startDay,
+             endDay: this._npnPortalService.endDay,
+             startMonth: this._npnPortalService.startMonth,
+             endMonth: this._npnPortalService.endMonth,
+             startYear: this._npnPortalService.startYear,
+             endYear: this._npnPortalService.endYear
+         };
+         this._persistentSearchService.saveSearch(savedSearch).subscribe((res:Response) => {
+             if(res.json().download_path === "error") {
+                 console.log('error saving search');
+             }
+             else {
+                 this.savedSearchUrl = this._configService.getPopUrl() + '?search=' + res.json().saved_search_hash;
+                 this.showSavedSearch = true;
+             }
+         });
+     }
 }

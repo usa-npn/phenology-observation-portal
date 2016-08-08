@@ -194,12 +194,6 @@ export class PartnerGroupsComponent implements OnInit {
         this._npnPortalService.setObservationCount();
     }
 
-    // routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
-    //     this.submit();
-    //     this._npnPortalService.activePage = next.routeName;
-    //     return true;
-    // }
-
     ngOnInit() {
         this.partnerGroups = this._partnerGroupsService.partnerGroups;
         this.setAllCollapsed('');

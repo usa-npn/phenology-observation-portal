@@ -5,6 +5,7 @@
 //     qc: boolean;
 // }
 export interface OutputField {
+    metadata_field_id: number;
     field_name: string;
     field_description: string;
     seq_num: number;
