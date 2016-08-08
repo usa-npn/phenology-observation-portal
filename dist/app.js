@@ -46,7 +46,6 @@
 
 	"use strict";
 	var platform_browser_dynamic_1 = __webpack_require__(1);
-	// import {ROUTER_PROVIDERS} from '@angular/router-deprecated';
 	var app_component_1 = __webpack_require__(328);
 	var app_routes_1 = __webpack_require__(644);
 	var deactivate_guard_1 = __webpack_require__(662);
@@ -65180,7 +65179,7 @@
 	    function NpnPortalService(http, config) {
 	        this.http = http;
 	        this.config = config;
-	        this.activePage = "/get-started";
+	        this.activePage = "get-started";
 	        this.extent = { bottom_left_x1: null, bottom_left_y1: null, upper_right_x2: null, upper_right_y2: null };
 	        this.states = [];
 	        this.species = [];

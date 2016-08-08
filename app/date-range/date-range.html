@@ -51,7 +51,7 @@
       <div class="row">
         <div class="col-md-4">
           <strong>Season Date Range</strong>
-        </div>
+        </div>          
         <div class="col-md-8">
           <div *ngIf="dateForm.hasError('invalidDate')" class="error" role="alert">
             <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
@@ -63,10 +63,11 @@
     </div>
     <div class="panel-body panel-body-sm">
       <div class="btn-group btn-group-lg" role="group" aria-label="...">
-        <button type="button" class="btn btn-default" [class.active]="isSelected('calendar')" (click)="setRangeType('calendar')">Calendar</button>
-        <button type="button" class="btn btn-default" [class.active]="isSelected('water')" (click)="setRangeType('water')">Water</button>
-        <button type="button" class="btn btn-default" [class.active]="isSelected('summer')" (click)="setRangeType('summer')">Summer</button>
-        <button type="button" class="btn btn-default" [class.active]="isSelected('custom')" (click)="setRangeType('custom')">Custom</button>
+          
+        <button type="button" data-toggle="tooltip" title="A calendar year starts on January 1 and runs through December 31." class="btn btn-default" [class.active]="isSelected('calendar')" (click)="setRangeType('calendar')">Calendar</button>
+        <button type="button" data-toggle="tooltip" title="A 'water year' starts on October 1 and runs through September 30 of the following year." class="btn btn-default" [class.active]="isSelected('water')" (click)="setRangeType('water')">Water</button>
+        <button type="button" data-toggle="tooltip" title="A 'summer year' starts on July 1 and runs through June 30 of the following year." class="btn btn-default" [class.active]="isSelected('summer')" (click)="setRangeType('summer')">Summer</button>
+        <button type="button" data-toggle="tooltip" title="Set a custom seasonal date range." class="btn btn-default" [class.active]="isSelected('custom')" (click)="setRangeType('custom')">Custom</button>
       </div>
       <br><br>
       <div class="col-sm-6">

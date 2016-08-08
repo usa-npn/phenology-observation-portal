@@ -4,7 +4,7 @@
     </div>
     <div class="panel-body panel-body-sm">
         <ul [class.hide]="!downloadTypeIsSet()" class="list-group">
-        <li class="list-group-item" [class.hide]="!downloadTypeIsSet()">{{getDownloadType()}} Data Set</li>
+        <li class="list-group-item" [class.hide]="!downloadTypeIsSet()">{{getDownloadType()}} Dataset</li>
         <li class="list-group-item" [class.hide]="getObservationCount() != -1"  ><span class="badge"><i class="fa fa-refresh fa-spin" style="font-size: 12px"></i></span>Estimated Records:</li>
         <li class="list-group-item" [class.hide]="getObservationCount() == -1" ><span class="badge">{{getObservationCount()}}</span>Estimated Records:</li>
         </ul>
@@ -106,7 +106,7 @@
         <div class="container">
         <div class="jumbotron">
             <p [class.hide]="getDownloadStatus() != 'error'">There was an error downloading your data. Please try again later.</p>
-            <p [class.hide]="getDownloadStatus() != 'downloading'">Please do not close your browser. This may take up to 20 minutes to process. While you're waiting:</p>
+            <p [class.hide]="getDownloadStatus() != 'downloading'">Please do not close this window. This may take up to 20 minutes to process. While you're waiting:</p>
             <p [class.hide]="getDownloadStatus() != 'complete'">Your data has finished downloading. Feel free to:</p>
             <div [class.hide]="getDownloadStatus() == 'error'">
                 <ul class="list-group">
