@@ -192,6 +192,11 @@ export class DownloadComponent {
         this._router.navigate( [page] );
     }
 
+    copyToClipboard(element) {
+        element.select();
+        document.execCommand("copy");
+    }
+
     submitActivePage() {
         if(this._npnPortalService.activePage === 'locations')
             this._locationService.submitLocations();

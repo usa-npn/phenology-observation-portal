@@ -12,9 +12,9 @@
 </div>
 
 <div class="input-group" [class.hide]="!showSavedSearch">
-    <input class="form-control" aria-label="Text input with segmented button dropdown" value="{{savedSearchUrl}}">
+    <input #savedSearch class="form-control" aria-label="Text input with segmented button dropdown" value="{{savedSearchUrl}}">
     <div class="input-group-btn">
-        <button type="button" class="btn btn-xs btn-default" data-toggle="tooltip" data-placement="top" title="copy to clipboard">
+        <button type="button" class="btn btn-xs btn-default" data-toggle="tooltip" data-placement="top" title="copy to clipboard" (click)="copyToClipboard(savedSearch)">
             <span class="glyphicon glyphicon-copy" aria-hidden="true"></span>
         </button>
         <button type="button" class="btn btn-xs btn-default" data-toggle="tooltip" data-placement="top" title="close search url" (click)="closeSavedSearch()" >

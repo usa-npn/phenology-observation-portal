@@ -65180,6 +65180,11 @@
 	        this._npnPortalService.reset();
 	        this._router.navigate([page]);
 	    };
+	    DownloadComponent.prototype.copyToClipboard = function (element) {
+	        console.log(element);
+	        element.select();
+	        document.execCommand("copy");
+	    };
 	    DownloadComponent.prototype.submitActivePage = function () {
 	        if (this._npnPortalService.activePage === 'locations')
 	            this._locationService.submitLocations();
