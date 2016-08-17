@@ -135,6 +135,8 @@ export class AppComponent {
                 let savedSearch = res.json();
                 if(savedSearch.downloadType) {
                     this._npnPortalService.downloadType = savedSearch.downloadType;
+                    if(savedSearch.downloadType === 'selectable')
+                        this._npnPortalService.allowDownloadTypeChangeWithoutReset = true;
                     if (savedSearch.startDate) {
                         this._dateService.startDate = savedSearch.startDate;
                         this._npnPortalService.startDate = savedSearch.startDate;
