@@ -49359,6 +49359,8 @@
 	                        _this._dateService.endDay = savedSearch.endDay;
 	                        _this._npnPortalService.endDay = savedSearch.endDay;
 	                    }
+	                    if (savedSearch.stations)
+	                        _this._npnPortalService.stations = savedSearch.stations;
 	                    _this._persistentSearchService.states = savedSearch.states;
 	                    _this._persistentSearchService.species = savedSearch.species;
 	                    _this._persistentSearchService.phenophases = savedSearch.phenophases;
@@ -62704,17 +62706,45 @@
 	} ())
 	function runTimeout(fun) {
 	    if (cachedSetTimeout === setTimeout) {
+	        //normal enviroments in sane situations
 	        return setTimeout(fun, 0);
-	    } else {
-	        return cachedSetTimeout.call(null, fun, 0);
 	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedSetTimeout(fun, 0);
+	    } catch(e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+	            return cachedSetTimeout.call(null, fun, 0);
+	        } catch(e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+	            return cachedSetTimeout.call(this, fun, 0);
+	        }
+	    }
+
+
 	}
 	function runClearTimeout(marker) {
 	    if (cachedClearTimeout === clearTimeout) {
-	        clearTimeout(marker);
-	    } else {
-	        cachedClearTimeout.call(null, marker);
+	        //normal enviroments in sane situations
+	        return clearTimeout(marker);
 	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedClearTimeout(marker);
+	    } catch (e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+	            return cachedClearTimeout.call(null, marker);
+	        } catch (e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+	            return cachedClearTimeout.call(this, marker);
+	        }
+	    }
+
+
+
 	}
 	var queue = [];
 	var draining = false;
@@ -65299,6 +65329,7 @@
 	        this.datasets = [];
 	        this.optionalFields = [];
 	        this.datasheets = [];
+	        this.stations = [];
 	        this.startDate = null;
 	        this.endDate = null;
 	        this.resettingFilters = false;
@@ -65495,7 +65526,8 @@
 	            species_id: this.getSelectedSpecies().map(function (s) { return s.species_id; }),
 	            phenophase_category: this.getSelectedPhenophases().map(function (p) { return p.phenophase_category; }),
 	            dataset_ids: this.getSelectedDatasets().map(function (dataset) { return dataset.dataset_id; }),
-	            network: this.getSelectedPartnerGroups().map(function (p) { return p.network_name; })
+	            network: this.getSelectedPartnerGroups().map(function (p) { return p.network_name; }),
+	            stations: this.stations
 	        });
 	        return this.http.post(this.config.getServerUrl() + '/npn_portal/observations/getObservationsCount.json', data, { headers: headers })
 	            .map(function (res) { return res.json(); })
@@ -65533,7 +65565,8 @@
 	            dataset_ids: this.getSelectedDatasets().map(function (dataset) { return dataset.dataset_id; }),
 	            integrated_datasets: this.getSelectedDatasets().map(function (dataset) { return dataset.dataset_name; }),
 	            ancillary_data: this.getSelectedDatasheets().map(function (datasheet) { return datasheet.name; }),
-	            qualityFlags: this.dataQualityChecksSelected() ? null : 'ignored'
+	            qualityFlags: this.dataQualityChecksSelected() ? null : 'ignored',
+	            stations: this.stations
 	        });
 	        //always use https on dev/prod servers, but not necessarily locally
 	        this.http.post(this.config.getServerUrl()
@@ -70624,7 +70657,7 @@
 	        core_1.Component({
 	            templateUrl: 'app/date-range/date-range.html',
 	            styleUrls: ['app/date-range/date-range.component.css'],
-	            directives: [router_1.ROUTER_DIRECTIVES, ng2_bs3_modal_1.MODAL_DIRECTIVES, DatePicker]
+	            directives: [router_1.ROUTER_DIRECTIVES, ng2_bs3_modal_1.MODAL_DIRECTIVES, DatePicker, common_1.FORM_DIRECTIVES]
 	        }), 
 	        __metadata('design:paramtypes', [npn_portal_service_1.NpnPortalService, date_service_1.DateService, router_1.Router, common_1.FormBuilder, core_1.ChangeDetectorRef])
 	    ], DateRangeComponent);

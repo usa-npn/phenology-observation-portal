@@ -27,6 +27,9 @@ export class NpnPortalService {
   datasets:Dataset[] = [];
   optionalFields:OutputField[] = [];
   datasheets:AncillaryData[] = [];
+
+  stations = [];
+
   observationCount;
   startDate = null;
   endDate = null;
@@ -251,7 +254,8 @@ export class NpnPortalService {
       species_id: this.getSelectedSpecies().map(function(s) { return s.species_id; }),
       phenophase_category: this.getSelectedPhenophases().map(function(p) { return p.phenophase_category; }),
       dataset_ids: this.getSelectedDatasets().map((dataset) => dataset.dataset_id),
-      network: this.getSelectedPartnerGroups().map(function(p) { return p.network_name; })
+      network: this.getSelectedPartnerGroups().map(function(p) { return p.network_name; }),
+      stations: this.stations
     });
 
     return this.http.post(this.config.getServerUrl() + '/npn_portal/observations/getObservationsCount.json', data, { headers: headers })
@@ -294,7 +298,8 @@ export class NpnPortalService {
       dataset_ids: this.getSelectedDatasets().map((dataset) => dataset.dataset_id),
       integrated_datasets: this.getSelectedDatasets().map((dataset) => dataset.dataset_name),
       ancillary_data: this.getSelectedDatasheets().map((datasheet) => datasheet.name),
-      qualityFlags: this.dataQualityChecksSelected() ? null : 'ignored'
+      qualityFlags: this.dataQualityChecksSelected() ? null : 'ignored',
+      stations: this.stations
     });
 
     //always use https on dev/prod servers, but not necessarily locally

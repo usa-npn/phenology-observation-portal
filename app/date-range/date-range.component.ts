@@ -1,5 +1,5 @@
 import {Component, OnInit, AfterViewInit, ChangeDetectorRef, ViewChild, Directive, ElementRef, Input, Output, EventEmitter} from "@angular/core";
-import {ControlGroup, FormBuilder, Validators} from "@angular/common";
+import {ControlGroup, FormBuilder, Validators, FORM_DIRECTIVES, FORM_PROVIDERS} from "@angular/common";
 import {Router, ROUTER_DIRECTIVES} from "@angular/router";
 import {NpnPortalService} from "../npn-portal.service";
 import {DateService} from "./date.service";
@@ -31,9 +31,10 @@ export class DatePicker implements OnInit {
 }
 
 @Component({
-  templateUrl: 'app/date-range/date-range.html',
-  styleUrls: ['app/date-range/date-range.component.css'],
-  directives: [ROUTER_DIRECTIVES, MODAL_DIRECTIVES, DatePicker]
+    templateUrl: 'app/date-range/date-range.html',
+    styleUrls: ['app/date-range/date-range.component.css'],
+    directives: [ROUTER_DIRECTIVES, MODAL_DIRECTIVES, DatePicker, FORM_DIRECTIVES],
+    providers: [FORM_PROVIDERS],
 })
 export class DateRangeComponent implements OnInit, AfterViewInit {
 

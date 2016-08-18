@@ -15,7 +15,6 @@ export class PersistentSearchService {
     optionalFields = [];
     datasheets = [];
 
-
     rangeType:string;
     startDay:number;
     endDay:number;
