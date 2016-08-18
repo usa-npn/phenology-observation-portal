@@ -15,8 +15,8 @@ export class AncillaryDataService {
         {id: 1, name: 'Sites', description: '', selected: false},
         {id: 2, name: 'Individual Plants', description: '', selected: false},
         {id: 3, name: 'Observers', description: '', selected: false},
-        {id: 4, name: 'Observation Details', description: '', selected: false},
-        {id: 5, name: 'Protocols', description: '', selected: false}
+        {id: 4, name: 'Site Visit', description: '', selected: false},
+        {id: 5, name: 'Protocols (7 files)', description: '', selected: false}
     ];
     
     public initDatasheets() {

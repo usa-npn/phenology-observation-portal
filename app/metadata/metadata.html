@@ -12,34 +12,25 @@
         </thead>
         <tbody>
             <tr>
-                <td width="60"><a (click)="downloadFile('/files/metadata/raw_status_observation_metadata.xlsx')"><span class="glyphicon glyphicon-file" aria-hidden="true"></span></a></td>
-                <td>Raw</td>
-                <td>Each row in this data type
-                    represents the status of one
-                    phenophase for one
-                    individual plant or animal
-                    species at a given site, on a
-                    single date and time.</td>
+                <td width="60"><a (click)="downloadFile('/files/metadata/status_intensity_datafield_descriptions.xlsx')"><span class="glyphicon glyphicon-file" aria-hidden="true"></span></a></td>
+                <td>Status and Intensity Metadata File Description</td>
+                <td>Each row in this data type represents the status of one phenophase for one individual plant or animal species at a given site, on a single date and time.</td>
             </tr>
             <tr>
-                <td width="60"><a (click)="downloadFile('/files/metadata/individual-level_summarized_observation_metadata.xlsx')"><span class="glyphicon glyphicon-file" aria-hidden="true"></span></a></td>
-                <td>Individual Summarized</td>
-                <td>Supports estimates of
-                    phenophase onset,
-                    duration and end.</td>
+                <td width="60"><a (click)="downloadFile('/files/metadata/individual_phenometrics_datafield_descriptions.xlsx')"><span class="glyphicon glyphicon-file" aria-hidden="true"></span></a></td>
+                <td>Individual Phenometrics Metadata File Description</td>
+                <td>Supports estimates of phenophase onset, duration and end, at the organismal level.</td>
             </tr>
             <tr>
-                <td width="60"><a (click)="downloadFile('/files/metadata/site-level_summarized_observation_metadata.xlsx')"><span class="glyphicon glyphicon-file" aria-hidden="true"></span></a></td>
-                <td>Site Level Summarized</td>
-                <td>Provides information on the
-                    mean first and the mean
-                    last positive observations
-                    for a given species and
-                    phenophase within a
-                    calendar year that are
-                    captured at a site within a
-                    user-defined interval.</td>
+                <td width="60"><a (click)="downloadFile('/files/metadata/site_phenometrics_datafield_descriptions.xlsx')"><span class="glyphicon glyphicon-file" aria-hidden="true"></span></a></td>
+                <td>Site Phenometrics Metadata File Description</td>
+                <td>Provides information on the mean first and the mean last positive observations for a given species and phenophase within a calendar year that are captured at a site within a user-defined interval.</td>
             </tr>
+            <tr>
+                <td width="60"><a (click)="downloadFile('/files/metadata/ancillary_datafield_descriptions.xlsx')"><span class="glyphicon glyphicon-file" aria-hidden="true"></span></a></td>
+                <td>Ancillary Data</td>
+                <td>Provides ancillary information about our status and intensity field observation data, including details about the sites, individual plants, observers and protocols.</td>
+            </tr>            
         </tbody>
     </table>
 </div>

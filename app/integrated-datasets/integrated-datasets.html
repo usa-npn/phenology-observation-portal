@@ -14,6 +14,9 @@
                 <th>
                     Description
                 </th>
+                <th>
+                    Documentation
+                </th>                
             </tr>
             </thead>
 
@@ -22,6 +25,7 @@
                 <td><input type="checkbox" name="species" value="{{dataset.dataset_name}}" [(ngModel)]="dataset.selected" (change)="toggleDataset(dataset)"></td>
                 <td>{{dataset.dataset_name}}</td>
                 <td>{{dataset.dataset_description}}</td>
+                <td><a href = '{{dataset.readme_url}}' target='_blank'>ReadMe</a></td>
             </tr>
             </tbody>
         </table>

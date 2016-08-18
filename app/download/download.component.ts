@@ -61,11 +61,11 @@ export class DownloadComponent {
 
     getDownloadType(){
         if(this._npnPortalService.downloadType == "siteLevelSummarized")
-            return "Site Level Summarized";
+            return "Site Phenometrics";
         else if(this._npnPortalService.downloadType == "raw")
-            return "Raw";
+            return "Status and Intensity";
         else if(this._npnPortalService.downloadType == "summarized")
-            return "Individual Level Summarized";
+            return "Individual Phenometrics";
     }
     
     downloadTypeIsSet() {

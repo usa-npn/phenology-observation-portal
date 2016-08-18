@@ -65077,11 +65077,11 @@
 	    };
 	    DownloadComponent.prototype.getDownloadType = function () {
 	        if (this._npnPortalService.downloadType == "siteLevelSummarized")
-	            return "Site Level Summarized";
+	            return "Site Phenometrics";
 	        else if (this._npnPortalService.downloadType == "raw")
-	            return "Raw";
+	            return "Status and Intensity";
 	        else if (this._npnPortalService.downloadType == "summarized")
-	            return "Individual Level Summarized";
+	            return "Individual Phenometrics";
 	    };
 	    DownloadComponent.prototype.downloadTypeIsSet = function () {
 	        return this._npnPortalService.reportTypeSelected();
@@ -70028,8 +70028,8 @@
 	            { id: 1, name: 'Sites', description: '', selected: false },
 	            { id: 2, name: 'Individual Plants', description: '', selected: false },
 	            { id: 3, name: 'Observers', description: '', selected: false },
-	            { id: 4, name: 'Observation Details', description: '', selected: false },
-	            { id: 5, name: 'Protocols', description: '', selected: false }
+	            { id: 4, name: 'Site Visit', description: '', selected: false },
+	            { id: 5, name: 'Protocols (7 files)', description: '', selected: false }
 	        ];
 	        this.ancillaryDataRemoved$ = new core_1.EventEmitter();
 	        this.submitAncillaryData$ = new core_1.EventEmitter();
@@ -71700,7 +71700,7 @@
 	                }
 	            }
 	        }
-	        if (datasheet.selected && datasheet.name === "Observation Details") {
+	        if (datasheet.selected && datasheet.name === "Site Visit") {
 	            for (var _b = 0, _c = this.optionalFields; _b < _c.length; _b++) {
 	                var field = _c[_b];
 	                if ("observation_group_id" === field.machine_name) {
