@@ -1,15 +1,17 @@
 import {Component} from "@angular/core";
 import {ROUTER_DIRECTIVES} from "@angular/router";
+import {Config} from '../config.service';
 
 @Component({
     templateUrl: 'app/metadata/metadata.html',
     styleUrls: ['app/metadata/metadata.component.css'],
     directives: [ROUTER_DIRECTIVES]
 })
+
 export class MetadataComponent {
-    constructor() {}
+    constructor(private config: Config) {}
     
     downloadFile(fileLocation) {
-        window.location.replace(window.location.origin + fileLocation);
+        window.location.replace(this.config.getServerUrl() + fileLocation);
     }
 }
