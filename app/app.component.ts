@@ -173,6 +173,9 @@ export class AppComponent {
                         this._dateService.endDay = savedSearch.endDay;
                         this._npnPortalService.endDay = savedSearch.endDay;
                     }
+                    if(savedSearch.stations)
+                        this._npnPortalService.stations = savedSearch.stations;
+                    
                     this._persistentSearchService.states = savedSearch.states;
                     this._persistentSearchService.species = savedSearch.species;
                     this._persistentSearchService.phenophases = savedSearch.phenophases;
