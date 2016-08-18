@@ -80,7 +80,7 @@ export class GetStartedComponent implements OnInit {
   }
   
   setDownloadType(type:string){
-    if(this._npnPortalService.filtersAreSet()) {
+    if(this._npnPortalService.filtersAreSet() && !this._npnPortalService.allowDownloadTypeChangeWithoutReset) {
       this.resetFiltersModal.open();
       this.newType = type;
     }
@@ -107,11 +107,13 @@ export class GetStartedComponent implements OnInit {
   onSelect(page) {
     if(page == "get-started" || page == "metadata" || page == "help") {
       // this._npnPortalService.activePage = page;
+      this._npnPortalService.allowDownloadTypeChangeWithoutReset = false;
       this._router.navigate( [page] );
     }
     else {
       if (this._npnPortalService.reportTypeSelected()) {
         // this._npnPortalService.activePage = page;
+        this._npnPortalService.allowDownloadTypeChangeWithoutReset = false;
         this._router.navigate( [page] );
       }
     }

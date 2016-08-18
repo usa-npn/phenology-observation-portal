@@ -33,7 +33,7 @@
             <div class="panel panel-default" [class.hide]="!_npnPortalService.dataPrecision">
                 <div class="panel-heading">
                     <h4 class="panel-title">
-                        Data Precision: <span class="badge">{{_npnPortalService.dataPrecision}}</span>
+                        Data Precision: <span class="badge">{{_npnPortalService.dataPrecision}} days</span>
                     </h4>
                 </div>
             </div>
@@ -193,7 +193,7 @@
         <button type="button" class="btn btn-block btn-primary" (click)="summaryModal.close()">Go Back to Modify Filters</button>
         <br/>
         <div class="well">
-            <label><input type="checkbox" name="agree" value="agree" [(ngModel)]="hasAgreed"> I have read and acknowledged the USA-NPN data citation policy.</label>
+            <label><input type="checkbox" name="agree" value="agree" [(ngModel)]="hasAgreed"> I have read and acknowledged the <a href ='https://www.usanpn.org/terms#DataAttribution' target='_blank' >USA-NPN data citation policy.</a></label>
             <button type="button" class="btn btn-block btn-success" (click)="download()">Download</button>
         </div>
 
@@ -205,7 +205,7 @@
         <h4 class="modal-title">Download Error</h4>
     </modal-header>
     <modal-body>
-        Please check that you have read and acknowledged the USA-NPN data citation policy.
+        Please check that you have read and acknowledged the <a href ='https://www.usanpn.org/terms#DataAttribution' target='_blank' >USA-NPN data citation policy.</a>
     </modal-body>
     <modal-footer><button type="button" class="btn btn-default" (click)="citationModal.close()">Close</button></modal-footer>
 </modal>

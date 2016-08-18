@@ -12,9 +12,9 @@
 </div>
 
 <div class="input-group" [class.hide]="!showSavedSearch">
-    <input class="form-control" aria-label="Text input with segmented button dropdown" value="{{savedSearchUrl}}">
+    <input #savedSearch class="form-control" aria-label="Text input with segmented button dropdown" value="{{savedSearchUrl}}">
     <div class="input-group-btn">
-        <button type="button" class="btn btn-xs btn-default" data-toggle="tooltip" data-placement="top" title="copy to clipboard">
+        <button type="button" class="btn btn-xs btn-default" data-toggle="tooltip" data-placement="top" title="copy to clipboard" (click)="copyToClipboard(savedSearch)">
             <span class="glyphicon glyphicon-copy" aria-hidden="true"></span>
         </button>
         <button type="button" class="btn btn-xs btn-default" data-toggle="tooltip" data-placement="top" title="close search url" (click)="closeSavedSearch()" >
@@ -47,7 +47,7 @@
     <div class="panel-body panel-body-sm">
         <ul class="list-group">
             <li [class.hide]="getSelectedDate() == ''" class="list-group-item"><span class="badge">{{getSelectedDate()}}</span>Date:</li>
-            <li [class.hide]="!getDataPrecision()" class="list-group-item"><span class="badge">{{getDataPrecision()}}</span>Data Precision:</li>
+            <li [class.hide]="!getDataPrecision()" class="list-group-item"><span class="badge">{{getDataPrecision()}} days</span>Data Precision:</li>
             <li [class.hide]="getSelectedStates().length == 0" class="list-group-item"><span class="badge">{{getSelectedStates().length}}</span>States:</li>
             <li [class.hide]="!getSelectedExtent().bottom_left_x1" class="list-group-item"><span class="badge">1</span>Regions:</li>
             <li [class.hide]="getSelectedSpecies().length == 0" class="list-group-item"><span class="badge">{{getSelectedSpecies().length}}</span>Species:</li>
@@ -65,7 +65,7 @@
         <h4 class="modal-title">Download Error</h4>
     </modal-header>
     <modal-body>
-        Please check that you have read and acknowledged the USA-NPN data citation policy.
+        Please check that you have read and acknowledged the <a href ='https://www.usanpn.org/terms#DataAttribution' target='_blank' >USA-NPN data citation policy.</a>
     </modal-body>
     <modal-footer><button type="button" class="btn btn-default" (click)="citationModal.close()">Close</button></modal-footer>
 </modal>
@@ -152,7 +152,7 @@
             <div class="panel panel-default" [class.hide]="!_npnPortalService.dataPrecision">
                 <div class="panel-heading">
                     <h4 class="panel-title">
-                        Data Precision: <span class="badge">{{getDataPrecision()}}</span>
+                        Data Precision: <span class="badge">{{getDataPrecision()}} days</span>
                     </h4>
                 </div>
             </div>
@@ -327,7 +327,7 @@
 
 <div [class.hide]="!(downloadTypeIsSet() && dateRangeIsValid())">
     <div class="well">
-    <label class="checkbox-inline"><input type="checkbox" name="agree" value="agree" [(ngModel)]="hasAgreed"> I have read and acknowledged the USA-NPN data citation policy.</label>
+    <label class="checkbox-inline"><input type="checkbox" name="agree" value="agree" [(ngModel)]="hasAgreed"> I have read and acknowledged the <a href ='https://www.usanpn.org/terms#DataAttribution' target='_blank' >USA-NPN data citation policy.</a></label>
         <button type="button" class="btn btn-block btn-success" (click)="download()">Download</button>
     </div>
 </div>

@@ -49321,6 +49321,8 @@
 	                var savedSearch = res.json();
 	                if (savedSearch.downloadType) {
 	                    _this._npnPortalService.downloadType = savedSearch.downloadType;
+	                    if (savedSearch.downloadType === 'selectable')
+	                        _this._npnPortalService.allowDownloadTypeChangeWithoutReset = true;
 	                    if (savedSearch.startDate) {
 	                        _this._dateService.startDate = savedSearch.startDate;
 	                        _this._npnPortalService.startDate = savedSearch.startDate;
@@ -65180,6 +65182,10 @@
 	        this._npnPortalService.reset();
 	        this._router.navigate([page]);
 	    };
+	    DownloadComponent.prototype.copyToClipboard = function (element) {
+	        element.select();
+	        document.execCommand("copy");
+	    };
 	    DownloadComponent.prototype.submitActivePage = function () {
 	        if (this._npnPortalService.activePage === 'locations')
 	            this._locationService.submitLocations();
@@ -65284,6 +65290,7 @@
 	        this.http = http;
 	        this.config = config;
 	        this.activePage = "get-started";
+	        this.allowDownloadTypeChangeWithoutReset = false;
 	        this.extent = { bottom_left_x1: null, bottom_left_y1: null, upper_right_x2: null, upper_right_y2: null };
 	        this.states = [];
 	        this.species = [];
@@ -70303,7 +70310,7 @@
 	        this._npnPortalService.setObservationCount();
 	    };
 	    GetStartedComponent.prototype.setDownloadType = function (type) {
-	        if (this._npnPortalService.filtersAreSet()) {
+	        if (this._npnPortalService.filtersAreSet() && !this._npnPortalService.allowDownloadTypeChangeWithoutReset) {
 	            this.resetFiltersModal.open();
 	            this.newType = type;
 	        }
@@ -70326,11 +70333,13 @@
 	    GetStartedComponent.prototype.onSelect = function (page) {
 	        if (page == "get-started" || page == "metadata" || page == "help") {
 	            // this._npnPortalService.activePage = page;
+	            this._npnPortalService.allowDownloadTypeChangeWithoutReset = false;
 	            this._router.navigate([page]);
 	        }
 	        else {
 	            if (this._npnPortalService.reportTypeSelected()) {
 	                // this._npnPortalService.activePage = page;
+	                this._npnPortalService.allowDownloadTypeChangeWithoutReset = false;
 	                this._router.navigate([page]);
 	            }
 	        }
