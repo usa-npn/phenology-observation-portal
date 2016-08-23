@@ -66739,11 +66739,11 @@
 	    };
 	    NpnPortalService.prototype.getReportType = function () {
 	        if (this.downloadType === 'raw')
-	            return 'Raw';
+	            return 'Status and Intensity';
 	        else if (this.downloadType === 'summarized')
-	            return 'Individual-Level Summarized';
+	            return 'Individual Phenometrics';
 	        else
-	            return 'Site-Level Summarized';
+	            return 'Site Phenometrics';
 	    };
 	    NpnPortalService.prototype.getSelectedStates = function () {
 	        return this.states.filter(function (s) {
@@ -72424,13 +72424,6 @@
 	    function SearchPipe() {
 	    }
 	    SearchPipe.prototype.transform = function (value, speciesName, sortType, sortReverse, functionalType, speciesType) {
-	        console.log('testtting');
-	        console.log(value);
-	        console.log(speciesName);
-	        console.log(sortType);
-	        console.log(sortReverse);
-	        console.log(functionalType);
-	        console.log(speciesType);
 	        speciesName = speciesName.toString().toLowerCase();
 	        if (sortType === "common") {
 	            value = value.sort(function (a, b) {
@@ -73301,9 +73294,9 @@
 	    function AvailabilityPipe() {
 	    }
 	    AvailabilityPipe.prototype.transform = function (value, reportType) {
-	        return value.filter(function (datasheet) { return !(datasheet.name === "Observers" && reportType === "Site-Level Summarized")
-	            && !(datasheet.name === "Individual Plants" && reportType === "Site-Level Summarized")
-	            && !(datasheet.name === "Observation Details" && reportType != "Raw"); });
+	        return value.filter(function (datasheet) { return !(datasheet.name === "Observers" && reportType === "Site Phenometrics")
+	            && !(datasheet.name === "Individual Plants" && reportType === "Site Phenometrics")
+	            && !(datasheet.name === "Observation Details" && reportType != "Status and Intensity"); });
 	    };
 	    AvailabilityPipe = __decorate([
 	        core_1.Pipe({
