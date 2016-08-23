@@ -25,7 +25,7 @@ import {Response} from "@angular/http";
 
       <section id="content1">
         <div class="btn-group-vertical btn-block" role="group" aria-label="...">
-          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('get-started')" (click)="onSelect('/get-started')">Get Started</button>
+          <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('get-started')" (click)="onSelect('get-started')">Get Started</button>
           <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('date-range')" [class.disabled]="!reportTypeSelected()" (click)="onSelect('date-range')">Date Range</button>
           <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('locations')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('locations')">Locations</button>
           <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('species')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('species')">Species</button>
