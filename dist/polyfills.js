@@ -45,14 +45,14 @@
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(666);
-	__webpack_require__(667);
-	module.exports = __webpack_require__(690);
+	__webpack_require__(678);
+	__webpack_require__(679);
+	module.exports = __webpack_require__(702);
 
 
 /***/ },
 
-/***/ 563:
+/***/ 574:
 /***/ function(module, exports) {
 
 	// shim for using process in browser
@@ -219,7 +219,7 @@
 
 /***/ },
 
-/***/ 666:
+/***/ 678:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global, process) { /*!
@@ -4000,11 +4000,11 @@
 	  return globals;
 	}));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(563)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(574)))
 
 /***/ },
 
-/***/ 667:
+/***/ 679:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/*! *****************************************************************************
@@ -4846,7 +4846,7 @@
 	    function CreateWeakMapPolyfill() {
 	        var UUID_SIZE = 16;
 	        var isNode = typeof global !== "undefined" && Object.prototype.toString.call(global.process) === '[object process]';
-	        var nodeCrypto = isNode && __webpack_require__(668);
+	        var nodeCrypto = isNode && __webpack_require__(680);
 	        var hasOwn = Object.prototype.hasOwnProperty;
 	        var keys = {};
 	        var rootKey = CreateUniqueKey();
@@ -4973,10 +4973,10 @@
 
 /***/ },
 
-/***/ 668:
+/***/ 680:
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var rng = __webpack_require__(673)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var rng = __webpack_require__(685)
 
 	function error () {
 	  var m = [].slice.call(arguments).join(' ')
@@ -4987,9 +4987,9 @@
 	    ].join('\n'))
 	}
 
-	exports.createHash = __webpack_require__(675)
+	exports.createHash = __webpack_require__(687)
 
-	exports.createHmac = __webpack_require__(687)
+	exports.createHmac = __webpack_require__(699)
 
 	exports.randomBytes = function(size, callback) {
 	  if (callback && callback.call) {
@@ -5010,7 +5010,7 @@
 	  return ['sha1', 'sha256', 'sha512', 'md5', 'rmd160']
 	}
 
-	var p = __webpack_require__(688)(exports)
+	var p = __webpack_require__(700)(exports)
 	exports.pbkdf2 = p.pbkdf2
 	exports.pbkdf2Sync = p.pbkdf2Sync
 
@@ -5030,11 +5030,11 @@
 	  }
 	})
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(669).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(681).Buffer))
 
 /***/ },
 
-/***/ 669:
+/***/ 681:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer, global) {/*!
@@ -5047,9 +5047,9 @@
 
 	'use strict'
 
-	var base64 = __webpack_require__(670)
-	var ieee754 = __webpack_require__(671)
-	var isArray = __webpack_require__(672)
+	var base64 = __webpack_require__(682)
+	var ieee754 = __webpack_require__(683)
+	var isArray = __webpack_require__(684)
 
 	exports.Buffer = Buffer
 	exports.SlowBuffer = SlowBuffer
@@ -6827,11 +6827,11 @@
 	  return val !== val // eslint-disable-line no-self-compare
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(669).Buffer, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(681).Buffer, (function() { return this; }())))
 
 /***/ },
 
-/***/ 670:
+/***/ 682:
 /***/ function(module, exports) {
 
 	'use strict'
@@ -6947,7 +6947,7 @@
 
 /***/ },
 
-/***/ 671:
+/***/ 683:
 /***/ function(module, exports) {
 
 	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -7038,7 +7038,7 @@
 
 /***/ },
 
-/***/ 672:
+/***/ 684:
 /***/ function(module, exports) {
 
 	var toString = {}.toString;
@@ -7050,13 +7050,13 @@
 
 /***/ },
 
-/***/ 673:
+/***/ 685:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, Buffer) {(function() {
 	  var g = ('undefined' === typeof window ? global : window) || {}
 	  _crypto = (
-	    g.crypto || g.msCrypto || __webpack_require__(674)
+	    g.crypto || g.msCrypto || __webpack_require__(686)
 	  )
 	  module.exports = function(size) {
 	    // Modern Browsers
@@ -7080,24 +7080,24 @@
 	  }
 	}())
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(669).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(681).Buffer))
 
 /***/ },
 
-/***/ 674:
+/***/ 686:
 /***/ function(module, exports) {
 
 	/* (ignored) */
 
 /***/ },
 
-/***/ 675:
+/***/ 687:
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(676)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(688)
 
-	var md5 = toConstructor(__webpack_require__(684))
-	var rmd160 = toConstructor(__webpack_require__(686))
+	var md5 = toConstructor(__webpack_require__(696))
+	var rmd160 = toConstructor(__webpack_require__(698))
 
 	function toConstructor (fn) {
 	  return function () {
@@ -7125,11 +7125,11 @@
 	  return createHash(alg)
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(669).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(681).Buffer))
 
 /***/ },
 
-/***/ 676:
+/***/ 688:
 /***/ function(module, exports, __webpack_require__) {
 
 	var exports = module.exports = function (alg) {
@@ -7138,17 +7138,17 @@
 	  return new Alg()
 	}
 
-	var Buffer = __webpack_require__(669).Buffer
-	var Hash   = __webpack_require__(677)(Buffer)
+	var Buffer = __webpack_require__(681).Buffer
+	var Hash   = __webpack_require__(689)(Buffer)
 
-	exports.sha1 = __webpack_require__(678)(Buffer, Hash)
-	exports.sha256 = __webpack_require__(682)(Buffer, Hash)
-	exports.sha512 = __webpack_require__(683)(Buffer, Hash)
+	exports.sha1 = __webpack_require__(690)(Buffer, Hash)
+	exports.sha256 = __webpack_require__(694)(Buffer, Hash)
+	exports.sha512 = __webpack_require__(695)(Buffer, Hash)
 
 
 /***/ },
 
-/***/ 677:
+/***/ 689:
 /***/ function(module, exports) {
 
 	module.exports = function (Buffer) {
@@ -7232,7 +7232,7 @@
 
 /***/ },
 
-/***/ 678:
+/***/ 690:
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -7244,7 +7244,7 @@
 	 * See http://pajhome.org.uk/crypt/md5 for details.
 	 */
 
-	var inherits = __webpack_require__(679).inherits
+	var inherits = __webpack_require__(691).inherits
 
 	module.exports = function (Buffer, Hash) {
 
@@ -7377,7 +7377,7 @@
 
 /***/ },
 
-/***/ 679:
+/***/ 691:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -7905,7 +7905,7 @@
 	}
 	exports.isPrimitive = isPrimitive;
 
-	exports.isBuffer = __webpack_require__(680);
+	exports.isBuffer = __webpack_require__(692);
 
 	function objectToString(o) {
 	  return Object.prototype.toString.call(o);
@@ -7949,7 +7949,7 @@
 	 *     prototype.
 	 * @param {function} superCtor Constructor function to inherit prototype from.
 	 */
-	exports.inherits = __webpack_require__(681);
+	exports.inherits = __webpack_require__(693);
 
 	exports._extend = function(origin, add) {
 	  // Don't do anything if add isn't an object
@@ -7967,11 +7967,11 @@
 	  return Object.prototype.hasOwnProperty.call(obj, prop);
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(563)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(574)))
 
 /***/ },
 
-/***/ 680:
+/***/ 692:
 /***/ function(module, exports) {
 
 	module.exports = function isBuffer(arg) {
@@ -7983,7 +7983,7 @@
 
 /***/ },
 
-/***/ 681:
+/***/ 693:
 /***/ function(module, exports) {
 
 	if (typeof Object.create === 'function') {
@@ -8013,7 +8013,7 @@
 
 /***/ },
 
-/***/ 682:
+/***/ 694:
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -8025,7 +8025,7 @@
 	 *
 	 */
 
-	var inherits = __webpack_require__(679).inherits
+	var inherits = __webpack_require__(691).inherits
 
 	module.exports = function (Buffer, Hash) {
 
@@ -8167,10 +8167,10 @@
 
 /***/ },
 
-/***/ 683:
+/***/ 695:
 /***/ function(module, exports, __webpack_require__) {
 
-	var inherits = __webpack_require__(679).inherits
+	var inherits = __webpack_require__(691).inherits
 
 	module.exports = function (Buffer, Hash) {
 	  var K = [
@@ -8418,7 +8418,7 @@
 
 /***/ },
 
-/***/ 684:
+/***/ 696:
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -8430,7 +8430,7 @@
 	 * See http://pajhome.org.uk/crypt/md5 for more info.
 	 */
 
-	var helpers = __webpack_require__(685);
+	var helpers = __webpack_require__(697);
 
 	/*
 	 * Calculate the MD5 of an array of little-endian words, and a bit length
@@ -8580,7 +8580,7 @@
 
 /***/ },
 
-/***/ 685:
+/***/ 697:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {var intSize = 4;
@@ -8618,11 +8618,11 @@
 
 	module.exports = { hash: hash };
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(669).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(681).Buffer))
 
 /***/ },
 
-/***/ 686:
+/***/ 698:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {
@@ -8831,14 +8831,14 @@
 
 
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(669).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(681).Buffer))
 
 /***/ },
 
-/***/ 687:
+/***/ 699:
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(675)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(687)
 
 	var zeroBuffer = new Buffer(128)
 	zeroBuffer.fill(0)
@@ -8882,14 +8882,14 @@
 	}
 
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(669).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(681).Buffer))
 
 /***/ },
 
-/***/ 688:
+/***/ 700:
 /***/ function(module, exports, __webpack_require__) {
 
-	var pbkdf2Export = __webpack_require__(689)
+	var pbkdf2Export = __webpack_require__(701)
 
 	module.exports = function (crypto, exports) {
 	  exports = exports || {}
@@ -8905,7 +8905,7 @@
 
 /***/ },
 
-/***/ 689:
+/***/ 701:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {module.exports = function(crypto) {
@@ -8993,11 +8993,11 @@
 	  }
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(669).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(681).Buffer))
 
 /***/ },
 
-/***/ 690:
+/***/ 702:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/******/ (function(modules) { // webpackBootstrap
@@ -9061,7 +9061,7 @@
 		timers_1.patchTimer(_global, set, clear, 'Timeout');
 		timers_1.patchTimer(_global, set, clear, 'Interval');
 		timers_1.patchTimer(_global, set, clear, 'Immediate');
-		timers_1.patchTimer(_global, 'request', 'cancelMacroTask', 'AnimationFrame');
+		timers_1.patchTimer(_global, 'request', 'cancel', 'AnimationFrame');
 		timers_1.patchTimer(_global, 'mozRequest', 'mozCancel', 'AnimationFrame');
 		timers_1.patchTimer(_global, 'webkitRequest', 'webkitCancel', 'AnimationFrame');
 		for (var i = 0; i < blockingMethods.length; i++) {
@@ -9090,7 +9090,7 @@
 		    function scheduleTask(task) {
 		        var data = task.data;
 		        data.target.addEventListener('readystatechange', function () {
-		            if (data.target.readyState === XMLHttpRequest.DONE) {
+		            if (data.target.readyState === data.target.DONE) {
 		                if (!data.aborted) {
 		                    task.invoke();
 		                }
@@ -9152,6 +9152,9 @@
 		/* WEBPACK VAR INJECTION */(function(global) {;
 		;
 		var Zone = (function (global) {
+		    if (global.Zone) {
+		        throw new Error('Zone already loaded.');
+		    }
 		    var Zone = (function () {
 		        function Zone(parent, zoneSpec) {
 		            this._properties = null;
@@ -9185,13 +9188,19 @@
 		        });
 		        ;
 		        Zone.prototype.get = function (key) {
+		            var zone = this.getZoneWith(key);
+		            if (zone)
+		                return zone._properties[key];
+		        };
+		        Zone.prototype.getZoneWith = function (key) {
 		            var current = this;
 		            while (current) {
 		                if (current._properties.hasOwnProperty(key)) {
-		                    return current._properties[key];
+		                    return current;
 		                }
 		                current = current._parent;
 		            }
+		            return null;
 		        };
 		        Zone.prototype.fork = function (zoneSpec) {
 		            if (!zoneSpec)
@@ -9421,14 +9430,26 @@
 		            this.callback = callback;
 		            var self = this;
 		            this.invoke = function () {
+		                _numberOfNestedTaskFrames++;
 		                try {
 		                    return zone.runTask(self, this, arguments);
 		                }
 		                finally {
-		                    drainMicroTaskQueue();
+		                    if (_numberOfNestedTaskFrames == 1) {
+		                        drainMicroTaskQueue();
+		                    }
+		                    _numberOfNestedTaskFrames--;
 		                }
 		            };
 		        }
+		        ZoneTask.prototype.toString = function () {
+		            if (this.data && typeof this.data.handleId !== 'undefined') {
+		                return this.data.handleId;
+		            }
+		            else {
+		                return this.toString();
+		            }
+		        };
 		        return ZoneTask;
 		    }());
 		    function __symbol__(name) { return '__zone_symbol__' + name; }
@@ -9441,9 +9462,11 @@
 		    var _microTaskQueue = [];
 		    var _isDrainingMicrotaskQueue = false;
 		    var _uncaughtPromiseErrors = [];
-		    var _drainScheduled = false;
+		    var _numberOfNestedTaskFrames = 0;
 		    function scheduleQueueDrain() {
-		        if (!_drainScheduled && !_currentTask && _microTaskQueue.length == 0) {
+		        // if we are not running in any task, and there has not been anything scheduled
+		        // we must bootstrap the initial task creation by manually scheduling the drain
+		        if (_numberOfNestedTaskFrames == 0 && _microTaskQueue.length == 0) {
 		            // We are not running in Task, so we need to kickstart the microtask queue.
 		            if (global[symbolPromise]) {
 		                global[symbolPromise].resolve(0)[symbolThen](drainMicroTaskQueue);
@@ -9460,7 +9483,7 @@
 		    function consoleError(e) {
 		        var rejection = e && e.rejection;
 		        if (rejection) {
-		            console.error('Unhandled Promise rejection:', rejection instanceof Error ? rejection.message : rejection, '; Zone:', e.zone.name, '; Task:', e.task && e.task.source, '; Value:', rejection);
+		            console.error('Unhandled Promise rejection:', rejection instanceof Error ? rejection.message : rejection, '; Zone:', e.zone.name, '; Task:', e.task && e.task.source, '; Value:', rejection, rejection instanceof Error ? rejection.stack : undefined);
 		        }
 		        console.error(e);
 		    }
@@ -9481,10 +9504,8 @@
 		                }
 		            }
 		            while (_uncaughtPromiseErrors.length) {
-		                var uncaughtPromiseErrors = _uncaughtPromiseErrors;
-		                _uncaughtPromiseErrors = [];
-		                var _loop_1 = function(i) {
-		                    var uncaughtPromiseError = uncaughtPromiseErrors[i];
+		                var _loop_1 = function() {
+		                    var uncaughtPromiseError = _uncaughtPromiseErrors.shift();
 		                    try {
 		                        uncaughtPromiseError.zone.runGuarded(function () { throw uncaughtPromiseError; });
 		                    }
@@ -9492,12 +9513,11 @@
 		                        consoleError(e);
 		                    }
 		                };
-		                for (var i = 0; i < uncaughtPromiseErrors.length; i++) {
-		                    _loop_1(i);
+		                while (_uncaughtPromiseErrors.length) {
+		                    _loop_1();
 		                }
 		            }
 		            _isDrainingMicrotaskQueue = false;
-		            _drainScheduled = false;
 		        }
 		    }
 		    function isThenable(value) {
@@ -9580,6 +9600,9 @@
 		    var ZoneAwarePromise = (function () {
 		        function ZoneAwarePromise(executor) {
 		            var promise = this;
+		            if (!(promise instanceof ZoneAwarePromise)) {
+		                throw new Error('Must be an instanceof Promise.');
+		            }
 		            promise[symbolState] = UNRESOLVED;
 		            promise[symbolValue] = []; // queue;
 		            try {
@@ -9637,7 +9660,7 @@
 		            return promise;
 		        };
 		        ZoneAwarePromise.prototype.then = function (onFulfilled, onRejected) {
-		            var chainPromise = new ZoneAwarePromise(null);
+		            var chainPromise = new this.constructor(null);
 		            var zone = Zone.current;
 		            if (this[symbolState] == UNRESOLVED) {
 		                this[symbolValue].push(zone, chainPromise, onFulfilled, onRejected);
@@ -9665,6 +9688,8 @@
 		            }).then(onResolve, onReject);
 		        };
 		    }
+		    // This is not part of public API, but it is usefull for tests, so we expose it.
+		    Promise[Zone.__symbol__('uncaughtPromiseErrors')] = _uncaughtPromiseErrors;
 		    return global.Zone = Zone;
 		})(typeof window === 'undefined' ? global : window);
 
@@ -9677,7 +9702,7 @@
 		"use strict";
 		var utils_1 = __webpack_require__(3);
 		var WTF_ISSUE_555 = 'Anchor,Area,Audio,BR,Base,BaseFont,Body,Button,Canvas,Content,DList,Directory,Div,Embed,FieldSet,Font,Form,Frame,FrameSet,HR,Head,Heading,Html,IFrame,Image,Input,Keygen,LI,Label,Legend,Link,Map,Marquee,Media,Menu,Meta,Meter,Mod,OList,Object,OptGroup,Option,Output,Paragraph,Pre,Progress,Quote,Script,Select,Source,Span,Style,TableCaption,TableCell,TableCol,Table,TableRow,TableSection,TextArea,Title,Track,UList,Unknown,Video';
-		var NO_EVENT_TARGET = 'ApplicationCache,EventSource,FileReader,InputMethodContext,MediaController,MessagePort,Node,Performance,SVGElementInstance,SharedWorker,TextTrack,TextTrackCue,TextTrackList,WebKitNamedFlow,Worker,WorkerGlobalScope,XMLHttpRequest,XMLHttpRequestEventTarget,XMLHttpRequestUpload,IDBRequest,IDBOpenDBRequest,IDBDatabase,IDBTransaction,IDBCursor,DBIndex'.split(',');
+		var NO_EVENT_TARGET = 'ApplicationCache,EventSource,FileReader,InputMethodContext,MediaController,MessagePort,Node,Performance,SVGElementInstance,SharedWorker,TextTrack,TextTrackCue,TextTrackList,WebKitNamedFlow,Window,Worker,WorkerGlobalScope,XMLHttpRequest,XMLHttpRequestEventTarget,XMLHttpRequestUpload,IDBRequest,IDBOpenDBRequest,IDBDatabase,IDBTransaction,IDBCursor,DBIndex'.split(',');
 		var EVENT_TARGET = 'EventTarget';
 		function eventTargetPatch(_global) {
 		    var apis = [];
@@ -9779,8 +9804,9 @@
 		            this[_prop] = null;
 		        }
 		    };
+		    // The getter would return undefined for unassigned properties but the default value of an unassigned property is null
 		    desc.get = function () {
-		        return this[_prop];
+		        return this[_prop] || null;
 		    };
 		    Object.defineProperty(obj, prop, desc);
 		}
@@ -9948,6 +9974,9 @@
 		    var instance = new OriginalClass(function () { });
 		    var prop;
 		    for (prop in instance) {
+		        // https://bugs.webkit.org/show_bug.cgi?id=44721
+		        if (className === 'XMLHttpRequest' && prop === 'responseBlob')
+		            continue;
 		        (function (prop) {
 		            if (typeof instance[prop] === 'function') {
 		                _global[className].prototype[prop] = function () {
@@ -10031,10 +10060,11 @@
 		        if (isUnconfigurable(obj, prop)) {
 		            throw new TypeError('Cannot assign to read only property \'' + prop + '\' of ' + obj);
 		        }
+		        var originalConfigurableFlag = desc.configurable;
 		        if (prop !== 'prototype') {
 		            desc = rewriteDescriptor(obj, prop, desc);
 		        }
-		        return _defineProperty(obj, prop, desc);
+		        return _tryDefineProperty(obj, prop, desc, originalConfigurableFlag);
 		    };
 		    Object.defineProperties = function (obj, props) {
 		        Object.keys(props).forEach(function (prop) {
@@ -10043,7 +10073,7 @@
 		        return obj;
 		    };
 		    Object.create = function (obj, proto) {
-		        if (typeof proto === 'object') {
+		        if (typeof proto === 'object' && !Object.isFrozen(proto)) {
 		            Object.keys(proto).forEach(function (prop) {
 		                proto[prop] = rewriteDescriptor(obj, prop, proto[prop]);
 		            });
@@ -10061,8 +10091,9 @@
 		exports.propertyPatch = propertyPatch;
 		;
 		function _redefineProperty(obj, prop, desc) {
+		    var originalConfigurableFlag = desc.configurable;
 		    desc = rewriteDescriptor(obj, prop, desc);
-		    return _defineProperty(obj, prop, desc);
+		    return _tryDefineProperty(obj, prop, desc, originalConfigurableFlag);
 		}
 		exports._redefineProperty = _redefineProperty;
 		;
@@ -10078,6 +10109,26 @@
 		        obj[unconfigurablesKey][prop] = true;
 		    }
 		    return desc;
+		}
+		function _tryDefineProperty(obj, prop, desc, originalConfigurableFlag) {
+		    try {
+		        return _defineProperty(obj, prop, desc);
+		    }
+		    catch (e) {
+		        if (desc.configurable) {
+		            // In case of errors, when the configurable flag was likely set by rewriteDescriptor(), let's retry with the original flag value
+		            if (typeof originalConfigurableFlag == 'undefined') {
+		                delete desc.configurable;
+		            }
+		            else {
+		                desc.configurable = originalConfigurableFlag;
+		            }
+		            return _defineProperty(obj, prop, desc);
+		        }
+		        else {
+		            throw e;
+		        }
+		    }
 		}
 
 
@@ -10289,7 +10340,17 @@
 		                delay: (nameSuffix === 'Timeout' || nameSuffix === 'Interval') ? args[1] || 0 : null,
 		                args: args
 		            };
-		            return zone.scheduleMacroTask(setName, args[0], options, scheduleTask, clearTask);
+		            var task = zone.scheduleMacroTask(setName, args[0], options, scheduleTask, clearTask);
+		            if (!task) {
+		                return task;
+		            }
+		            // Node.js must additionally support the ref and unref functions.
+		            var handle = task.data.handleId;
+		            if (handle.ref && handle.unref) {
+		                task.ref = handle.ref.bind(handle);
+		                task.unref = handle.unref.bind(handle);
+		            }
+		            return task;
 		        }
 		        else {
 		            // cause an error by calling it directly.
@@ -10315,7 +10376,7 @@
 
 	/***/ }
 	/******/ ]);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(563)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(574)))
 
 /***/ }
 

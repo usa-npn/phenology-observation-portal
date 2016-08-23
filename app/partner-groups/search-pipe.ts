@@ -1,7 +1,7 @@
 import {Pipe} from "@angular/core";
 
 @Pipe({
-    name: 'search',
+    name: 'networkSearch',
     // pure: false
 })
 export class SearchPipe {
