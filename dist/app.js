@@ -73193,7 +73193,7 @@
 	                }
 	            }
 	        }
-	        if (datasheet.selected && datasheet.name === "Site Visit") {
+	        if (datasheet.selected && datasheet.name === "Site Visit Details") {
 	            for (var _b = 0, _c = this.optionalFields; _b < _c.length; _b++) {
 	                var field = _c[_b];
 	                if ("observation_group_id" === field.machine_name) {

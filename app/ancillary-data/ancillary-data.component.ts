@@ -48,7 +48,7 @@ export class AncillaryDataComponent implements OnInit {
                 }
             }
         }
-        if(datasheet.selected && datasheet.name === "Site Visit") {
+        if(datasheet.selected && datasheet.name === "Site Visit Details") {
             for(var field of this.optionalFields) {
                 if ("observation_group_id" === field.machine_name) {
                     field.selected = true;
