@@ -73299,7 +73299,8 @@
 	    AvailabilityPipe.prototype.transform = function (value, reportType) {
 	        return value.filter(function (datasheet) { return !(datasheet.name === "Observers" && reportType === "Site Phenometrics")
 	            && !(datasheet.name === "Individual Plants" && reportType === "Site Phenometrics")
-	            && !(datasheet.name === "Observation Details" && reportType != "Status and Intensity"); });
+	            && !(datasheet.name === "Observation Details" && reportType != "Status and Intensity")
+	            && !(datasheet.name === "Site Visit Details" && reportType != "Status and Intensity"); });
 	    };
 	    AvailabilityPipe = __decorate([
 	        core_1.Pipe({
