@@ -1,0 +1,36 @@
+<div id="pagewrap1">
+    <header>
+        <h1>Phenology Observation Portal</h1>
+    </header>
+
+
+    <section id="content1">
+        <div class="btn-group-vertical btn-block" role="group" aria-label="...">
+            <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('get-started')" (click)="onSelect('get-started')">Get Started</button>
+            <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('date-range')" [class.disabled]="!reportTypeSelected()" (click)="onSelect('date-range')">Date Range</button>
+            <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('locations')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('locations')">Locations</button>
+            <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('species')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('species')">Species</button>
+            <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('phenophases')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('phenophases')">Phenophases</button>
+            <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('partner-groups')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('partner-groups')">Partner Groups</button>
+            <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('integrated-datasets')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('integrated-datasets')">Integrated Datasets</button>
+            <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('output-fields')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('output-fields')">Output Fields</button>
+            <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('ancillary-data')" [class.disabled]="!(reportTypeSelected() && validDateRange())" (click)="onSelect('ancillary-data')">Ancillary Data</button>
+            <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('metadata')" [class.disabled]="!allDataLoaded()" (click)="onSelect('metadata')">Metadata</button>
+            <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('help')" [class.disabled]="!allDataLoaded()" (click)="onSelect('help')">Help</button>
+        </div>
+    </section>
+
+    <section id="middle1">
+        <router-outlet></router-outlet>
+    </section>
+
+    <aside id="sidebar1">
+        <download></download>
+    </aside>
+
+    <footer>
+        <!--<h4>Footer</h4>-->
+        <!--<p>Do we want this footer for anything or remove it?</p>-->
+    </footer>
+
+</div>
