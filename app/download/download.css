@@ -51,3 +51,8 @@ padding: 6px 10px 2px 10px;
 .well {
     padding: 5px 5px 5px 5px;
 }
+
+#your-download-header{
+	color: white;
+	background-color:rgb(68,158,68);
+}
