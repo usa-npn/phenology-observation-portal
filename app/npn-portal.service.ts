@@ -83,11 +83,11 @@ export class NpnPortalService {
 
   getReportType():string {
     if(this.downloadType === 'raw')
-        return 'Raw';
+        return 'Status and Intensity';
     else if(this.downloadType === 'summarized')
-        return 'Individual-Level Summarized';
+        return 'Individual Phenometrics';
     else
-        return 'Site-Level Summarized';
+        return 'Site Phenometrics';
   }
 
   getSelectedStates() {

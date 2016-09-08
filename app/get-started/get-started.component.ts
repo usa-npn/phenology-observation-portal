@@ -80,6 +80,8 @@ export class GetStartedComponent implements OnInit {
   }
   
   setDownloadType(type:string){
+    if(type === this._npnPortalService.downloadType)
+        return;
     if(this._npnPortalService.filtersAreSet() && !this._npnPortalService.allowDownloadTypeChangeWithoutReset) {
       this.resetFiltersModal.open();
       this.newType = type;

@@ -15,7 +15,7 @@
     <div class="panel-body" style="padding:2px 2px 2px 2px;height:330px;overflow-y: scroll">
             <div class="panel-group" id="accordion">
                 <!-- top level -->
-                <div *ngFor="let partnerGroup of partnerGroups | search:nameFilter" [ngClass]="getPanelClasses(partnerGroup)">
+                <div *ngFor="let partnerGroup of partnerGroups | networkSearch:nameFilter" [ngClass]="getPanelClasses(partnerGroup)">
                     <div [ngClass]="['panel-heading', 'panel-heading-sm']">
                         <div class="checkbox">
                             <label class="primary">

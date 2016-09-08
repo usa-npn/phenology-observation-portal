@@ -1,10 +1,11 @@
-import {Pipe} from "@angular/core";
+import {Pipe, PipeTransform} from "@angular/core";
 
 @Pipe({
     name: 'search'
 })
-export class SearchPipe {
+export class SearchPipe implements PipeTransform {
     transform(value, speciesName, sortType, sortReverse, functionalType, speciesType) {
+        
         speciesName = speciesName.toString().toLowerCase();
         if(sortType === "common") {
             value = value.sort(function(a, b) {

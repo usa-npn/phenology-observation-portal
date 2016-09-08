@@ -148,6 +148,7 @@ export class DownloadComponent {
     }
     
     download() {
+        this.submitActivePage();
         if(!this.hasAgreed) {
             this.citationModal.open();
         }

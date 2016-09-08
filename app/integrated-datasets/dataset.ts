@@ -3,7 +3,7 @@ export interface Dataset {
     dataset_name: string;
     dataset_description: string;
     contact_name: string;
-    readme_url: string;
+    dataset_documentation_url: string;
     contact_institution: string;
     contact_description: string;
     contact_email: string;
