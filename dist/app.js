@@ -73268,7 +73268,7 @@
 	        __metadata('design:type', ng2_bs3_modal_1.ModalComponent)
 	    ], AncillaryDataComponent.prototype, "citationModal", void 0);
 	    __decorate([
-	        core_1.ViewChild('noFiltersWarningeModal'), 
+	        core_1.ViewChild('noFiltersWarningModal'), 
 	        __metadata('design:type', ng2_bs3_modal_1.ModalComponent)
 	    ], AncillaryDataComponent.prototype, "noFiltersWarningModal", void 0);
 	    __decorate([
