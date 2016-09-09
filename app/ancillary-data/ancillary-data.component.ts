@@ -23,7 +23,7 @@ export class AncillaryDataComponent implements OnInit {
     @ViewChild('citationModal') 
     citationModal: ModalComponent;
 
-    @ViewChild('noFiltersWarningeModal')
+    @ViewChild('noFiltersWarningModal')
     noFiltersWarningModal: ModalComponent;
 
     @ViewChild('downloadModal')
