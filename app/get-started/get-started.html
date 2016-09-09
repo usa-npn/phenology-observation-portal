@@ -6,16 +6,14 @@
   </div>
 </div>
 <div [hidden]="!allDataLoaded()">
-  <h2>Introduction</h2>
+  <h2>Get Started!</h2>
   <p>Download customized datasets from the National Phenology
     Database using the filters in the menu at left to specify dates,
-    locations, species, and phenophases of interest.</p>
-  <h2>Get Started!</h2>
+    locations, species, and phenophases of interest. Choose which data type you would like to download.</p>
   <div class="btn-group btn-group-lg" role="group" aria-label="...">
     <button type="button" class="btn btn-default" [class.active]="isSelected('raw')" (click)="setDownloadType('raw')">Status<br/>and Intensity</button>
     <button type="button" class="btn btn-default" [class.active]="isSelected('summarized')" (click)="setDownloadType('summarized')">Individual<br/>Phenometrics</button>
     <button type="button" class="btn btn-default" [class.active]="isSelected('siteLevelSummarized')" (click)="setDownloadType('siteLevelSummarized')">Site<br/>Phenometrics</button>
-    <!--<button type="button" class="btn btn-default" [class.active]="isSelected('savedSearch')">Saved Search</button>-->
   </div>
   <br/><br/>
   <div class="panel panel-default" [class.hide]="!downloadTypeIsSet()">
