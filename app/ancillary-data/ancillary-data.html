@@ -210,16 +210,16 @@
     <modal-footer><button type="button" class="btn btn-default" (click)="citationModal.close()">Close</button></modal-footer>
 </modal>
 
-<modal #noDateModal>
+<modal #noFiltersWarningModal>
     <modal-header>
         <h4 class="modal-title">Download Warning</h4>
     </modal-header>
     <modal-body>
-        You have not yet selected a data range. The resulting download may take some time. Would you like to continue?
+        You have not yet set any Filters. The resulting download may take some time. Would you like to continue?
     </modal-body>
     <modal-footer>
-        <button type="button" class="btn btn-danger" (click)="noDateModal.close()">Cancel</button>
-        <button type="button" class="btn btn-success" (click)="noDateModal.close(); continueDownload()">Continue</button>
+        <button type="button" class="btn btn-danger btn-long" (click)="noFiltersWarningModal.close()">No, let me add filters</button>
+        <button type="button" class="btn btn-success btn-long" (click)="noFiltersWarningModal.close(); continueDownload()">Yes, continue <br/>with download</button>
     </modal-footer>
 </modal>
 

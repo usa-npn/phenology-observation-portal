@@ -73228,8 +73228,16 @@
 	        if (!this.hasAgreed) {
 	            this.citationModal.open();
 	        }
-	        else if (!this._npnPortalService.startDate || !this._npnPortalService.endDate) {
-	            this.noDateModal.open();
+	        else if (this._npnPortalService.getDateFilter() == ''
+	            && !this._npnPortalService.dataPrecision
+	            && this._npnPortalService.getSelectedStates().length == 0
+	            && !this._npnPortalService.getSelectedExtent().bottom_left_x1
+	            && this._npnPortalService.getSelectedSpecies().length == 0
+	            && this._npnPortalService.getSelectedPhenophases().length == 0
+	            && this._npnPortalService.getSelectedPartnerGroups().length == 0
+	            && this._npnPortalService.getSelectedDatasets().length == 0
+	            && this._npnPortalService.getSelectedOptionalFields().length == 0) {
+	            this.noFiltersWarningModal.open();
 	        }
 	        else {
 	            this.continueDownload();
@@ -73260,9 +73268,9 @@
 	        __metadata('design:type', ng2_bs3_modal_1.ModalComponent)
 	    ], AncillaryDataComponent.prototype, "citationModal", void 0);
 	    __decorate([
-	        core_1.ViewChild('noDateModal'), 
+	        core_1.ViewChild('noFiltersWarningeModal'), 
 	        __metadata('design:type', ng2_bs3_modal_1.ModalComponent)
-	    ], AncillaryDataComponent.prototype, "noDateModal", void 0);
+	    ], AncillaryDataComponent.prototype, "noFiltersWarningModal", void 0);
 	    __decorate([
 	        core_1.ViewChild('downloadModal'), 
 	        __metadata('design:type', ng2_bs3_modal_1.ModalComponent)
