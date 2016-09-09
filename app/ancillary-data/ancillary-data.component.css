@@ -21,3 +21,6 @@ label {
 .well {
     padding: 5px 5px 5px 5px;
 }
+.btn-long {
+    width: 200px;
+}
