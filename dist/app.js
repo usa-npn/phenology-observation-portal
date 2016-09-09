@@ -66938,9 +66938,7 @@
 	            stations: this.stations
 	        });
 	        //always use https on dev/prod servers, but not necessarily locally
-	        this.http.post(this.config.getPopServerUrl()
-	            .replace("http://data-dev", "https://data-dev")
-	            .replace("http://data.usanpn", "https://data.usanpn") + this.config.getPopDownloadEndpoint(), data, { headers: headers })
+	        this.http.post(this.config.getPopServerUrl() + this.config.getPopDownloadEndpoint(), data, { headers: headers })
 	            .subscribe(function (res) {
 	            console.log(res.json().download_path);
 	            if (res.json().download_path === "error") {
@@ -70818,16 +70816,17 @@
 	            searchJson: searchJson
 	        });
 	        //always use https on dev/prod servers, but not necessarily locally
-	        return this.http.post(this.config.getPopServerUrl()
-	            .replace("http://www-dev", "https://www-dev")
-	            .replace("http://www.usanpn", "https://www.usanpn") + this.config.getPopSearchEndpoint(), data, { headers: headers });
+	        return this.http.post(this.config.getPopServerUrl() + this.config.getPopSearchEndpoint(), data, { headers: headers });
+	        // .replace("http://www-dev", "https://www-dev")
+	        // .replace("http://www.usanpn", "https://www.usanpn") + this.config.getPopSearchEndpoint(), data, { headers: headers })
 	    };
 	    PersistentSearchService.prototype.getSearch = function (searchId) {
 	        var params = new http_1.URLSearchParams();
 	        params.set('searchId', searchId);
-	        return this.http.get(this.config.getPopServerUrl()
-	            .replace("http://www-dev", "https://www-dev")
-	            .replace("http://www.usanpn", "https://www.usanpn") + this.config.getPopSearchEndpoint(), { search: params });
+	        return this.http.get(this.config.getPopServerUrl() + this.config.getPopSearchEndpoint(), 
+	        // .replace("http://www-dev", "https://www-dev")
+	        // .replace("http://www.usanpn", "https://www.usanpn") + this.config.getPopSearchEndpoint(),
+	        { search: params });
 	    };
 	    // functions to parse query strings /////
 	    PersistentSearchService.prototype.getSearchId = function () {

@@ -34,18 +34,18 @@ export class PersistentSearchService {
         });
 
         //always use https on dev/prod servers, but not necessarily locally
-        return this.http.post(this.config.getPopServerUrl()
-                .replace("http://www-dev", "https://www-dev")
-                .replace("http://www.usanpn", "https://www.usanpn") + this.config.getPopSearchEndpoint(), data, { headers: headers })
+        return this.http.post(this.config.getPopServerUrl() + this.config.getPopSearchEndpoint(), data, { headers: headers });
+                // .replace("http://www-dev", "https://www-dev")
+                // .replace("http://www.usanpn", "https://www.usanpn") + this.config.getPopSearchEndpoint(), data, { headers: headers })
     }
 
     getSearch(searchId) {
         let params: URLSearchParams = new URLSearchParams();
         params.set('searchId', searchId);
 
-        return this.http.get(this.config.getPopServerUrl()
-                .replace("http://www-dev", "https://www-dev")
-                .replace("http://www.usanpn", "https://www.usanpn") + this.config.getPopSearchEndpoint(),
+        return this.http.get(this.config.getPopServerUrl() + this.config.getPopSearchEndpoint(),
+                // .replace("http://www-dev", "https://www-dev")
+                // .replace("http://www.usanpn", "https://www.usanpn") + this.config.getPopSearchEndpoint(),
             {search: params});
     }
 

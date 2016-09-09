@@ -303,9 +303,9 @@ export class NpnPortalService {
     });
 
     //always use https on dev/prod servers, but not necessarily locally
-    this.http.post(this.config.getPopServerUrl()
-            .replace("http://data-dev", "https://data-dev")
-            .replace("http://data.usanpn", "https://data.usanpn") + this.config.getPopDownloadEndpoint(), data, { headers: headers })
+    this.http.post(this.config.getPopServerUrl() + this.config.getPopDownloadEndpoint(), data, { headers: headers })
+            // .replace("http://data-dev", "https://data-dev") 
+            // .replace("http://data.usanpn", "https://data.usanpn") + this.config.getPopDownloadEndpoint(), data, { headers: headers })
         .subscribe((res:Response) => {
           console.log(res.json().download_path);
           if(res.json().download_path === "error") {
