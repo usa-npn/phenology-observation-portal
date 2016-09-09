@@ -105,7 +105,7 @@
     </modal-body>
     <modal-footer>
         <button type="button" class="btn btn-danger btn-long" (click)="noFiltersModal.close()">No, let me add filters</button>
-        <button type="button" class="btn btn-success btn-long" (click)="noFiltersModal.close(); continueDownload()">Yes, continue with download</button>
+        <button type="button" class="btn btn-success btn-long" (click)="noFiltersModal.close(); continueDownload()">Yes, continue <br/>with download</button>
     </modal-footer>
 </modal>
 
@@ -328,6 +328,6 @@
 <div [class.hide]="!(downloadTypeIsSet() && dateRangeIsValid())">
     <div class="well">
     <label class="checkbox-inline"><input type="checkbox" name="agree" value="agree" [(ngModel)]="hasAgreed"> I have read and acknowledged the <a href ='https://www.usanpn.org/terms#DataAttribution' target='_blank' >USA-NPN data citation policy.</a></label>
-        <button type="button" class="btn btn-block btn-success" (click)="download()">Download</button>
+        <button type="button" id="download-btn" class="btn btn-block btn-success" (click)="download()">Download</button>
     </div>
 </div>

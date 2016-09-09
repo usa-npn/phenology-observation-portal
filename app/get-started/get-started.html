@@ -11,10 +11,10 @@
     Database using the filters in the menu at left to specify dates,
     locations, species, and phenophases of interest.</p>
   <h2>Get Started!</h2>
-  <div class="btn-group btn-group-lg" role="group" aria-label="...">
-    <button type="button" class="btn btn-default" [class.active]="isSelected('raw')" (click)="setDownloadType('raw')">Status<br/>and Intensity</button>
-    <button type="button" class="btn btn-default" [class.active]="isSelected('summarized')" (click)="setDownloadType('summarized')">Individual<br/>Phenometrics</button>
-    <button type="button" class="btn btn-default" [class.active]="isSelected('siteLevelSummarized')" (click)="setDownloadType('siteLevelSummarized')">Site<br/>Phenometrics</button>
+  <div id="search-type-button-grp" class="btn-group btn-group-lg" role="group" aria-label="...">
+    <button type="button" class="btn btn-default search-type-btn" [class.active]="isSelected('raw')" (click)="setDownloadType('raw')">Status<br/>and Intensity</button>
+    <button type="button" class="btn btn-default search-type-btn" [class.active]="isSelected('summarized')" (click)="setDownloadType('summarized')">Individual<br/>Phenometrics</button>
+    <button type="button" class="btn btn-default search-type-btn" [class.active]="isSelected('siteLevelSummarized')" (click)="setDownloadType('siteLevelSummarized')">Site<br/>Phenometrics</button>
     <!--<button type="button" class="btn btn-default" [class.active]="isSelected('savedSearch')">Saved Search</button>-->
   </div>
   <br/><br/>

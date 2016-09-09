@@ -1,6 +1,7 @@
 <div id="pagewrap1">
     <header>
         <h1>Phenology Observation Portal</h1>
+		<a href="https://www-dev.usanpn.org"><img [src]="'images/npn_rgb_solid_blk_sm.png'" id="logo" ></a> 
     </header>
 
 
@@ -18,6 +19,7 @@
             <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('metadata')" [class.disabled]="!allDataLoaded()" (click)="onSelect('metadata')">Metadata</button>
             <button type="button" class="btn btn-block btn-default" [class.active]="isSelected('help')" [class.disabled]="!allDataLoaded()" (click)="onSelect('help')">Help</button>
         </div>
+		
     </section>
 
     <section id="middle1">

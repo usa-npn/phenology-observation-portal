@@ -3,3 +3,12 @@
 }
 
 .btn-group button:focus {outline:0;}
+
+
+#search-type-button-grp{
+	width:100%;
+}
+
+.search-type-btn{
+	width:33%;
+}
