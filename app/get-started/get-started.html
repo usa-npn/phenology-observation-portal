@@ -6,28 +6,26 @@
   </div>
 </div>
 <div [hidden]="!allDataLoaded()">
-  <h2>Introduction</h2>
+  <h2>Get Started!</h2>
   <p>Download customized datasets from the National Phenology
     Database using the filters in the menu at left to specify dates,
-    locations, species, and phenophases of interest.</p>
-  <h2>Get Started!</h2>
+    locations, species, and phenophases of interest. Choose which data type you would like to download.</p>
   <div id="search-type-button-grp" class="btn-group btn-group-lg" role="group" aria-label="...">
     <button type="button" class="btn btn-default search-type-btn" [class.active]="isSelected('raw')" (click)="setDownloadType('raw')">Status<br/>and Intensity</button>
     <button type="button" class="btn btn-default search-type-btn" [class.active]="isSelected('summarized')" (click)="setDownloadType('summarized')">Individual<br/>Phenometrics</button>
     <button type="button" class="btn btn-default search-type-btn" [class.active]="isSelected('siteLevelSummarized')" (click)="setDownloadType('siteLevelSummarized')">Site<br/>Phenometrics</button>
-    <!--<button type="button" class="btn btn-default" [class.active]="isSelected('savedSearch')">Saved Search</button>-->
   </div>
   <br/><br/>
   <div class="panel panel-default" [class.hide]="!downloadTypeIsSet()">
     <div class="panel-heading"><strong>Data Description</strong></div>
     <div class="panel-body" [class.hide]="!isSelected('raw')">
-        <strong>Status and Intensity Data: </strong>This data type includes raw phenophase status records of presence (“yes”) or absence (“no”) of the phenophase. Each row represents the status of one phenophase on one individual plant or animal species at a given site, on a single date and time.
+        <strong>Status and Intensity Data: </strong>This data type includes phenophase status records of presence (“yes”) or absence (“no”) of the phenophase, as well as information about the intensity with which the phenophase was expressed. Each row represents the status and intensity of one phenophase on one individual plant or on one animal species at a given site, on a single visit. See the Metadata window for more information.
     </div>    
     <div class="panel-body" [class.hide]="!isSelected('summarized')">
-        <strong>Individual Phenometrics Data: </strong>This data type includes estimates of the dates of phenophase onsets and ends for individual plants and for animal species at a site during a user-defined time period. Each row represents a series of consecutive "yes" phenophase status records, beginning with the date of the first "yes" and ending with the date of the last "yes", submitted for a given phenophase on a given organism. Note that more than one consecutive series for an organism may be present within a single growing season or year.
+        <strong>Individual Phenometrics Data: </strong>This data type includes estimates of the dates of phenophase onsets and ends for individual plants and for animal species at a site during a user-defined time period. Each row represents a series of consecutive "yes" phenophase status records, beginning with the date of the first "yes" and ending with the date of the last "yes", submitted for a given phenophase on a given organism. Note that more than one consecutive series for an organism may be present within a single growing season or year. See the Metadata window for more information.
     </div>
     <div class="panel-body" [class.hide]="!isSelected('siteLevelSummarized')">
-        <strong>Site Phenometrics Data: </strong>This data type includes estimates of the overall onset and end of phenophase activity for plant and animal species at a site over a user-defined time period. Each row provides the first and last occurrences of a given phenophase on a given species, beginning with the date of the first observed “yes” phenophase status record and ending with the date of the last observed “yes” record of the user-defined time period. For plant species where multiple individuals are monitored at the site, the date provided for “first yes” is the mean of the first “yes” records for each individual plant at the site, and the date for “last yes” is the mean of the last “yes” records. Note that a phenophase may have ended and restarted during the overall period of its activity at the site. These more fine-scale patterns can be explored in the individual phenometrics data.
+        <strong>Site Phenometrics Data: </strong>This data type includes estimates of the overall onset and end of phenophase activity for plant and animal species at a site over a user-defined time period. Each row provides the first and last occurrences of a given phenophase on a given species, beginning with the date of the first observed “yes” phenophase status record and ending with the date of the last observed “yes” record of the user-defined time period. For plant species where multiple individuals are monitored at the site, the date provided for “first yes” is the mean of the first “yes” records for each individual plant at the site, and the date for “last yes” is the mean of the last “yes” records. Note that a phenophase may have ended and restarted during the overall period of its activity at the site. These more fine-scale patterns can be explored in the individual phenometrics data. See the Metadata window for more information.
 
 
     </div>

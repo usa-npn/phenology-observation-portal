@@ -327,7 +327,7 @@
 
 <div [class.hide]="!(downloadTypeIsSet() && dateRangeIsValid())">
     <div class="well">
-    <label class="checkbox-inline"><input type="checkbox" name="agree" value="agree" [(ngModel)]="hasAgreed"> I have read and acknowledged the <a href ='https://www.usanpn.org/terms#DataAttribution' target='_blank' >USA-NPN data citation policy.</a></label>
+    <label class="checkbox-inline"><input type="checkbox" name="agree" value="agree" [(ngModel)]="hasAgreed"> I have read and acknowledged the USA-NPN <a href ='https://www.usanpn.org/terms#DataUse' target='_blank' >data use</a> and <a href ='https://www.usanpn.org/terms#DataAttribution' target='_blank' >attribution</a> policies.</label>
         <button type="button" id="download-btn" class="btn btn-block btn-success" (click)="download()">Download</button>
     </div>
 </div>

@@ -28,7 +28,7 @@ export class OutputFieldsService {
     public selectAllOptional:boolean = false;
     public selectAllClimate:boolean = false;
 
-    private _metadataFieldsUrl = this.config.getServerUrl() + '/npn_portal/metadata/getMetadataFields.json';
+    private _metadataFieldsUrl = this.config.getNpnPortalServerUrl() + '/npn_portal/metadata/getMetadataFields.json';
     public rawFieldsReady: boolean = false;
     public summarizedFieldsReady: boolean = false;
     public siteLevelSummarizedFieldsReady: boolean = false;

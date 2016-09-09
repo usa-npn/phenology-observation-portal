@@ -58,6 +58,10 @@ padding: 6px 10px 2px 10px;
 	border:1px solid #ff5500;
 }
 
+.checkbox-inline {
+    font-size: 14px;
+}
+
 #download-btn:hover {
     background-color: #ee4400;
 	border:1px solid #ff5500;

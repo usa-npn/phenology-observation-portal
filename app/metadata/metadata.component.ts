@@ -12,6 +12,6 @@ export class MetadataComponent {
     constructor(private config: Config) {}
     
     downloadFile(fileLocation) {
-        window.location.replace(this.config.getServerUrl() + fileLocation);
+        window.location.replace(this.config.getNpnPortalServerUrl() + fileLocation);
     }
 }

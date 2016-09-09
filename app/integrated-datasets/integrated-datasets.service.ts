@@ -14,7 +14,7 @@ export class IntegratedDatasetService {
                  private _persistentSearchService: PersistentSearchService, 
                  private _npnPortalService: NpnPortalService) {}
     
-    private _datasetUrl = this.config.getServerUrl() + '/npn_portal/observations/getDatasetDetails.json';
+    private _datasetUrl = this.config.getNpnPortalServerUrl() + '/npn_portal/observations/getDatasetDetails.json';
     errorMessage: string;
     public ready:boolean = false;
     public datasets:Dataset[] = [];

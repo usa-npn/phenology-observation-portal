@@ -14,7 +14,7 @@ export class PartnerGroupsService {
                  private _persistentSearchService: PersistentSearchService, 
                  private _npnPortalService: NpnPortalService) {}
 
-    private _partnerGroupsUrl = this.config.getServerUrl() + '/npn_portal/networks/getNetworkTree.json';
+    private _partnerGroupsUrl = this.config.getNpnPortalServerUrl() + '/npn_portal/networks/getNetworkTree.json';
     errorMessage: string;
     public ready:boolean = false;
     public nameFilter:string = "";

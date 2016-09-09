@@ -1,5 +1,5 @@
 <h2>Output Fields</h2>
-<p>Select which optional fields and climate data fields you would like to appear in your data output file.</p>
+<p>Select which optional fields you would like to have appear in your data output file. Use tabs to add climate data fields, derived from Daymet, and view default fields.</p>
 <ul class="nav nav-tabs">
     <li role="presentation" *ngFor="let tab of tabs" [class.active]=isActiveTab(tab.view) (click)=onClickTab(tab)>
         <a href="javascript:;">{{tab.title}}</a>

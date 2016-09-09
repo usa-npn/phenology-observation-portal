@@ -66898,7 +66898,7 @@
 	            network: this.getSelectedPartnerGroups().map(function (p) { return p.network_name; }),
 	            stations: this.stations
 	        });
-	        return this.http.post(this.config.getServerUrl() + '/npn_portal/observations/getObservationsCount.json', data, { headers: headers })
+	        return this.http.post(this.config.getNpnPortalServerUrl() + '/npn_portal/observations/getObservationsCount.json', data, { headers: headers })
 	            .map(function (res) { return res.json(); })
 	            .catch(this.handleError);
 	    };
@@ -66938,9 +66938,9 @@
 	            stations: this.stations
 	        });
 	        //always use https on dev/prod servers, but not necessarily locally
-	        this.http.post(this.config.getServerUrl()
-	            .replace("http://www-dev", "https://www-dev")
-	            .replace("http://www.usanpn", "https://www.usanpn") + this.config.getPopDownloadEndpoint(), data, { headers: headers })
+	        this.http.post(this.config.getPopServerUrl()
+	            .replace("http://data-dev", "https://data-dev")
+	            .replace("http://data.usanpn", "https://data.usanpn") + this.config.getPopDownloadEndpoint(), data, { headers: headers })
 	            .subscribe(function (res) {
 	            console.log(res.json().download_path);
 	            if (res.json().download_path === "error") {
@@ -70176,7 +70176,15 @@
 	var Config = (function () {
 	    function Config() {
 	    }
-	    Config.prototype.getServerUrl = function () {
+	    Config.prototype.getPopServerUrl = function () {
+	        if (location.hostname.includes('local'))
+	            return location.protocol + '//' + location.hostname;
+	        if (location.hostname.includes('dev'))
+	            return location.protocol + "//data-dev.usanpn.org";
+	        else
+	            return location.protocol + "//data.usanpn.org";
+	    };
+	    Config.prototype.getNpnPortalServerUrl = function () {
 	        if (location.hostname.includes('local'))
 	            return location.protocol + '//' + location.hostname;
 	        if (location.hostname.includes('dev'))
@@ -70656,7 +70664,7 @@
 	        this.config = config;
 	        this._persistentSearchService = _persistentSearchService;
 	        this._npnPortalService = _npnPortalService;
-	        this._statesUrl = this.config.getServerUrl() + '/npn_portal/stations/getStates.json';
+	        this._statesUrl = this.config.getNpnPortalServerUrl() + '/npn_portal/stations/getStates.json';
 	        this.ready = false;
 	        this.states = [];
 	        this.currentTab = 'statesView';
@@ -70810,14 +70818,14 @@
 	            searchJson: searchJson
 	        });
 	        //always use https on dev/prod servers, but not necessarily locally
-	        return this.http.post(this.config.getServerUrl()
+	        return this.http.post(this.config.getPopServerUrl()
 	            .replace("http://www-dev", "https://www-dev")
 	            .replace("http://www.usanpn", "https://www.usanpn") + this.config.getPopSearchEndpoint(), data, { headers: headers });
 	    };
 	    PersistentSearchService.prototype.getSearch = function (searchId) {
 	        var params = new http_1.URLSearchParams();
 	        params.set('searchId', searchId);
-	        return this.http.get(this.config.getServerUrl()
+	        return this.http.get(this.config.getPopServerUrl()
 	            .replace("http://www-dev", "https://www-dev")
 	            .replace("http://www.usanpn", "https://www.usanpn") + this.config.getPopSearchEndpoint(), { search: params });
 	    };
@@ -70860,7 +70868,7 @@
 	        this.config = config;
 	        this._persistentSearchService = _persistentSearchService;
 	        this._npnPortalService = _npnPortalService;
-	        this._partnerGroupsUrl = this.config.getServerUrl() + '/npn_portal/networks/getNetworkTree.json';
+	        this._partnerGroupsUrl = this.config.getNpnPortalServerUrl() + '/npn_portal/networks/getNetworkTree.json';
 	        this.ready = false;
 	        this.nameFilter = "";
 	        this.partnerGroups = [];
@@ -70976,8 +70984,8 @@
 	        this.config = config;
 	        this._persistentSearchService = _persistentSearchService;
 	        this._npnPortalService = _npnPortalService;
-	        this._speciesUrl = this.config.getServerUrl() + '/npn_portal/species/getSpecies.json';
-	        this._functionalTypesUrl = this.config.getServerUrl() + '/npn_portal/species/getSpeciesFunctionalTypes.json';
+	        this._speciesUrl = this.config.getNpnPortalServerUrl() + '/npn_portal/species/getSpecies.json';
+	        this._functionalTypesUrl = this.config.getNpnPortalServerUrl() + '/npn_portal/species/getSpeciesFunctionalTypes.json';
 	        this.speciesRemoved$ = new core_1.EventEmitter();
 	        this.submitSpecies$ = new core_1.EventEmitter();
 	        this.ready = false;
@@ -71141,7 +71149,7 @@
 	        this.config = config;
 	        this._persistentSearchService = _persistentSearchService;
 	        this._npnPortalService = _npnPortalService;
-	        this._phenophasesUrl = this.config.getServerUrl() + '/npn_portal/phenophases/getPhenophases.json';
+	        this._phenophasesUrl = this.config.getNpnPortalServerUrl() + '/npn_portal/phenophases/getPhenophases.json';
 	        this.ready = false;
 	        this.phenophases = [];
 	        this.phenophaseRemoved$ = new core_1.EventEmitter();
@@ -71227,7 +71235,7 @@
 	        this.submitOptionalFields$ = new core_1.EventEmitter();
 	        this.selectAllOptional = false;
 	        this.selectAllClimate = false;
-	        this._metadataFieldsUrl = this.config.getServerUrl() + '/npn_portal/metadata/getMetadataFields.json';
+	        this._metadataFieldsUrl = this.config.getNpnPortalServerUrl() + '/npn_portal/metadata/getMetadataFields.json';
 	        this.rawFieldsReady = false;
 	        this.summarizedFieldsReady = false;
 	        this.siteLevelSummarizedFieldsReady = false;
@@ -71431,7 +71439,7 @@
 	        this.config = config;
 	        this._persistentSearchService = _persistentSearchService;
 	        this._npnPortalService = _npnPortalService;
-	        this._datasetUrl = this.config.getServerUrl() + '/npn_portal/observations/getDatasetDetails.json';
+	        this._datasetUrl = this.config.getNpnPortalServerUrl() + '/npn_portal/observations/getDatasetDetails.json';
 	        this.ready = false;
 	        this.datasets = [];
 	        this.datasetRemoved$ = new core_1.EventEmitter();
@@ -73335,7 +73343,7 @@
 	        this.config = config;
 	    }
 	    MetadataComponent.prototype.downloadFile = function (fileLocation) {
-	        window.location.replace(this.config.getServerUrl() + fileLocation);
+	        window.location.replace(this.config.getNpnPortalServerUrl() + fileLocation);
 	    };
 	    MetadataComponent = __decorate([
 	        core_1.Component({

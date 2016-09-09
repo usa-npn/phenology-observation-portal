@@ -21,7 +21,7 @@
         <h1 class="modal-title">Start Search</h1>
     </modal-header>
     <modal-body>
-        <p>Your search is ready for execution. You’ve selected the following filters. If you’re not satisfied with these parameters, feel free to go back and modify them. You can click the ‘Download’ button on the right-hand side at any time.</p>
+        <p>Your search is ready for execution. You’ve selected filters listed below. If these are correct, click "download". If not, click "Go Back to Modify Filters" and use the left menu to modify them. When you are finished, click "Download" in the right sidebar.</p>
         <div class="panel-group" id="summaryAccordion">
             <div class="panel panel-default" [class.hide]="_npnPortalService.getDateFilter() == ''">
                 <div class="panel-heading">
@@ -193,7 +193,7 @@
         <button type="button" class="btn btn-block btn-primary" (click)="summaryModal.close()">Go Back to Modify Filters</button>
         <br/>
         <div class="well">
-            <label><input type="checkbox" name="agree" value="agree" [(ngModel)]="hasAgreed"> I have read and acknowledged the <a href ='https://www.usanpn.org/terms#DataAttribution' target='_blank' >USA-NPN data citation policy.</a></label>
+            <label><input type="checkbox" name="agree" value="agree" [(ngModel)]="hasAgreed"> I have read and acknowledged the USA-NPN <a href ='https://www.usanpn.org/terms#DataUse' target='_blank' >data use</a> and <a href ='https://www.usanpn.org/terms#DataAttribution' target='_blank' >attribution</a> policies.</label>
             <button type="button" class="btn btn-block btn-success" (click)="download()">Download</button>
         </div>
 
@@ -225,7 +225,7 @@
 
 <modal #downloadModal>
     <modal-header>
-        <h1 class="modal-title" [class.hide]="_npnPortalService.downloadStatus != 'complete'">Download Complete</h1>
+        <h1 class="modal-title" [class.hide]="_npnPortalService.downloadStatus != 'complete'">Processing Complete</h1>
         <h1 class="modal-title" [class.hide]="_npnPortalService.downloadStatus != 'error'">Download Error</h1>
         <h1 class="modal-title" [class.hide]="_npnPortalService.downloadStatus != 'downloading'"><i class="fa fa-refresh fa-spin" style="font-size:30px"></i>  Downloading</h1>
     </modal-header>
@@ -234,7 +234,7 @@
             <div class="jumbotron">
                 <p [class.hide]="_npnPortalService.downloadStatus != 'error'">There was an error downloading your data. Please try again later.</p>
                 <p [class.hide]="_npnPortalService.downloadStatus != 'downloading'">Please do not close your browser. This may take up to 20 minutes to process. While you're waiting:</p>
-                <p [class.hide]="_npnPortalService.downloadStatus != 'complete'">Your data has finished downloading. Feel free to:</p>
+                <p [class.hide]="_npnPortalService.downloadStatus != 'complete'">Your data has finished processing and should have begun downloading. Feel free to:</p>
                 <div [class.hide]="_npnPortalService.downloadStatus == 'error'">
                     <ul class="list-group">
                         <li class="list-group-item"><p><a target="_blank" href="https://visitor.r20.constantcontact.com/manage/optin?v=001QKOUjm76P7ZkuVnwXnf8NbWg8itt4_5iA_iRRaxoyFqZhd8V4CPwEEumfTh-UUQJ45grryVp2AxE-0KSQE6fe-aCGoz5VNzG_3-URPgvxy0%3D">Sign up</a> for our researcher's newsletter.</p></li>
