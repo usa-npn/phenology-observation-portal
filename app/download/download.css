@@ -51,3 +51,7 @@ padding: 6px 10px 2px 10px;
 .well {
     padding: 5px 5px 5px 5px;
 }
+
+.checkbox-inline {
+    font-size: 14px;
+}

@@ -17,3 +17,7 @@
 label {
     float: left;
 }
+
+.well {
+    padding: 5px 5px 5px 5px;
+}
