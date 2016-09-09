@@ -14,7 +14,7 @@ export class LocationsService {
                  private _persistentSearchService: PersistentSearchService,
                  private _npnPortalService: NpnPortalService) {}
     
-    private _statesUrl = this.config.getServerUrl() + '/npn_portal/stations/getStates.json';
+    private _statesUrl = this.config.getNpnPortalServerUrl() + '/npn_portal/stations/getStates.json';
     errorMessage: string;
     public ready:boolean = false;
     public states:State[] = [];

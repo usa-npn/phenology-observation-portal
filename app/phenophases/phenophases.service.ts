@@ -14,7 +14,7 @@ export class PhenophasesService {
                  private _persistentSearchService: PersistentSearchService, 
                  private _npnPortalService: NpnPortalService) {}
 
-    private _phenophasesUrl = this.config.getServerUrl() + '/npn_portal/phenophases/getPhenophases.json';
+    private _phenophasesUrl = this.config.getNpnPortalServerUrl() + '/npn_portal/phenophases/getPhenophases.json';
     errorMessage: string;
     public ready:boolean = false;
     public phenophases:Phenophase[] = [];
