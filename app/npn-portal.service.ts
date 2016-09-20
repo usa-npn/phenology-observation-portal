@@ -17,6 +17,7 @@ export class NpnPortalService {
 
   activePage = "get-started";
   downloadType:string;
+  fromVizTool = false;
   allowDownloadTypeChangeWithoutReset:boolean = false;
   errorMessage: string;
   extent:Extent = {bottom_left_x1: null, bottom_left_y1: null, upper_right_x2: null, upper_right_y2: null};

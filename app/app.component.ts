@@ -145,6 +145,10 @@ export class AppComponent {
                     this._persistentSearchService.datasets = savedSearch.datasets;
                     this._persistentSearchService.optionalFields = savedSearch.optionalFields;
                     this._persistentSearchService.datasheets = savedSearch.datasheets;
+
+                    if(savedSearch.searchSource === 'visualization-tool') {
+                        this._npnPortalService.fromVizTool = true;
+                    }
                 }
                 //initialize our components data
                 this.initializeData();

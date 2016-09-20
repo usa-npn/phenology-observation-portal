@@ -7,7 +7,8 @@
 </div>
 <div [hidden]="!allDataLoaded()">
   <h2>Get Started!</h2>
-  <p>Download customized datasets from the National Phenology
+  <p [hidden]="!fromVizTool()">Your data search has been preset with your selections from the visualization tool. Please select a search type to begin your download. You may also further customize your search.</p>
+  <p [hidden]="fromVizTool()">Download customized datasets from the National Phenology
     Database using the filters in the menu at left to specify dates,
     locations, species, and phenophases of interest. Choose which data type you would like to download.</p>
   <div id="search-type-button-grp" class="btn-group btn-group-lg" role="group" aria-label="...">

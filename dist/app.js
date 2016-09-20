@@ -50099,6 +50099,9 @@
 	                    _this._persistentSearchService.datasets = savedSearch.datasets;
 	                    _this._persistentSearchService.optionalFields = savedSearch.optionalFields;
 	                    _this._persistentSearchService.datasheets = savedSearch.datasheets;
+	                    if (savedSearch.searchSource === 'visualization-tool') {
+	                        _this._npnPortalService.fromVizTool = true;
+	                    }
 	                }
 	                //initialize our components data
 	                _this.initializeData();
@@ -66689,6 +66692,7 @@
 	        this.http = http;
 	        this.config = config;
 	        this.activePage = "get-started";
+	        this.fromVizTool = false;
 	        this.allowDownloadTypeChangeWithoutReset = false;
 	        this.extent = { bottom_left_x1: null, bottom_left_y1: null, upper_right_x2: null, upper_right_y2: null };
 	        this.states = [];
@@ -71762,6 +71766,9 @@
 	            && this._outputFieldsService.rawFieldsReady
 	            && this._outputFieldsService.summarizedFieldsReady
 	            && this._outputFieldsService.siteLevelSummarizedFieldsReady;
+	    };
+	    GetStartedComponent.prototype.fromVizTool = function () {
+	        return this._npnPortalService.fromVizTool;
 	    };
 	    GetStartedComponent.prototype.dataLoaded = function () {
 	        var numLoaded = 5;

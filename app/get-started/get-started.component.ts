@@ -40,6 +40,10 @@ export class GetStartedComponent implements OnInit {
         && this._outputFieldsService.summarizedFieldsReady
         && this._outputFieldsService.siteLevelSummarizedFieldsReady
   }
+
+  fromVizTool() {
+    return this._npnPortalService.fromVizTool
+  }
   
   dataLoaded() {
     var numLoaded:number = 5;
