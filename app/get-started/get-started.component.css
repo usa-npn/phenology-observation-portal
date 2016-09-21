@@ -12,3 +12,10 @@
 .search-type-btn{
 	width:33%;
 }
+
+#viz-into-text {
+	border: 2px black solid;
+	padding: 7px;
+	font-weight: bold;
+	background: lightgray;
+}
