@@ -71460,7 +71460,8 @@
 	            _this.datasets = datasets.filter(function (d) { return d.dataset_id === 7
 	                || d.dataset_id === 8
 	                || d.dataset_id === 11
-	                || d.dataset_id === 13; });
+	                || d.dataset_id === 13
+	                || d.dataset_id === 15; });
 	            console.log('datasets have been set');
 	            var datasetIds = _this._persistentSearchService.datasets;
 	            if (datasetIds) {
