@@ -14,4 +14,8 @@ export class MetadataComponent {
     downloadFile(fileLocation) {
         window.location.replace(this.config.getNpnPortalServerUrl() + fileLocation);
     }
+
+    downloadXml(fileLocation) {
+        document.execCommand('SaveAs', true, this.config.getNpnPortalServerUrl() + fileLocation);
+    }
 }

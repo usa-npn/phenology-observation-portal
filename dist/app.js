@@ -73360,6 +73360,9 @@
 	    MetadataComponent.prototype.downloadFile = function (fileLocation) {
 	        window.location.replace(this.config.getNpnPortalServerUrl() + fileLocation);
 	    };
+	    MetadataComponent.prototype.downloadXml = function (fileLocation) {
+	        document.execCommand('SaveAs', true, this.config.getNpnPortalServerUrl() + fileLocation);
+	    };
 	    MetadataComponent = __decorate([
 	        core_1.Component({
 	            templateUrl: 'app/metadata/metadata.html',
