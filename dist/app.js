@@ -70208,6 +70208,9 @@
 	    Config.prototype.getPopSearchEndpoint = function () {
 	        return ':3002/pop/search';
 	    };
+	    Config.prototype.getPopFgdcEndpoint = function () {
+	        return ':3002/pop/fgdc';
+	    };
 	    Config = __decorate([
 	        core_1.Injectable(), 
 	        __metadata('design:paramtypes', [])
@@ -73356,12 +73359,10 @@
 	var MetadataComponent = (function () {
 	    function MetadataComponent(config) {
 	        this.config = config;
+	        this.fgdcLink = this.config.getPopServerUrl() + this.config.getPopFgdcEndpoint();
 	    }
 	    MetadataComponent.prototype.downloadFile = function (fileLocation) {
 	        window.location.replace(this.config.getNpnPortalServerUrl() + fileLocation);
-	    };
-	    MetadataComponent.prototype.downloadXml = function (fileLocation) {
-	        document.execCommand('SaveAs', true, this.config.getNpnPortalServerUrl() + fileLocation);
 	    };
 	    MetadataComponent = __decorate([
 	        core_1.Component({

@@ -37,4 +37,8 @@ export class Config {
     public getPopSearchEndpoint() {
         return ':3002/pop/search';
     }
+
+    public getPopFgdcEndpoint() {
+        return ':3002/pop/fgdc';
+    }
 }

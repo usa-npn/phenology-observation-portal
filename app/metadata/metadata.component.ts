@@ -1,6 +1,7 @@
 import {Component} from "@angular/core";
 import {ROUTER_DIRECTIVES} from "@angular/router";
 import {Config} from '../config.service';
+import {Http} from "@angular/http";
 
 @Component({
     templateUrl: 'app/metadata/metadata.html',
@@ -15,7 +16,5 @@ export class MetadataComponent {
         window.location.replace(this.config.getNpnPortalServerUrl() + fileLocation);
     }
 
-    downloadXml(fileLocation) {
-        document.execCommand('SaveAs', true, this.config.getNpnPortalServerUrl() + fileLocation);
-    }
+    fgdcLink = this.config.getPopServerUrl() + this.config.getPopFgdcEndpoint();
 }
