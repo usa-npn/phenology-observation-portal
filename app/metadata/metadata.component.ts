@@ -1,7 +1,6 @@
 import {Component} from "@angular/core";
 import {ROUTER_DIRECTIVES} from "@angular/router";
 import {Config} from '../config.service';
-import {Http} from "@angular/http";
 
 @Component({
     templateUrl: 'app/metadata/metadata.html',
