@@ -69669,7 +69669,35 @@
 	                user_display: 1,
 	                kingdom: 'Plantae',
 	                image_path: ''
-	            }];
+	            },
+	            {
+	                species_type_id: 34,
+	                network_id: 1,
+	                species_type: 'Nectar Connectors Campaign',
+	                comment: '',
+	                user_display: 1,
+	                kingdom: 'Plantae',
+	                image_path: ''
+	            },
+	            {
+	                species_type_id: 32,
+	                network_id: 1,
+	                species_type: 'Shady Invaders Campaign',
+	                comment: '',
+	                user_display: 1,
+	                kingdom: 'Plantae',
+	                image_path: ''
+	            },
+	            {
+	                species_type_id: 33,
+	                network_id: 1,
+	                species_type: 'Southwest Season Trackers Campaign',
+	                comment: '',
+	                user_display: 1,
+	                kingdom: 'Plantae',
+	                image_path: ''
+	            }
+	        ];
 	    }
 	    SpeciesService.prototype.removeSpecies = function (species) {
 	        this.speciesRemoved$.emit(species);
