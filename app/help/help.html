@@ -10,4 +10,45 @@
         </ul>
     </div>
 </div>
+<div class="panel panel-default">
+    <div class="panel-heading"><strong>Frequently Asked Questions</strong></div>
+    <div class="panel-body" style="overflow-y: scroll; height:350px;">
+
+        <!--<h3><a href="#DataType">What data type should I download?</a></h3>-->
+        <!--<h3><a href="#AnimalData">What is the difference between the plant and animal data?</a></h3>-->
+        <!--<h3><a href="#DateRanges">How do the date ranges work?</a></h3>-->
+        <!--<h3><a href="#EstimatedRecords">How is the estimated number of records generated?</a></h3>-->
+        <!--<h3><a href="#AncillaryandMetadata">What is the difference between “ancillary data” and “metadata”?</a></h3>-->
+        <!--<h3><a href="#DataDocumentation">Data Documentation</a></h3>-->
+        <!--<hr/>-->
+
+        <h3><a name="DataType"></a>What data type should I download?</h3>
+        <p>There are three types of data available to download and each can be used to explore different types of questions.</p>
+        <p><strong>Status and Intensity data</strong>&nbsp;(formerly "raw data") are collected by observers in the field by answering a series of yes or no questions about the daily status and intensity of phenophases on an organism. This type of data will indicate whether or not a phenophase was occurring on a particular day for an individual plant or animal species at a site.</p>
+        <p>This type of data has many applications. For example, one can see whether trees at a site have reports of the "Leaves" phenophase occurring to compare to satellite images on the same day. Information about the Earth’s surface can be detected from satellites, including whether or not a deciduous forest or grassland has green leaf tissue that is photosynthesizing. Status and Intensity data can be used to “validate” whether the satellite really is detecting green leaves.</p>
+        <p>You can also use Status and Intensity data to understand the “synchrony” of two or more species. For example, bees and other pollinators rely on nectar from flowers as a food source, but the phenology of these pollinators and plants might be changing at different rates due to climate change. One can see if bees and “Open flowers” of their favorite plant are observed at a site at the same time, and whether the bees are most active when the flowers are at the peak of their bloom. You can create graphs for species and phenophases of interest to see whether or not they are “in sync”.</p>
+        <p><strong>Individual Phenometrics</strong>&nbsp;(formerly "summarized data") use phenophase status data to summarize the start and end dates of phenological activity of individual plants and animals at a site. This type of data is useful for understanding patterns of activity within a species, such as quantifying how many episodes of phenophase activity occur, and the duration of those episodes. &nbsp;For example, in many water limited ecosystems, individual plants may have two or more periods of leaf and flower activity within a year because their phenology is triggered by rainfall.</p>
+        <p><strong>Site Phenometrics</strong> use phenophase status data to summarize the start and end dates of phenological activity for species at a site by averaging across individuals at a site, or observation location. This type of data is useful for many applications, such as the creation of site or regional phenological calendars, and quantifying the length of the growing season for a site or region. These data can be used to understand how phenophase onset and end dates relate to climate drivers, such as seasonal temperatures and precipitation. &nbsp;For example, you can investigate how the start of the "Breaking leaf buds" phenophase relates to winter temperature &nbsp;across sites and years.&nbsp;</p>
+        <hr/>
+        <p>&nbsp;</p>
+        <h3><a name="AnimalData"></a>What is the difference between the plant and animal data?</h3>
+        <p>In the <em>Nature's Notebook</em> phenology program, data on animal species are collected at the species level at a site, as we do not ask observers to differentiate between individual animals. We include the species-level animal data in each data type to allow researchers to make comparisons of plant and animal species when downloading each data type.&nbsp;</p>
+        <hr/>
+        <p>&nbsp;</p>
+        <h3><a name="DateRanges"></a>How do the date ranges work?</h3>
+        <p>The Individual and Site Phenometric datasets are based on aggregating observations across a period of time, such as a calendar year. However, many researchers are interested in looking at individual seasons or periods of time that are non-contiguous with the calendar year. Therefore, the phenometrics data output will depend on the user-defined dates. For example, if a user searches for data for a phenophase from January to June, then the data output may differ from a search from January to December. Specifically, you may see additional periods of activity or longer period of activity.</p>
+        <p>When a data user searches for multiple years in one query, data are aggregated separately for each year. For instance, a user searching for three calendar years' worth of data would find that each year's data, January to December, is aggregated separately from one another; periods of activity for an individual plant would end on December 31st of one year, and begin again on January 1 the following year.</p>
+        <hr/>
+        <p>&nbsp;</p>
+        <h3><a name="EstimatedRecords"></a>How is the estimated number of records generated?&nbsp;</h3>
+        <p>Once you begin to set filters in the Phenology Observation Portal, you will see an estimate of records appear in the upper lefthand corner. While the Status and Intensity dataset is a direct measure of what observers have recorded in the database, the Individual and Site Phenometric datasets represent an aggregation of those observations. As observers report data at varying frequencies, there is no universal ratio between the number of Status and Intensity records and the number of Phenometric records. Therefore the estimated count of Phenometric records is an approximation based on an average ratio. For Individual Phenometrics this ratio is 20:1, and for Site Phenometrics the ratio is 115:1 when using a data precision filter of 7 days, the most conservative filter. Data precision filters of 14 or 30 days will generally result in more records returned.</p>
+        <hr/>
+        <p>&nbsp;</p>
+        <h3><a name="AncillaryandMetadata"></a>What is the difference between “ancillary data” and “metadata”?</h3>
+        <p>Ancillary data can be downloaded for your customized dataset. It includes extra information about sites, observers, individual plants and notes about individual site visits that might help interpret the observation data. It also provides detailed information about the phenophase definitions and intensity measures used in different datasets.</p>
+        <p>Metadata explains the nature of our data types and how the different fields of data where calculated. The Metadata window provides a link to the FGDC-compliant summary for all of our observation data products, as well as descriptions of what is included in the datafields present in each of the observation data and ancillary data files that you can download.</p>
+        <hr/>
+        <p>&nbsp;</p>
+    </div>
+</div>
 
