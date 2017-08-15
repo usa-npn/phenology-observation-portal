@@ -48,6 +48,7 @@
         <ul class="list-group">
             <li [class.hide]="getSelectedDate() == ''" class="list-group-item"><span class="badge">{{getSelectedDate()}}</span>Date:</li>
             <li [class.hide]="!getDataPrecision()" class="list-group-item"><span class="badge">{{getDataPrecision()}} days</span>Data Precision:</li>
+            <li [class.hide]="!getPeriodInterest()" class="list-group-item"><span class="badge">{{getPeriodInterest()}}</span>Period of Interest:</li>
             <li [class.hide]="getSelectedStates().length == 0" class="list-group-item"><span class="badge">{{getSelectedStates().length}}</span>States:</li>
             <li [class.hide]="!getSelectedExtent().bottom_left_x1" class="list-group-item"><span class="badge">1</span>Regions:</li>
             <li [class.hide]="getSelectedSpecies().length == 0" class="list-group-item"><span class="badge">{{getSelectedSpecies().length}}</span>Species:</li>
@@ -156,6 +157,13 @@
                     </h4>
                 </div>
             </div>
+            <div class="panel panel-default" [class.hide]="!_npnPortalService.periodInterest">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        Period of Interest: <span class="badge">{{getPeriodInterest()}}</span>
+                    </h4>
+                </div>
+            </div>            
             <div class="panel panel-default" [class.hide]="_npnPortalService.getSelectedStates().length == 0">
                 <div class="panel-heading">
                     <h4 class="panel-title">

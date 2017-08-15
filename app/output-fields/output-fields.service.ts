@@ -32,6 +32,7 @@ export class OutputFieldsService {
     public rawFieldsReady: boolean = false;
     public summarizedFieldsReady: boolean = false;
     public siteLevelSummarizedFieldsReady: boolean = false;
+    public magnitudeFieldsReady: boolean = false;
     errorMessage: string;
 
     public rawFields:OutputField[] = [];
@@ -48,6 +49,12 @@ export class OutputFieldsService {
     public optionalFieldsSiteLevelSummarized:OutputField[]= [];
     public climateFieldsSiteLevelSummarized:OutputField[] = [];
     public defaultFieldsSiteLevelSummarized:OutputField[] = [];
+    
+    public magnitudeFields:OutputField[] = [];
+    public siteLevelMagnitude:OutputField[] = [];
+    public optionalFieldsMagnitude:OutputField[]= [];
+    public climateFieldsMagnitude:OutputField[] = [];
+    public defaultFieldsMagnitude:OutputField[] = [];    
 
     mapBooleans(field) {
         field.quality_check === 1 ? field.quality_check = true : field.quality_check = false;
@@ -166,6 +173,45 @@ export class OutputFieldsService {
             .map(res => <OutputField[]> res.json())
             .catch(this.handleError);
     }
+    
+    
+    initMagnitudeFields() {
+        this.getMagnitudeFields().subscribe(
+            magnitudeFields => {
+                // booleans are nicer to work with than numbers
+                magnitudeFields.map(this.mapBooleans);
+                this.magnitudeFields = magnitudeFields;
+
+                if(this._npnPortalService.downloadType === "magnitude") {
+                    let fieldIds = this._persistentSearchService.optionalFields;
+                    if(fieldIds) {
+                        for(var fieldId of fieldIds) {
+                            for(var magnitudeField of this.magnitudeFields) {
+                                if(magnitudeField.metadata_field_id === fieldId)
+                                    magnitudeField.selected = true;
+                            }
+                        }
+                    }
+                }
+                
+                this.optionalFieldsMagnitude = magnitudeFields.filter((field) => {return !field.climate && !field.required});
+                this.climateFieldsMagnitude = magnitudeFields.filter((field) => {return field.climate && !field.required});
+                this.defaultFieldsMagnitude = magnitudeFields.filter((field) => {return field.required});
+
+                if(this._npnPortalService.downloadType === "magnitude")
+                    this._npnPortalService.optionalFields = this.optionalFieldsMagnitude.concat(this.climateFieldsMagnitude).map(obj => Object.assign({}, obj));
+                
+                this.magnitudeFieldsReady = true;
+            },
+            error => this.errorMessage = <any>error)
+    }    
+    
+    
+    getMagnitudeFields() {
+        return this.http.get(this._metadataFieldsUrl + '?type=magnitude')
+            .map(res => <OutputField[]> res.json())
+            .catch(this.handleError);
+    }    
 
     private handleError (error: Response) {
         console.error(error);

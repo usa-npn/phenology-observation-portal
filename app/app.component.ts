@@ -85,6 +85,7 @@ export class AppComponent {
         this._outputFieldsService.initRawFields();
         this._outputFieldsService.initSummarizedFields();
         this._outputFieldsService.initSiteLevelSummarizedFields();
+        this._outputFieldsService.initMagnitudeFields();
         this._integratedDatasetService.initDatasets();
         this._ancillaryDataService.initDatasheets();
     }

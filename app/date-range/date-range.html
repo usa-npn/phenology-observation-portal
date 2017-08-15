@@ -41,16 +41,20 @@
   </form>
 </div>
 
-<div *ngIf="getDownloadType() == 'summarized' || getDownloadType() == 'siteLevelSummarized' ">
+
+
+<div *ngIf="getDownloadType() == 'summarized' || getDownloadType() == 'siteLevelSummarized' || getDownloadType() == 'magnitude' ">
   <form [ngFormModel]="dateForm">
   <h2>Date Range</h2>
-  <p>Define the season of interest and years for your dataset.</p>
 
+  <p>{{getDateRangeLabel()}}</p>
+
+  
   <div class="panel panel-default">
     <div class="panel-heading">
       <div class="row">
         <div class="col-md-4">
-          <strong>Season Date Range</strong>
+          <strong>{{getDateRangeHeader()}}</strong>
         </div>          
         <div class="col-md-8">
           <div *ngIf="dateForm.hasError('invalidDate')" class="error" role="alert">
@@ -62,7 +66,7 @@
       </div>
     </div>
     <div class="panel-body panel-body-sm">
-      <div class="btn-group btn-group-lg" role="group" aria-label="...">
+      <div class="btn-group btn-group-lg" role="group" aria-label="..." *ngIf="getDownloadType() != 'magnitude'" >
           
         <button type="button" data-toggle="tooltip" title="A calendar year starts on January 1 and runs through December 31." class="btn btn-default" [class.active]="isSelected('calendar')" (click)="setRangeType('calendar')">Calendar</button>
         <button type="button" data-toggle="tooltip" title="A 'water year' starts on October 1 and runs through September 30 of the following year." class="btn btn-default" [class.active]="isSelected('water')" (click)="setRangeType('water')">Water</button>
@@ -175,8 +179,27 @@
       </div>
     </div>
   </div>
+  
+  <div *ngIf="getDownloadType() == 'magnitude'">
+    <div class="panel panel-default">
+      <div class="panel-heading"><strong>Period of Interest</strong></div>
+      <div class="panel-body">
+        The data can be broken into different periods of varying frequency, depending on your needs. Select one of the options below to change this setting.
+        <select class="form-control"  required name="periodInterest" [(ngModel)]="periodInterest">
+          <option value="7">7 days</option>
+          <option value="14">14 days</option>
+          <option value="30">Monthly</option>          
+        </select>
+      </div>
+    </div>
+  </div>  
+  
+  
   </form>
 </div>
+
+
+
 
 <modal #invalidDateRangeModal>
   <modal-header>

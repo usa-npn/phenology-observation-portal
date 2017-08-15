@@ -44,6 +44,7 @@ export class NpnPortalService {
   endYear:number;
   
   dataPrecision:number;
+  periodInterest:number;
   resettingFilters:boolean = false;
   
   filtersAreSet(): boolean {
@@ -67,7 +68,9 @@ export class NpnPortalService {
     this.errorMessage = null;
     this.extent = {bottom_left_x1: null, bottom_left_y1: null, upper_right_x2: null, upper_right_y2: null};
     this.states = [];
-    this.species = [];
+    
+    this.species.forEach(obj => obj.selected=false);
+    
     this.phenophases = [];
     this.partnerGroups = [];
     this.datasets = [];
@@ -79,16 +82,22 @@ export class NpnPortalService {
     this.startYear = null;
     this.endYear = null;
     this.dataPrecision = null;
+    this.periodInterest = null;
   }
 
 
   getReportType():string {
-    if(this.downloadType === 'raw')
+    if(this.downloadType === 'raw'){
         return 'Status and Intensity';
-    else if(this.downloadType === 'summarized')
+    }
+    else if(this.downloadType === 'summarized'){
         return 'Individual Phenometrics';
-    else
+    }
+    else if (this.downloadType === 'magnitude'){
+        return 'Magnitude Phenometrics'
+    }else{
         return 'Site Phenometrics';
+    }
   }
 
   getSelectedStates() {
@@ -176,7 +185,8 @@ export class NpnPortalService {
   reportTypeSelected() {
     return this.downloadType === "raw"
         || this.downloadType === "summarized"
-        || this.downloadType === "siteLevelSummarized";
+        || this.downloadType === "siteLevelSummarized"
+        || this.downloadType === "magnitude";
   }
 
   dateRangeIsValid() {
@@ -212,33 +222,93 @@ export class NpnPortalService {
       return null;
   }
 
-  setObservationCount() {
-    
+  setObservationCount() {      
+            
     this.observationCount = -1;
-    this.getObservationCount().subscribe(
-        (observationCount: any) => {
-          console.log('observationCount = ' + observationCount.obsCount);
-          let estimatedCount = observationCount.obsCount;
-          if(this.downloadType === 'summarized')
-              estimatedCount = estimatedCount / 20;
-          if(this.downloadType === 'siteLevelSummarized')
-            estimatedCount = estimatedCount / 115;
-          if(estimatedCount < 1000)
-            this.observationCount = Math.round(estimatedCount);
-          else if(estimatedCount < 1000000) {
-            let numInThousands = estimatedCount / 1000;
-            this.observationCount = (Math.round( numInThousands * 10 ) / 10).toFixed(1).toString() + ' K';
-          }
-          else {
-            let numInMillions = estimatedCount / 1000000;
-            this.observationCount = (Math.round( numInMillions * 10 ) / 10).toFixed(1).toString() + ' M';
-          }
-        },
-        (error) => {
-          this.errorMessage = <any>error;
-          console.log(this.errorMessage);
-        })
+    
+    if(this.downloadType === "magnitude"){
+        this.observationCount = this.roundEstimate(this.getMagnitudeEstimate());
+    }else{
+
+        this.getObservationCount().subscribe(
+            (observationCount: any) => {
+              console.log('observationCount = ' + observationCount.obsCount);
+              let estimatedCount = observationCount.obsCount;
+              if(this.downloadType === 'summarized')
+                  estimatedCount = estimatedCount / 20;
+              if(this.downloadType === 'siteLevelSummarized')
+                estimatedCount = estimatedCount / 115;
+                
+              this.observationCount = this.roundEstimate(estimatedCount);
+            },
+            (error) => {
+              this.errorMessage = <any>error;
+              console.log(this.errorMessage);
+            })
+    }
   }
+  
+  roundEstimate(estimatedCount : any){
+      
+    let estimate : string;
+    
+    if (estimatedCount == "N/a"){
+        estimate = estimatedCount;
+    }
+    else if(estimatedCount < 1000){
+      estimate = Math.round(estimatedCount) + '';
+    }
+    else if(estimatedCount < 1000000) {
+      let numInThousands = estimatedCount / 1000;
+      estimate = (Math.round( numInThousands * 10 ) / 10).toFixed(1).toString() + ' K';
+    }
+    else {
+      let numInMillions = estimatedCount / 1000000;
+      estimate = (Math.round( numInMillions * 10 ) / 10).toFixed(1).toString() + ' M';
+    }
+    
+    return estimate;
+  }
+  
+  getMagnitudeEstimate(){
+      
+      console.log("Selected species:");
+      console.log(this.getSelectedSpecies());
+      console.log(this.species);
+      
+      var num_species = (this.getSelectedSpecies().length > 0) ? this.getSelectedSpecies().length : this.species.length;
+      var average_phenophases_per_species = 12;
+      var num_phenophases = (this.getSelectedPhenophases().length > 0) ? (this.getSelectedPhenophases().length * 2) : average_phenophases_per_species;
+      var result : any;
+      
+      console.log("num species: " + num_species);
+      console.log("num pheno:" + num_phenophases);
+      
+      
+      if (this.startYear == null || this.endYear == null){
+          
+        result = 'N/a';
+        
+      }else{
+      
+        var sDate = new Date(this.startYear, this.getMonthString(this.startMonth), this.startDay);
+        var eDate = new Date(this.startYear, this.getMonthString(this.endMonth), this.endDay);
+
+        let diff:number = eDate.getTime()-sDate.getTime();
+        var number_periods = ( ((diff/1000/60/60/24) + 1) / this.periodInterest) * ( (this.endYear - this.startYear) + 1 );
+        result = number_periods * num_phenophases * num_species;
+      }
+
+      return result;
+      
+  }
+  
+    getMonthString(month){
+      return new Date(Date.parse(month+" 1, 2012")).getMonth()+1;
+    }
+
+      
+  
 
   getObservationCount() {
     var headers = new Headers();
@@ -283,6 +353,7 @@ export class NpnPortalService {
       startDate: this.startDate,
       endDate: this.endDate,
       num_days_quality_filter: this.dataPrecision,
+      frequency: this.periodInterest,
       state: this.getSelectedStates().map((state) => state.state_code),
       bottom_left_x1: this.extent.bottom_left_x1,
       bottom_left_y1: this.extent.bottom_left_y1,

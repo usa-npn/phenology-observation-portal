@@ -1,4 +1,5 @@
 var webpack = require("webpack");
+var path = require('path');
 module.exports = {
     entry: {
         polyfills: ['es6-shim/es6-shim.js', 'reflect-metadata/Reflect.js', 'zone.js/dist/zone.js'],
@@ -11,7 +12,7 @@ module.exports = {
         filename: "[name].js"
     },
     resolve: {
-        extensions: ['', '.js', '.ts']
+        extensions: ['.js', '.ts']
     },
     module: {
         loaders: [{

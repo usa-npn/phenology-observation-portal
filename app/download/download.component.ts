@@ -58,6 +58,15 @@ export class DownloadComponent {
     getDataPrecision() {
         return this._npnPortalService.dataPrecision;
     }
+    
+    getPeriodInterest(){
+        return (this._npnPortalService.periodInterest != null) ? 
+            ((this._npnPortalService.periodInterest == 30) ? 
+                "Monthly" : 
+                this._npnPortalService.periodInterest + " Days"
+            ) : 
+            null;
+    }
 
     getDownloadType(){
         if(this._npnPortalService.downloadType == "siteLevelSummarized")

@@ -13,7 +13,16 @@ import {OutputFieldsService} from "./output-fields.service";
 export class OutputFieldsComponent implements OnInit {
     constructor(private _npnPortalService: NpnPortalService,
                 private _outputFieldsService: OutputFieldsService,
-                private _router: Router) {}
+                private _router: Router) {
+        
+        this.tabs.push({title: 'Optional Fields',     view: 'optionalFieldsView'});       
+        if (this.getDownloadType() != 'magnitude'){
+            this.tabs.push({title: 'Climate Data Fields', view: 'climateFieldsView'});
+        }        
+        this.tabs.push({title: 'Default Data Fields', view: 'defaultFieldsView'});
+        
+                    
+    }
 
     optionalFields:OutputField[];
     climateFields:OutputField[];
@@ -22,10 +31,8 @@ export class OutputFieldsComponent implements OnInit {
     selectAllOptional:boolean;
     selectAllClimate:boolean;
 
-    tabs = [{title: 'Optional Fields',     view: 'optionalFieldsView'},
-            {title: 'Climate Data Fields', view: 'climateFieldsView'},
-            {title: 'Default Data Fields', view: 'defaultFieldsView'}
-    ];
+    tabs = [];
+    
     currentTab = 'optionalFieldsView';
 
     onClickTab(tab) {
@@ -85,6 +92,10 @@ export class OutputFieldsComponent implements OnInit {
     getNonQcFields() {
         return this.optionalFields.filter((field) => !field.quality_check );
     }
+    
+    getDownloadType(){
+        return this._npnPortalService.downloadType;
+    }    
 
     submit() {
         this._npnPortalService.optionalFields = this.optionalFields.concat(this.climateFields).map(obj => Object.assign({}, obj));
@@ -104,9 +115,24 @@ export class OutputFieldsComponent implements OnInit {
     ngOnInit() {
         this.selectAllOptional = this._outputFieldsService.selectAllOptional;
         this.selectAllClimate = this._outputFieldsService.selectAllClimate;
-        this.optionalFields = this._npnPortalService.downloadType === "raw" ? this._outputFieldsService.optionalFieldsRaw : (this._npnPortalService.downloadType === "summarized" ? this._outputFieldsService.optionalFieldsSummarized : this._outputFieldsService.optionalFieldsSiteLevelSummarized);
+        
+        this.optionalFields = this._npnPortalService.downloadType === "raw" ? 
+            this._outputFieldsService.optionalFieldsRaw : 
+            (this._npnPortalService.downloadType === "summarized") ? 
+                this._outputFieldsService.optionalFieldsSummarized : 
+                (this._npnPortalService.downloadType === "magnitude") ?
+                    this._outputFieldsService.optionalFieldsMagnitude : 
+                    this._outputFieldsService.optionalFieldsSiteLevelSummarized;
+                
         this.climateFields = this._npnPortalService.downloadType === "raw" ? this._outputFieldsService.climateFieldsRaw : (this._npnPortalService.downloadType === "summarized" ? this._outputFieldsService.climateFieldsSummarized : this._outputFieldsService.climateFieldsSiteLevelSummarized);
-        this.defaultFields = this._npnPortalService.downloadType === "raw" ? this._outputFieldsService.defaultFieldsRaw : (this._npnPortalService.downloadType === "summarized" ? this._outputFieldsService.defaultFieldsSummarized : this._outputFieldsService.defaultFieldsSiteLevelSummarized);
+        
+        this.defaultFields = this._npnPortalService.downloadType === "raw" ? 
+            this._outputFieldsService.defaultFieldsRaw : 
+            (this._npnPortalService.downloadType === "summarized" ? 
+                this._outputFieldsService.defaultFieldsSummarized : 
+                (this._npnPortalService.downloadType === "magnitude") ? 
+                    this._outputFieldsService.defaultFieldsMagnitude :
+                    this._outputFieldsService.defaultFieldsSiteLevelSummarized);
 
         this._outputFieldsService.optionalFieldRemoved$.subscribe(optionalField => {this.removeOptionalField(optionalField); this.submit()});
         this._outputFieldsService.submitOptionalFields$.subscribe(() => this.submit());

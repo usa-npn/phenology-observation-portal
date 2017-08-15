@@ -71,14 +71,15 @@ export class DateRangeComponent implements OnInit, AfterViewInit {
     endYear:number;
     
     dataPrecision:number;
+    periodInterest:number;
 
     modalErrorMessage:string;
     
-  constructor(private _npnPortalService: NpnPortalService,
-              private _dateService: DateService,
-              private _router: Router,
-              private builder: FormBuilder,
-              private cdr: ChangeDetectorRef) {
+    constructor(private _npnPortalService: NpnPortalService,
+                private _dateService: DateService,
+                private _router: Router,
+                private builder: FormBuilder,
+                private cdr: ChangeDetectorRef) {
       
       // this.dateForm = builder.group({
       //     startDateGroup:  builder.group({
@@ -103,45 +104,53 @@ export class DateRangeComponent implements OnInit, AfterViewInit {
 
   }
     
-  isSelected(button) {
-    return button == this.rangeType;
-  }
+    isSelected(button) {
+      return button == this.rangeType;
+    }
+
+    setRangeDates() {
+      if (this.rangeType == 'calendar') {
+        this.startMonth = 'January';
+        this.endMonth = 'December';
+        this.startDay = 1;
+        this.endDay = 31;
+      }
+      else if (this.rangeType == 'water') {
+        this.startMonth = 'October';
+        this.endMonth = 'September';
+        this.startDay = 1;
+        this.endDay = 30;
+      }
+      else if (this.rangeType == 'summer') {
+        this.startMonth = 'July';
+        this.endMonth = 'June';
+        this.startDay = 1;
+        this.endDay = 30;
+      }
+    }
+
+  
+    setRangeType(type:string) {
+        this.rangeType = type;
+        this.setRangeDates();
+        // this.cdr.detectChanges();
+    }
+
+    getDownloadType(){
+        return this._npnPortalService.downloadType;
+    }
+
+    getMonths(){
+        return this._dateService.months;
+    }
+
+    getDateRangeHeader(){
+        return (this.getDownloadType() == "magnitude") ? "Period of Interest" : "Season Date Range";
+    }
     
-  setRangeDates() {
-    if (this.rangeType == 'calendar') {
-      this.startMonth = 'January';
-      this.endMonth = 'December';
-      this.startDay = 1;
-      this.endDay = 31;
-    }
-    else if (this.rangeType == 'water') {
-      this.startMonth = 'October';
-      this.endMonth = 'September';
-      this.startDay = 1;
-      this.endDay = 30;
-    }
-    else if (this.rangeType == 'summer') {
-      this.startMonth = 'July';
-      this.endMonth = 'June';
-      this.startDay = 1;
-      this.endDay = 30;
-    }
-  }
-
-  
-  setRangeType(type:string) {
-      this.rangeType = type;
-      this.setRangeDates();
-      // this.cdr.detectChanges();
-  }
-  
-  getDownloadType(){
-      return this._npnPortalService.downloadType;
-  }
-
-  getMonths(){
-      return this._dateService.months;
-  }
+    getDateRangeLabel(){
+        return (this.getDownloadType() == "magnitude") ? "Define the period of interest and years for your dataset." : "Define the season of interest and years for your dataset.";
+    }    
     
     getYears() {
         var today = new Date();
@@ -226,6 +235,16 @@ export class DateRangeComponent implements OnInit, AfterViewInit {
               this._dateService.dataPrecision = null;
               this._npnPortalService.dataPrecision = null;
           }
+          
+          if(this.getDownloadType() == 'magnitude'){
+              console.log('Setting period of interest: ' + this.periodInterest);
+              this._dateService.periodInterest = this.periodInterest;
+              this._npnPortalService.periodInterest = this.periodInterest;
+          }else{
+              this._dateService.periodInterest = null;
+              this._npnPortalService.periodInterest = null;
+          }
+          
       }
 
       if (this.getDownloadType() === 'raw') {
@@ -264,12 +283,18 @@ export class DateRangeComponent implements OnInit, AfterViewInit {
       
       this.dataPrecision = this._dateService.dataPrecision;
       
+      this.periodInterest = this._dateService.periodInterest;
+      
       if (!this.rangeType) {
           this.setRangeType('calendar');
       }
       
       if (!this.dataPrecision) {
           this.dataPrecision = 30;
+      }
+      
+      if (!this.periodInterest){
+          this.periodInterest = 7;
       }
 
 
