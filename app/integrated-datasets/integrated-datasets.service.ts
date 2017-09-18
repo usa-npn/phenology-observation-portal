@@ -38,7 +38,13 @@ export class IntegratedDatasetService {
                 || d.dataset_id === 11 
                 || d.dataset_id === 13
                 || d.dataset_id === 15);
-                console.log('datasets have been set');
+
+                var nnDataset = <Dataset>{};
+                nnDataset.dataset_id = -9999;
+                nnDataset.dataset_name= 'Nature\'s Notebook';  
+                nnDataset.dataset_description = 'Data from Nature\'s Notebook online and mobile apps';
+                nnDataset.dataset_documentation_url = 'https://www.usanpn.org/results/nndocumentation';      
+                this.datasets.unshift(nnDataset);
 
 
                 let datasetIds = this._persistentSearchService.datasets;

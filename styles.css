@@ -31,7 +31,7 @@ header {
 
 }
 #content1 {
-  height: 700px;
+  height: auto;
   width: 200px;
   float: left;
   padding: 20px 20px;
@@ -39,7 +39,7 @@ header {
 }
 
 #middle1 {
-  height: 700px;
+  height: auto;
   width: 600px; /* Account for margins + border values */
   float: left;
   padding: 5px 15px;
@@ -49,11 +49,17 @@ header {
 
 
 #sidebar1 {
-  height: 700px;
+  height: auto;
   width: 300px;
   padding: 20px 15px;
   float: left;  
 }
+
+#contentwrap{
+    height:auto;
+    display:flex;
+}
+
 footer {
   clear: both;
   /*padding: 0 5px;*/
@@ -124,6 +130,7 @@ MEDIA QUERIES
   #middle1 {
     width: auto;
     float: none;
+    min-height:700px;
     margin-left: 0px;
   }
 

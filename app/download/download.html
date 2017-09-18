@@ -54,7 +54,7 @@
             <li [class.hide]="getSelectedSpecies().length == 0" class="list-group-item"><span class="badge">{{getSelectedSpecies().length}}</span>Species:</li>
             <li [class.hide]="getSelectedPhenophases().length == 0" class="list-group-item"><span class="badge">{{getSelectedPhenophases().length}}</span>Phenophases:</li>
             <li [class.hide]="getSelectedPartnerGroups().length == 0" class="list-group-item"><span class="badge">{{getSelectedPartnerGroups().length}}</span>PartnerGroups:</li>
-            <li [class.hide]="getSelectedIntegratedDatasets().length == 0" class="list-group-item"><span class="badge">{{getSelectedIntegratedDatasets().length}}</span>Datasets:</li>
+            <li [class.hide]="getSelectedIntegratedDatasets().length == 0" class="list-group-item"><span class="badge">{{getSelectedIntegratedDatasets().length}}</span>Source Datasets:</li>
             <li [class.hide]="getSelectedOptionalFields().length == 0" class="list-group-item"><span class="badge">{{getSelectedOptionalFields().length}}</span>Output Fields:</li>
             <li [class.hide]="getSelectedAncillaryData().length == 0" class="list-group-item"><span class="badge">{{getSelectedAncillaryData().length}}</span>Datasheets:</li>
         </ul>
@@ -269,7 +269,7 @@
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <a data-toggle="collapse" data-parent="#filterAccordion" href="#integratedDatasetsCollapse">
-                            Datasets: <span class="badge">{{getSelectedIntegratedDatasets().length}}</span></a>
+                            Source Datasets: <span class="badge">{{getSelectedIntegratedDatasets().length}}</span></a>
                     </h4>
                 </div>
                 <div id="integratedDatasetsCollapse" class="panel-collapse collapse">

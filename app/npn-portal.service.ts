@@ -44,7 +44,7 @@ export class NpnPortalService {
   endYear:number;
   
   dataPrecision:number;
-  periodInterest:number;
+  periodInterest:any;
   resettingFilters:boolean = false;
   
   filtersAreSet(): boolean {
@@ -226,26 +226,32 @@ export class NpnPortalService {
             
     this.observationCount = -1;
     
-    if(this.downloadType === "magnitude"){
-        this.observationCount = this.roundEstimate(this.getMagnitudeEstimate());
-    }else{
 
-        this.getObservationCount().subscribe(
-            (observationCount: any) => {
-              console.log('observationCount = ' + observationCount.obsCount);
-              let estimatedCount = observationCount.obsCount;
-              if(this.downloadType === 'summarized')
-                  estimatedCount = estimatedCount / 20;
-              if(this.downloadType === 'siteLevelSummarized')
-                estimatedCount = estimatedCount / 115;
-                
-              this.observationCount = this.roundEstimate(estimatedCount);
-            },
-            (error) => {
-              this.errorMessage = <any>error;
-              console.log(this.errorMessage);
-            })
-    }
+
+    this.getObservationCount().subscribe(
+        (observationCount: any) => {
+
+          let estimatedCount = observationCount.obsCount;
+          
+          if(this.downloadType === 'summarized'){
+              estimatedCount = estimatedCount / 20;
+          }
+          
+          if(this.downloadType === 'siteLevelSummarized'){
+            estimatedCount = estimatedCount / 115;
+          }
+          
+          if(this.downloadType === 'magnitude'){
+            estimatedCount = this.getMagnitudeEstimate(estimatedCount);
+          }          
+
+          this.observationCount = this.roundEstimate(estimatedCount);
+        },
+        (error) => {
+          this.errorMessage = <any>error;
+          console.log(this.errorMessage);
+        })
+    
   }
   
   roundEstimate(estimatedCount : any){
@@ -270,21 +276,10 @@ export class NpnPortalService {
     return estimate;
   }
   
-  getMagnitudeEstimate(){
-      
-      console.log("Selected species:");
-      console.log(this.getSelectedSpecies());
-      console.log(this.species);
-      
-      var num_species = (this.getSelectedSpecies().length > 0) ? this.getSelectedSpecies().length : this.species.length;
-      var average_phenophases_per_species = 12;
-      var num_phenophases = (this.getSelectedPhenophases().length > 0) ? (this.getSelectedPhenophases().length * 2) : average_phenophases_per_species;
+  getMagnitudeEstimate(estimatedCount : number){
+
       var result : any;
-      
-      console.log("num species: " + num_species);
-      console.log("num pheno:" + num_phenophases);
-      
-      
+
       if (this.startYear == null || this.endYear == null){
           
         result = 'N/a';
@@ -296,7 +291,8 @@ export class NpnPortalService {
 
         let diff:number = eDate.getTime()-sDate.getTime();
         var number_periods = ( ((diff/1000/60/60/24) + 1) / this.periodInterest) * ( (this.endYear - this.startYear) + 1 );
-        result = number_periods * num_phenophases * num_species;
+ 
+        result = number_periods * estimatedCount;
       }
 
       return result;
@@ -326,7 +322,8 @@ export class NpnPortalService {
       phenophase_category: this.getSelectedPhenophases().map(function(p) { return p.phenophase_category; }),
       dataset_ids: this.getSelectedDatasets().map((dataset) => dataset.dataset_id),
       network: this.getSelectedPartnerGroups().map(function(p) { return p.network_name; }),
-      stations: this.stations
+      stations: this.stations,
+      is_magnitude: (this.downloadType == 'magnitude') ? 1 : 0
     });
 
     return this.http.post(this.config.getNpnPortalServerUrl() + '/npn_portal/observations/getObservationsCount.json', data, { headers: headers })
@@ -353,7 +350,7 @@ export class NpnPortalService {
       startDate: this.startDate,
       endDate: this.endDate,
       num_days_quality_filter: this.dataPrecision,
-      frequency: this.periodInterest,
+      frequency: ((this.periodInterest == 30) ? 'months' : this.periodInterest),
       state: this.getSelectedStates().map((state) => state.state_code),
       bottom_left_x1: this.extent.bottom_left_x1,
       bottom_left_y1: this.extent.bottom_left_y1,

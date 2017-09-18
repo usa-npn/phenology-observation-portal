@@ -3,7 +3,7 @@ import {ControlGroup, FormBuilder, Validators, FORM_DIRECTIVES, FORM_PROVIDERS} 
 import {Router, ROUTER_DIRECTIVES} from "@angular/router";
 import {NpnPortalService} from "../npn-portal.service";
 import {DateService} from "./date.service";
-import {validateRawDateRange, validateDateRange, validateDay} from './validators';
+import {validateRawDateRange, validateDateRange, validateDay, validateYearRange} from './validators';
 import { MODAL_DIRECTIVES, ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 
 declare var $: any;
@@ -58,6 +58,9 @@ export class DateRangeComponent implements OnInit, AfterViewInit {
     dateForm: ControlGroup;
     startDateGroup: ControlGroup;
     endDateGroup: ControlGroup;
+    
+    dateYearForm : ControlGroup;
+    
 
     startDate:string;
     endDate:string;
@@ -72,6 +75,7 @@ export class DateRangeComponent implements OnInit, AfterViewInit {
     
     dataPrecision:number;
     periodInterest:number;
+    customPeriodInterest:number;
 
     modalErrorMessage:string;
     
@@ -175,12 +179,12 @@ export class DateRangeComponent implements OnInit, AfterViewInit {
                 return false;
             }
             if(this.endDate <= this.startDate) {
-                this.modalErrorMessage = "Please make the end date come after the start date.";
+                this.modalErrorMessage = "Please make the end date comes after the start date.";
                 this.invalidDateRangeModal.open();
                 return false;
             }
         }
-        else {
+        else if (this.getDownloadType() !== 'magnitude'){
             if(!this.dateForm.valid || !this.startDateGroup.valid || !this.endDateGroup.valid) {
                 if(!this.startDateGroup.valid && !this.endDateGroup.valid)
                     this.modalErrorMessage = "You have entered an invalid date range. Please enter a valid start and end days.";
@@ -190,6 +194,22 @@ export class DateRangeComponent implements OnInit, AfterViewInit {
                     this.modalErrorMessage = "You have entered an invalid date range. Please enter a valid end day.";
                 else
                     this.modalErrorMessage = "Please make the end date come after the start date.";
+                this.invalidDateRangeModal.open();
+                return false;
+            }
+        }else{
+            if(!this.startYear) {
+                this.modalErrorMessage = "You have entered an invalid date range. Please enter a start year.";
+                this.invalidDateRangeModal.open();
+                return false;
+            }
+            if(!this.endYear) {
+                this.modalErrorMessage = "You have entered an invalid date range. Please enter an end year.";
+                this.invalidDateRangeModal.open();
+                return false;
+            }
+            if(this.endYear < this.startYear) {
+                this.modalErrorMessage = "Please make the end year comes after the start year.";
                 this.invalidDateRangeModal.open();
                 return false;
             }
@@ -237,9 +257,10 @@ export class DateRangeComponent implements OnInit, AfterViewInit {
           }
           
           if(this.getDownloadType() == 'magnitude'){
-              console.log('Setting period of interest: ' + this.periodInterest);
-              this._dateService.periodInterest = this.periodInterest;
-              this._npnPortalService.periodInterest = this.periodInterest;
+              
+              let periodToSet = (this.periodInterest != -1) ? this.periodInterest : this.customPeriodInterest;
+              this._dateService.periodInterest = periodToSet;
+              this._npnPortalService.periodInterest = periodToSet;
           }else{
               this._dateService.periodInterest = null;
               this._npnPortalService.periodInterest = null;
@@ -251,11 +272,17 @@ export class DateRangeComponent implements OnInit, AfterViewInit {
           this._dateService.startDate = this.startDate;
           this._dateService.endDate = this.endDate;
       }
-
+      
       this._npnPortalService.startDate = this._dateService.startDate;
       this._npnPortalService.endDate = this._dateService.endDate;
       
       this._npnPortalService.setObservationCount();
+  }
+  
+  checkCustomPeriodRange(){
+      if(this.customPeriodInterest > 366){
+          this.customPeriodInterest = 366;
+      }
   }
     
     onSelect(page) {
@@ -283,7 +310,8 @@ export class DateRangeComponent implements OnInit, AfterViewInit {
       
       this.dataPrecision = this._dateService.dataPrecision;
       
-      this.periodInterest = this._dateService.periodInterest;
+      this.periodInterest = (this._dateService.periodInterest == 7 || this._dateService.periodInterest == 14 || this._dateService.periodInterest == 30 || this._dateService.periodInterest == null) ? this._dateService.periodInterest : -1;
+      this.customPeriodInterest = this._dateService.periodInterest;
       
       if (!this.rangeType) {
           this.setRangeType('calendar');
@@ -310,6 +338,11 @@ export class DateRangeComponent implements OnInit, AfterViewInit {
               day: ['', Validators.required]
           },  {validator: validateDay})
       },  {validator: validateDateRange});
+      
+      this.dateYearForm = this.builder.group({
+          startYear: ['', Validators.required],
+          endYear: ['', Validators.required]
+      }, {validator: validateYearRange});
 
       this.rawDateForm = this.builder.group({
           startDate: ['', Validators.required],
@@ -318,6 +351,7 @@ export class DateRangeComponent implements OnInit, AfterViewInit {
 
       this.startDateGroup = <ControlGroup> this.dateForm.controls['startDateGroup'];
       this.endDateGroup = <ControlGroup> this.dateForm.controls['endDateGroup'];
+           
   }
     
     ngAfterViewInit() {

@@ -241,6 +241,7 @@ export class DownloadComponent {
              optionalFields: this._npnPortalService.getSelectedOptionalFields().map((field) => field.metadata_field_id),
              datasheets: this._npnPortalService.getSelectedDatasheets().map((datasheet) => datasheet.id),
              dataPrecision: this._npnPortalService.dataPrecision,
+             periodInterest: this._npnPortalService.periodInterest,
              rangeType: this._npnPortalService.rangeType,
              startDay: this._npnPortalService.startDay,
              endDay: this._npnPortalService.endDay,

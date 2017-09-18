@@ -3628,23 +3628,22 @@ var NpnPortalService = (function () {
     NpnPortalService.prototype.setObservationCount = function () {
         var _this = this;
         this.observationCount = -1;
-        if (this.downloadType === "magnitude") {
-            this.observationCount = this.roundEstimate(this.getMagnitudeEstimate());
-        }
-        else {
-            this.getObservationCount().subscribe(function (observationCount) {
-                console.log('observationCount = ' + observationCount.obsCount);
-                var estimatedCount = observationCount.obsCount;
-                if (_this.downloadType === 'summarized')
-                    estimatedCount = estimatedCount / 20;
-                if (_this.downloadType === 'siteLevelSummarized')
-                    estimatedCount = estimatedCount / 115;
-                _this.observationCount = _this.roundEstimate(estimatedCount);
-            }, function (error) {
-                _this.errorMessage = error;
-                console.log(_this.errorMessage);
-            });
-        }
+        this.getObservationCount().subscribe(function (observationCount) {
+            var estimatedCount = observationCount.obsCount;
+            if (_this.downloadType === 'summarized') {
+                estimatedCount = estimatedCount / 20;
+            }
+            if (_this.downloadType === 'siteLevelSummarized') {
+                estimatedCount = estimatedCount / 115;
+            }
+            if (_this.downloadType === 'magnitude') {
+                estimatedCount = _this.getMagnitudeEstimate(estimatedCount);
+            }
+            _this.observationCount = _this.roundEstimate(estimatedCount);
+        }, function (error) {
+            _this.errorMessage = error;
+            console.log(_this.errorMessage);
+        });
     };
     NpnPortalService.prototype.roundEstimate = function (estimatedCount) {
         var estimate;
@@ -3664,16 +3663,8 @@ var NpnPortalService = (function () {
         }
         return estimate;
     };
-    NpnPortalService.prototype.getMagnitudeEstimate = function () {
-        console.log("Selected species:");
-        console.log(this.getSelectedSpecies());
-        console.log(this.species);
-        var num_species = (this.getSelectedSpecies().length > 0) ? this.getSelectedSpecies().length : this.species.length;
-        var average_phenophases_per_species = 12;
-        var num_phenophases = (this.getSelectedPhenophases().length > 0) ? (this.getSelectedPhenophases().length * 2) : average_phenophases_per_species;
+    NpnPortalService.prototype.getMagnitudeEstimate = function (estimatedCount) {
         var result;
-        console.log("num species: " + num_species);
-        console.log("num pheno:" + num_phenophases);
         if (this.startYear == null || this.endYear == null) {
             result = 'N/a';
         }
@@ -3682,7 +3673,10 @@ var NpnPortalService = (function () {
             var eDate = new Date(this.startYear, this.getMonthString(this.endMonth), this.endDay);
             var diff = eDate.getTime() - sDate.getTime();
             var number_periods = (((diff / 1000 / 60 / 60 / 24) + 1) / this.periodInterest) * ((this.endYear - this.startYear) + 1);
-            result = number_periods * num_phenophases * num_species;
+            console.log('Mag est');
+            console.log(number_periods);
+            console.log(estimatedCount);
+            result = number_periods * estimatedCount;
         }
         return result;
     };
@@ -3705,7 +3699,8 @@ var NpnPortalService = (function () {
             phenophase_category: this.getSelectedPhenophases().map(function (p) { return p.phenophase_category; }),
             dataset_ids: this.getSelectedDatasets().map(function (dataset) { return dataset.dataset_id; }),
             network: this.getSelectedPartnerGroups().map(function (p) { return p.network_name; }),
-            stations: this.stations
+            stations: this.stations,
+            is_magnitude: (this.downloadType == 'magnitude') ? 1 : 0
         });
         return this.http.post(this.config.getNpnPortalServerUrl() + '/npn_portal/observations/getObservationsCount.json', data, { headers: headers })
             .map(function (res) { return res.json(); })
@@ -3727,7 +3722,7 @@ var NpnPortalService = (function () {
             startDate: this.startDate,
             endDate: this.endDate,
             num_days_quality_filter: this.dataPrecision,
-            frequency: this.periodInterest,
+            frequency: ((this.periodInterest == 30) ? 'months' : this.periodInterest),
             state: this.getSelectedStates().map(function (state) { return state.state_code; }),
             bottom_left_x1: this.extent.bottom_left_x1,
             bottom_left_y1: this.extent.bottom_left_y1,
@@ -21693,7 +21688,12 @@ var IntegratedDatasetService = (function () {
                 || d.dataset_id === 11
                 || d.dataset_id === 13
                 || d.dataset_id === 15; });
-            console.log('datasets have been set');
+            var nnDataset = {};
+            nnDataset.dataset_id = -9999;
+            nnDataset.dataset_name = 'Nature\'s Notebook';
+            nnDataset.dataset_description = 'Data from Nature\'s Notebook online and mobile apps';
+            nnDataset.dataset_documentation_url = 'https://www.usanpn.org/results/nndocumentation';
+            _this.datasets.unshift(nnDataset);
             var datasetIds = _this._persistentSearchService.datasets;
             if (datasetIds) {
                 for (var _i = 0, datasetIds_1 = datasetIds; _i < datasetIds_1.length; _i++) {
@@ -77169,6 +77169,7 @@ var DownloadComponent = (function () {
             optionalFields: this._npnPortalService.getSelectedOptionalFields().map(function (field) { return field.metadata_field_id; }),
             datasheets: this._npnPortalService.getSelectedDatasheets().map(function (datasheet) { return datasheet.id; }),
             dataPrecision: this._npnPortalService.dataPrecision,
+            periodInterest: this._npnPortalService.periodInterest,
             rangeType: this._npnPortalService.rangeType,
             startDay: this._npnPortalService.startDay,
             endDay: this._npnPortalService.endDay,
@@ -78020,12 +78021,12 @@ var DateRangeComponent = (function () {
                 return false;
             }
             if (this.endDate <= this.startDate) {
-                this.modalErrorMessage = "Please make the end date come after the start date.";
+                this.modalErrorMessage = "Please make the end date comes after the start date.";
                 this.invalidDateRangeModal.open();
                 return false;
             }
         }
-        else {
+        else if (this.getDownloadType() !== 'magnitude') {
             if (!this.dateForm.valid || !this.startDateGroup.valid || !this.endDateGroup.valid) {
                 if (!this.startDateGroup.valid && !this.endDateGroup.valid)
                     this.modalErrorMessage = "You have entered an invalid date range. Please enter a valid start and end days.";
@@ -78035,6 +78036,23 @@ var DateRangeComponent = (function () {
                     this.modalErrorMessage = "You have entered an invalid date range. Please enter a valid end day.";
                 else
                     this.modalErrorMessage = "Please make the end date come after the start date.";
+                this.invalidDateRangeModal.open();
+                return false;
+            }
+        }
+        else {
+            if (!this.startYear) {
+                this.modalErrorMessage = "You have entered an invalid date range. Please enter a start year.";
+                this.invalidDateRangeModal.open();
+                return false;
+            }
+            if (!this.endYear) {
+                this.modalErrorMessage = "You have entered an invalid date range. Please enter an end year.";
+                this.invalidDateRangeModal.open();
+                return false;
+            }
+            if (this.endYear < this.startYear) {
+                this.modalErrorMessage = "Please make the end year comes after the start year.";
                 this.invalidDateRangeModal.open();
                 return false;
             }
@@ -78075,9 +78093,9 @@ var DateRangeComponent = (function () {
                 this._npnPortalService.dataPrecision = null;
             }
             if (this.getDownloadType() == 'magnitude') {
-                console.log('Setting period of interest: ' + this.periodInterest);
-                this._dateService.periodInterest = this.periodInterest;
-                this._npnPortalService.periodInterest = this.periodInterest;
+                var periodToSet = (this.periodInterest != -1) ? this.periodInterest : this.customPeriodInterest;
+                this._dateService.periodInterest = periodToSet;
+                this._npnPortalService.periodInterest = periodToSet;
             }
             else {
                 this._dateService.periodInterest = null;
@@ -78091,6 +78109,11 @@ var DateRangeComponent = (function () {
         this._npnPortalService.startDate = this._dateService.startDate;
         this._npnPortalService.endDate = this._dateService.endDate;
         this._npnPortalService.setObservationCount();
+    };
+    DateRangeComponent.prototype.checkCustomPeriodRange = function () {
+        if (this.customPeriodInterest > 366) {
+            this.customPeriodInterest = 366;
+        }
     };
     DateRangeComponent.prototype.onSelect = function (page) {
         this._router.navigate([page]);
@@ -78110,7 +78133,8 @@ var DateRangeComponent = (function () {
         this.startYear = this._dateService.startYear;
         this.endYear = this._dateService.endYear;
         this.dataPrecision = this._dateService.dataPrecision;
-        this.periodInterest = this._dateService.periodInterest;
+        this.periodInterest = (this._dateService.periodInterest == 7 || this._dateService.periodInterest == 14 || this._dateService.periodInterest == 30 || this._dateService.periodInterest == null) ? this._dateService.periodInterest : -1;
+        this.customPeriodInterest = this._dateService.periodInterest;
         if (!this.rangeType) {
             this.setRangeType('calendar');
         }
@@ -78132,6 +78156,10 @@ var DateRangeComponent = (function () {
                 day: ['', common_1.Validators.required]
             }, { validator: validators_1.validateDay })
         }, { validator: validators_1.validateDateRange });
+        this.dateYearForm = this.builder.group({
+            startYear: ['', common_1.Validators.required],
+            endYear: ['', common_1.Validators.required]
+        }, { validator: validators_1.validateYearRange });
         this.rawDateForm = this.builder.group({
             startDate: ['', common_1.Validators.required],
             endDate: ['', common_1.Validators.required]
@@ -78201,6 +78229,14 @@ function validateRawDateRange(group) {
     }
 }
 exports.validateRawDateRange = validateRawDateRange;
+function validateYearRange(group) {
+    var startYear = group.controls['startYear'];
+    var endYear = group.controls['endYear'];
+    if (endYear.value && endYear.value <= startYear.value) {
+        return { invalidDateRange: true };
+    }
+}
+exports.validateYearRange = validateYearRange;
 function validateDateRange(group) {
     var startYear = group.controls['startDateGroup']['controls']['year'];
     var startMonth = group.controls['startDateGroup']['controls']['month'];
@@ -79396,7 +79432,11 @@ var AvailabilityPipe = (function () {
         return value.filter(function (datasheet) { return !(datasheet.name === "Observers" && reportType === "Site Phenometrics")
             && !(datasheet.name === "Individual Plants" && reportType === "Site Phenometrics")
             && !(datasheet.name === "Observation Details" && reportType != "Status and Intensity")
-            && !(datasheet.name === "Site Visit Details" && reportType != "Status and Intensity"); });
+            && !(datasheet.name === "Site Visit Details" && reportType != "Status and Intensity")
+            && !(datasheet.name === "Site Visit Details" && reportType === "Magnitude Phenometrics")
+            && !(datasheet.name === "Observers" && reportType === "Magnitude Phenometrics")
+            && !(datasheet.name === "Individual Plants" && reportType === "Magnitude Phenometrics")
+            && !(datasheet.name === "Sites" && reportType === "Magnitude Phenometrics"); });
     };
     AvailabilityPipe = __decorate([
         core_1.Pipe({
