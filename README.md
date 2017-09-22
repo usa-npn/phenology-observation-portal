@@ -26,13 +26,6 @@ npm install
 ```
 The command installs all dependencies listed in the package.json file into a folder called node_modules.
 
-Next install the typings files needed for typescript
-
-```
-cd phenology-observation-portal
-typings install
-```
-
 [Webpack](https://webpack.github.io/) is used to build and bundle the project.
 
 ```
