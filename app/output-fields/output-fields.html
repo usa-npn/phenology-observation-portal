@@ -15,8 +15,8 @@
                     <td><input type="checkbox" name="optionalField" value="{{optionalField.machine_name}}" [(ngModel)]="optionalField.selected" (change)="toggleOptionalField(optionalField)">
                         <a class="outputfield" href="javascript:;" data-toggle="tooltip" title="{{optionalField.field_description}}">{{optionalField.field_name}}</a>
                     </td>
-                </tr>
-                <tr style="height: 40px; line-height: 40px; vertical-align:middle"><td style="height: 40px; line-height: 40px; vertical-align:middle" align="center"><span class="glyphicon glyphicon-option-horizontal"></span>  <strong>Quality Control Fields</strong>  <span class="glyphicon glyphicon-option-horizontal"></span></td></tr>
+                </tr>                
+                <tr *ngIf="getQcFields().length > 0" style="height: 40px; line-height: 40px; vertical-align:middle"><td style="height: 40px; line-height: 40px; vertical-align:middle" align="center"><span class="glyphicon glyphicon-option-horizontal"></span>  <strong>Quality Control Fields</strong>  <span class="glyphicon glyphicon-option-horizontal"></span></td></tr>
                 <tr *ngFor="let optionalField of getQcFields()">
                     <td><input type="checkbox" name="optionalField" value="{{optionalField.machine_name}}" [(ngModel)]="optionalField.selected" (change)="toggleOptionalField(optionalField)">
                         <a class="outputfield" href="javascript:;" data-toggle="tooltip" title="{{optionalField.field_description}}">{{optionalField.field_name}}</a>

@@ -231,6 +231,11 @@ h1 {
 	margin-bottom:5px;
 }
 
+#search-type-button-grp .search-type-btn{
+    width:48%;
+    height:auto;
+}
+
 
 
 
