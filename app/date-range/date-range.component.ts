@@ -165,6 +165,16 @@ export class DateRangeComponent implements OnInit, AfterViewInit {
         }
         return years;
     }
+    
+    getRecentYears() {
+        var today = new Date();
+        var year = today.getFullYear();
+        let years:number[] = [];
+        for(var i = 2008; i <= year; i++) {
+            years.push(i);
+        }
+        return years; 
+    }    
 
     isDateRangeValid() :boolean {
         if (this.getDownloadType() === 'raw') {

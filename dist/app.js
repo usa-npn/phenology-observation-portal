@@ -3673,9 +3673,6 @@ var NpnPortalService = (function () {
             var eDate = new Date(this.startYear, this.getMonthString(this.endMonth), this.endDay);
             var diff = eDate.getTime() - sDate.getTime();
             var number_periods = (((diff / 1000 / 60 / 60 / 24) + 1) / this.periodInterest) * ((this.endYear - this.startYear) + 1);
-            console.log('Mag est');
-            console.log(number_periods);
-            console.log(estimatedCount);
             result = number_periods * estimatedCount;
         }
         return result;
@@ -8224,28 +8221,37 @@ var Config = (function () {
     function Config() {
     }
     Config.prototype.getPopServerUrl = function () {
-        if (location.hostname.includes('local'))
+        if (location.hostname.includes('local')) {
             return location.protocol + '//' + location.hostname;
-        if (location.hostname.includes('dev'))
-            return location.protocol + "//data-dev.usanpn.org";
-        else
-            return location.protocol + "//data.usanpn.org";
+        }
+        if (location.hostname.includes('dev')) {
+            return "https://data-dev.usanpn.org";
+        }
+        else {
+            return "https://data.usanpn.org";
+        }
     };
     Config.prototype.getNpnPortalServerUrl = function () {
-        if (location.hostname.includes('local'))
+        if (location.hostname.includes('local')) {
             return location.protocol + '//' + location.hostname;
-        if (location.hostname.includes('dev'))
-            return location.protocol + "//www-dev.usanpn.org";
-        else
-            return location.protocol + "//www.usanpn.org";
+        }
+        if (location.hostname.includes('dev')) {
+            return "https://www-dev.usanpn.org";
+        }
+        else {
+            return "https:/www.usanpn.org";
+        }
     };
     Config.prototype.getPopUrl = function () {
-        if (location.hostname.includes('local'))
+        if (location.hostname.includes('local')) {
             return window.location.origin;
-        if (location.hostname.includes('dev'))
+        }
+        if (location.hostname.includes('dev')) {
             return window.location.origin + "/observations";
-        else
+        }
+        else {
             return window.location.origin + "/observations";
+        }
     };
     Config.prototype.getPopDownloadEndpoint = function () {
         return ':3002/pop/download';
@@ -78004,6 +78010,15 @@ var DateRangeComponent = (function () {
         var year = today.getFullYear();
         var years = [];
         for (var i = 1950; i <= year; i++) {
+            years.push(i);
+        }
+        return years;
+    };
+    DateRangeComponent.prototype.getRecentYears = function () {
+        var today = new Date();
+        var year = today.getFullYear();
+        var years = [];
+        for (var i = 2008; i <= year; i++) {
             years.push(i);
         }
         return years;

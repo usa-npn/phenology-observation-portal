@@ -190,7 +190,6 @@
 <div *ngIf="getDownloadType() == 'magnitude' ">
   <form [ngFormModel]="dateYearForm">
   <h2>Date Range</h2>
-
   <p>{{getDateRangeLabel()}}</p>
 
   
@@ -226,7 +225,7 @@
                   <td>Year:</td>
                   <td>
                     <select class="form-control" required name="startYear" [(ngModel)]="startYear" #yearStart="ngForm">
-                      <option *ngFor="let year of getYears()" value="{{year}}">{{year}}</option>
+                      <option *ngFor="let year of getRecentYears()" value="{{year}}">{{year}}</option>
                     </select>
                   </td>
                 </tr>
@@ -249,7 +248,7 @@
               <td>Year:</td>
               <td>
                 <select class="form-control" required name="endYear" [(ngModel)]="endYear"  #endStart="ngForm">
-                  <option *ngFor="let year of getYears()" value="{{year}}">{{year}}</option>
+                  <option *ngFor="let year of getRecentYears()" value="{{year}}">{{year}}</option>
                 </select>
               </td>
             </tr>
