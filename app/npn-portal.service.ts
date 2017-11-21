@@ -362,6 +362,7 @@ export class NpnPortalService {
       species_names: this.getSelectedSpecies().map((s) => { return s.common_name + ' ('  + s.genus + ' ' + s.species + ')' }),
       phenophaseCategories: this.getSelectedPhenophases().map((phenophase) => phenophase.phenophase_category),
       partnerGroups: this.getSelectedPartnerGroups().map((partnerGroup) => partnerGroup.network_name),
+      network_ids: this.getSelectedPartnerGroups().map((partnerGroup) => partnerGroup.network_id),
       additionalFields: this.getSelectedOptionalFields().map((optionalField) => optionalField.machine_name),
       additionalFieldsDisplay: this.getSelectedOptionalFields().map((optionalField) => optionalField.field_name),
       dataset_ids: this.getSelectedDatasets().map((dataset) => dataset.dataset_id),
