@@ -84,6 +84,9 @@ export class GetStartedComponent implements OnInit {
   }
   
   setDownloadType(type:string){
+      
+    console.log("fa fa");
+
     if(type === this._npnPortalService.downloadType)
         return;
     if(this._npnPortalService.filtersAreSet() && !this._npnPortalService.allowDownloadTypeChangeWithoutReset) {
@@ -101,9 +104,11 @@ export class GetStartedComponent implements OnInit {
   }
   
   downloadTypeIsSet() {
+    
     return this._npnPortalService.downloadType == "raw"
         || this._npnPortalService.downloadType == "summarized"
         || this._npnPortalService.downloadType == "siteLevelSummarized"
+        || this._npnPortalService.downloadType == "magnitude"
   }
   
   isSelected(button) {

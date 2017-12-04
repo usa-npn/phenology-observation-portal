@@ -48,12 +48,13 @@
         <ul class="list-group">
             <li [class.hide]="getSelectedDate() == ''" class="list-group-item"><span class="badge">{{getSelectedDate()}}</span>Date:</li>
             <li [class.hide]="!getDataPrecision()" class="list-group-item"><span class="badge">{{getDataPrecision()}} days</span>Data Precision:</li>
+            <li [class.hide]="!getPeriodInterest()" class="list-group-item"><span class="badge">{{getPeriodInterest()}}</span>Period of Interest:</li>
             <li [class.hide]="getSelectedStates().length == 0" class="list-group-item"><span class="badge">{{getSelectedStates().length}}</span>States:</li>
             <li [class.hide]="!getSelectedExtent().bottom_left_x1" class="list-group-item"><span class="badge">1</span>Regions:</li>
             <li [class.hide]="getSelectedSpecies().length == 0" class="list-group-item"><span class="badge">{{getSelectedSpecies().length}}</span>Species:</li>
             <li [class.hide]="getSelectedPhenophases().length == 0" class="list-group-item"><span class="badge">{{getSelectedPhenophases().length}}</span>Phenophases:</li>
             <li [class.hide]="getSelectedPartnerGroups().length == 0" class="list-group-item"><span class="badge">{{getSelectedPartnerGroups().length}}</span>PartnerGroups:</li>
-            <li [class.hide]="getSelectedIntegratedDatasets().length == 0" class="list-group-item"><span class="badge">{{getSelectedIntegratedDatasets().length}}</span>Datasets:</li>
+            <li [class.hide]="getSelectedIntegratedDatasets().length == 0" class="list-group-item"><span class="badge">{{getSelectedIntegratedDatasets().length}}</span>Source Datasets:</li>
             <li [class.hide]="getSelectedOptionalFields().length == 0" class="list-group-item"><span class="badge">{{getSelectedOptionalFields().length}}</span>Output Fields:</li>
             <li [class.hide]="getSelectedAncillaryData().length == 0" class="list-group-item"><span class="badge">{{getSelectedAncillaryData().length}}</span>Datasheets:</li>
         </ul>
@@ -156,6 +157,13 @@
                     </h4>
                 </div>
             </div>
+            <div class="panel panel-default" [class.hide]="!_npnPortalService.periodInterest">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        Period of Interest: <span class="badge">{{getPeriodInterest()}}</span>
+                    </h4>
+                </div>
+            </div>            
             <div class="panel panel-default" [class.hide]="_npnPortalService.getSelectedStates().length == 0">
                 <div class="panel-heading">
                     <h4 class="panel-title">
@@ -261,7 +269,7 @@
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <a data-toggle="collapse" data-parent="#filterAccordion" href="#integratedDatasetsCollapse">
-                            Datasets: <span class="badge">{{getSelectedIntegratedDatasets().length}}</span></a>
+                            Source Datasets: <span class="badge">{{getSelectedIntegratedDatasets().length}}</span></a>
                     </h4>
                 </div>
                 <div id="integratedDatasetsCollapse" class="panel-collapse collapse">

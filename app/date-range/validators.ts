@@ -32,6 +32,15 @@ export function validateRawDateRange(group:ControlGroup) {
     }
 }
 
+export function validateYearRange(group:ControlGroup) {
+    let startYear:Control = <Control> group.controls['startYear'];
+    let endYear:Control = <Control> group.controls['endYear'];
+    
+    if (endYear.value && endYear.value <= startYear.value) {
+        return {invalidDateRange: true};
+    }
+}
+
 export function validateDateRange(group:ControlGroup) {
     let startYear:Control = <Control> group.controls['startDateGroup']['controls']['year'];
     let startMonth:Control = <Control> group.controls['startDateGroup']['controls']['month'];

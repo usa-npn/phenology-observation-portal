@@ -32,6 +32,8 @@ export class DateService {
   
   // for site lvl
   public dataPrecision:number;
+  
+  public periodInterest:number;
 
   public reset() {
       this.rangeType = null;
@@ -48,5 +50,7 @@ export class DateService {
 
         // for site lvl
       this.dataPrecision = 30;
+      
+      this.periodInterest = 7;
   }
 }

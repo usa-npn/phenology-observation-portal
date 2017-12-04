@@ -58,6 +58,15 @@ export class DownloadComponent {
     getDataPrecision() {
         return this._npnPortalService.dataPrecision;
     }
+    
+    getPeriodInterest(){
+        return (this._npnPortalService.periodInterest != null) ? 
+            ((this._npnPortalService.periodInterest == 30) ? 
+                "Monthly" : 
+                this._npnPortalService.periodInterest + " Days"
+            ) : 
+            null;
+    }
 
     getDownloadType(){
         if(this._npnPortalService.downloadType == "siteLevelSummarized")
@@ -232,6 +241,7 @@ export class DownloadComponent {
              optionalFields: this._npnPortalService.getSelectedOptionalFields().map((field) => field.metadata_field_id),
              datasheets: this._npnPortalService.getSelectedDatasheets().map((datasheet) => datasheet.id),
              dataPrecision: this._npnPortalService.dataPrecision,
+             periodInterest: this._npnPortalService.periodInterest,
              rangeType: this._npnPortalService.rangeType,
              startDay: this._npnPortalService.startDay,
              endDay: this._npnPortalService.endDay,
