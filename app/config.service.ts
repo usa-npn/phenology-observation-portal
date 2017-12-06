@@ -23,7 +23,7 @@ export class Config {
         if(location.hostname.includes('dev')){
             return "https://www-dev.usanpn.org";
         }else{
-            return "https:/www.usanpn.org";
+            return "https://www.usanpn.org";
         }
     }
 

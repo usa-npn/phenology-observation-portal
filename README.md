@@ -47,6 +47,7 @@ A common deployment will look like this
 cd phenology-observation-portal
 sudo git pull
 sudo npm install - this is only needed if the commit added a new npm package
+tsc
 sudo npm run build
 ```
 
