@@ -57,7 +57,17 @@ export class IntegratedDatasetsComponent implements OnInit {
 
     ngOnInit() {
         this.datasets =  this._integratedDatasetService.datasets;
-        this.optionalFields = this._npnPortalService.downloadType === "raw" ? this._outputFieldsService.optionalFieldsRaw : (this._npnPortalService.downloadType === "summarized" ? this._outputFieldsService.optionalFieldsSummarized : this._outputFieldsService.optionalFieldsSiteLevelSummarized);
+        this.optionalFields = 
+            (this._npnPortalService.downloadType === "raw" ? 
+                this._outputFieldsService.optionalFieldsRaw : 
+                (this._npnPortalService.downloadType === "summarized" ? 
+                    this._outputFieldsService.optionalFieldsSummarized :
+                    (this._npnPortalService.downloadType === "magnitude" ? 
+                        this._outputFieldsService.optionalFieldsMagnitude : 
+                        this._outputFieldsService.optionalFieldsSiteLevelSummarized
+                    )
+                )
+            );
         this.climateFields = this._npnPortalService.downloadType === "raw" ? this._outputFieldsService.climateFieldsRaw : (this._npnPortalService.downloadType === "summarized" ? this._outputFieldsService.climateFieldsSummarized : this._outputFieldsService.climateFieldsSiteLevelSummarized);
         this._integratedDatasetService.datasetRemoved$.subscribe(dataset => {this.removeDataset(dataset); this.submit()});
         this._integratedDatasetService.submitDatasets$.subscribe(() => this.submit());

@@ -115,7 +115,17 @@ export class AncillaryDataComponent implements OnInit {
 
     ngOnInit() {
         this.datasheets =  this._ancillaryDataService.datasheets;
-        this.optionalFields = this._npnPortalService.downloadType === "raw" ? this._outputFieldsService.optionalFieldsRaw : (this._npnPortalService.downloadType === "summarized" ? this._outputFieldsService.optionalFieldsSummarized : this._outputFieldsService.optionalFieldsSiteLevelSummarized);
+        this.optionalFields = 
+            (this._npnPortalService.downloadType === "raw" ? 
+                this._outputFieldsService.optionalFieldsRaw : 
+                (this._npnPortalService.downloadType === "summarized" ? 
+                    this._outputFieldsService.optionalFieldsSummarized :
+                    (this._npnPortalService.downloadType === "magnitude" ? 
+                        this._outputFieldsService.optionalFieldsMagnitude : 
+                        this._outputFieldsService.optionalFieldsSiteLevelSummarized
+                    )
+                )
+            );
         this.climateFields = this._npnPortalService.downloadType === "raw" ? this._outputFieldsService.climateFieldsRaw : (this._npnPortalService.downloadType === "summarized" ? this._outputFieldsService.climateFieldsSummarized : this._outputFieldsService.climateFieldsSiteLevelSummarized);
         this._ancillaryDataService.ancillaryDataRemoved$.subscribe(dataset => {this.removeAncillaryData(dataset); this.submit()});
         this._ancillaryDataService.submitAncillaryData$.subscribe(() => this.submit());
