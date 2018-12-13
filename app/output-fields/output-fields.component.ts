@@ -18,7 +18,7 @@ export class OutputFieldsComponent implements OnInit {
         this.tabs.push({title: 'Optional Fields',     view: 'optionalFieldsView'});       
         if (this.getDownloadType() != 'magnitude'){
             this.tabs.push({title: 'Climate Data Fields', view: 'climateFieldsView'});
-			this.tabs.push({title: 'Remote Sensing Data Fields', view: 'climateFieldsView'});
+			this.tabs.push({title: 'Remote Sensing Data Fields', view: 'remoteSensingFieldsView'});
         }        
         this.tabs.push({title: 'Default Data Fields', view: 'defaultFieldsView'});
         
