@@ -34,7 +34,7 @@
     "karma": "^1.3.0",
     "ts-loader": "latest",
     "typescript": "2.0.10",
-    "webpack": "latest",
-    "webpack-dev-server": "latest"
+    "webpack": "2.15.5",
+    "webpack-dev-server": "2.15.5"
   }
 }
