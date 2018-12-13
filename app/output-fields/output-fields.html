@@ -35,6 +35,18 @@
             </tr>
             </table>
         </div>
+		
+        <div id="remoteSensingFieldsView" [class.hide]="!isActiveTab('remoteSensingFieldsView')" style="height:400px;" *ngIf="getDownloadType() != 'magnitude'">
+            <table class="table table-striped table-hover table-responsive header-fixed table-condensed">
+            <tr><td><input type="checkbox" name="selectAllRemoteSensing" value="{{selectAllRemoteSensing}}" [(ngModel)]="selectAllRemoteSensing" (change)="selectAll()"> <strong>Select All</strong></td></tr>
+            <tr *ngFor="let remoteSensingField of remoteSensingFields">
+                <td><input type="checkbox" name="remoteSensingField" value="{{remoteSensingField.machine_name}}" [(ngModel)]="remoteSensingField.selected" (change)="toggleRemoteSensingField(remoteSensingField)">
+                    <a class="outputfield" href="javascript:;" data-toggle="tooltip" title="{{remoteSensingField.field_description}}">{{remoteSensingField.field_name}}</a>
+                </td>
+            </tr>
+            </table>
+        </div>		
+		
         <div id="defaultFieldsView" [class.hide]="!isActiveTab('defaultFieldsView')">
             <table class="table table-striped table-hover table-responsive header-fixed">
                 <tr *ngFor="let defaultField of defaultFields">

@@ -18,6 +18,7 @@ export class OutputFieldsComponent implements OnInit {
         this.tabs.push({title: 'Optional Fields',     view: 'optionalFieldsView'});       
         if (this.getDownloadType() != 'magnitude'){
             this.tabs.push({title: 'Climate Data Fields', view: 'climateFieldsView'});
+			this.tabs.push({title: 'Remote Sensing Data Fields', view: 'climateFieldsView'});
         }        
         this.tabs.push({title: 'Default Data Fields', view: 'defaultFieldsView'});
         
@@ -26,10 +27,12 @@ export class OutputFieldsComponent implements OnInit {
 
     optionalFields:OutputField[];
     climateFields:OutputField[];
+	remoteSensingFields:OutputField[];
     defaultFields:OutputField[];
     
     selectAllOptional:boolean;
     selectAllClimate:boolean;
+	selectAllRemoteSensing:boolean;
 
     tabs = [];
     
@@ -54,6 +57,12 @@ export class OutputFieldsComponent implements OnInit {
         if(!climateField.selected && this.selectAllClimate)
             this.selectAllClimate = false;
     }
+	
+    toggleRemoteSensingField(remoteSensingField) {
+        remoteSensingField.selected = !remoteSensingField.selected;
+        if(!remoteSensingField.selected && this.selectAllRemoteSensing)
+            this.selectAllRemoteSensing = false;
+    }	
     
     selectAll() {
         if(this.currentTab === 'optionalFieldsView') {
@@ -68,6 +77,12 @@ export class OutputFieldsComponent implements OnInit {
                 climateField.selected = this.selectAllClimate;
             }
         }
+        else if(this.currentTab === 'remoteSensingFieldsView') {
+            this.selectAllRemoteSensing = !this.selectAllRemoteSensing;
+            for(var remoteSensingField of this.remoteSensingFields) {
+                remoteSensingField.selected = this.selectAllRemoteSensing;
+            }
+        }		
     }
     
     removeOptionalField(optionalField:OutputField) {
@@ -83,6 +98,12 @@ export class OutputFieldsComponent implements OnInit {
                 this.selectAllClimate = false;
             }
         }
+        for(var field of this.remoteSensingFields) {
+            if(optionalField.machine_name === field.machine_name) {
+                field.selected = false;
+                this.selectAllRemoteSensing = false;
+            }
+        }		
     }
     
     getQcFields() {
@@ -98,7 +119,7 @@ export class OutputFieldsComponent implements OnInit {
     }    
 
     submit() {
-        this._npnPortalService.optionalFields = this.optionalFields.concat(this.climateFields).map(obj => Object.assign({}, obj));
+        this._npnPortalService.optionalFields = this.optionalFields.concat(this.climateFields).concat(this.remoteSensingFields).map(obj => Object.assign({}, obj));
         this._npnPortalService.setObservationCount();
     }
 
@@ -115,6 +136,7 @@ export class OutputFieldsComponent implements OnInit {
     ngOnInit() {
         this.selectAllOptional = this._outputFieldsService.selectAllOptional;
         this.selectAllClimate = this._outputFieldsService.selectAllClimate;
+		this.selectAllRemoteSensing = this._outputFieldsService.selectAllRemoteSensing;
         
         this.optionalFields = this._npnPortalService.downloadType === "raw" ? 
             this._outputFieldsService.optionalFieldsRaw : 
@@ -125,6 +147,9 @@ export class OutputFieldsComponent implements OnInit {
                     this._outputFieldsService.optionalFieldsSiteLevelSummarized;
                 
         this.climateFields = this._npnPortalService.downloadType === "raw" ? this._outputFieldsService.climateFieldsRaw : (this._npnPortalService.downloadType === "summarized" ? this._outputFieldsService.climateFieldsSummarized : this._outputFieldsService.climateFieldsSiteLevelSummarized);
+		
+
+        this.remoteSensingFields = this._npnPortalService.downloadType === "raw" ? this._outputFieldsService.remoteSensingFieldsRaw : (this._npnPortalService.downloadType === "summarized" ? this._outputFieldsService.remoteSensingFieldsSummarized : this._outputFieldsService.remoteSensingFieldsSiteLevelSummarized);		
         
         this.defaultFields = this._npnPortalService.downloadType === "raw" ? 
             this._outputFieldsService.defaultFieldsRaw : 

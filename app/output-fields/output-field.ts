@@ -12,6 +12,7 @@ export interface OutputField {
     type: string;
     quality_check: boolean;
     climate: boolean;
+	remote_sensing: boolean;
     required: boolean;
     machine_name: string;
     controlled_values: string;

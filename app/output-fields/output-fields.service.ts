@@ -27,6 +27,7 @@ export class OutputFieldsService {
     
     public selectAllOptional:boolean = false;
     public selectAllClimate:boolean = false;
+	public selectAllRemoteSensing:boolean = false;
 
     private _metadataFieldsUrl = this.config.getNpnPortalServerUrl() + '/npn_portal/metadata/getMetadataFields.json';
     public rawFieldsReady: boolean = false;
@@ -38,16 +39,19 @@ export class OutputFieldsService {
     public rawFields:OutputField[] = [];
     public optionalFieldsRaw:OutputField[] = [];
     public climateFieldsRaw:OutputField[] = [];
+	public remoteSensingFieldsRaw:OutputField[] = [];
     public defaultFieldsRaw:OutputField[] = [];
     
     public summarizedFields:OutputField[] = [];
     public optionalFieldsSummarized:OutputField[] = [];
     public climateFieldsSummarized:OutputField[] = [];
+	public remoteSensingFieldsSummarized:OutputField[] = [];
     public defaultFieldsSummarized:OutputField[] = [];
     
     public siteLevelSummarizedFields:OutputField[] = [];
     public optionalFieldsSiteLevelSummarized:OutputField[]= [];
     public climateFieldsSiteLevelSummarized:OutputField[] = [];
+	public remoteSensingFieldsSiteLevelSummarized:OutputField[] = [];
     public defaultFieldsSiteLevelSummarized:OutputField[] = [];
     
     public magnitudeFields:OutputField[] = [];
@@ -59,6 +63,7 @@ export class OutputFieldsService {
     mapBooleans(field) {
         field.quality_check === 1 ? field.quality_check = true : field.quality_check = false;
         field.climate === 1 ? field.climate = true : field.climate = false;
+		field.remote_sensing === 1 ? field.remote_sensing = true : field.remote_sensing = false;
         field.required === 1 ? field.required = true : field.required = false;
         field.field_name = field.field_name.replace(/_/gi, ' ');
     }
@@ -82,12 +87,14 @@ export class OutputFieldsService {
                     }
                 }
                 
-                this.optionalFieldsRaw = rawFields.filter((field) => {return !field.climate && !field.required});
+                this.optionalFieldsRaw = rawFields.filter((field) => {return !field.climate && !field.required && !field.remote_sensing});
                 this.climateFieldsRaw = rawFields.filter((field) => {return field.climate && !field.required});
+				this.remoteSensingFieldsRaw = rawFields.filter((field) => {return field.remote_sensing && !field.required});
                 this.defaultFieldsRaw = rawFields.filter((field) => {return field.required});
 
                 if(this._npnPortalService.downloadType === "raw")
-                    this._npnPortalService.optionalFields = this.optionalFieldsRaw.concat(this.climateFieldsRaw).map(obj => Object.assign({}, obj));
+                    this._npnPortalService.optionalFields = this.optionalFieldsRaw.concat(this.climateFieldsRaw).concat(this.remoteSensingFieldsRaw).map(obj => Object.assign({}, obj));
+                    this._npnPortalService.optionalFields = this.optionalFieldsRaw.concat(this.remoteSensingFieldsRaw).map(obj => Object.assign({}, obj));				
                 
                 this.rawFieldsReady = true;
             },
@@ -119,8 +126,9 @@ export class OutputFieldsService {
                     }
                 }
                 
-                this.optionalFieldsSummarized = summarizedFields.filter((field) => {return !field.climate && !field.required});
+                this.optionalFieldsSummarized = summarizedFields.filter((field) => {return !field.climate && !field.required && !field.remote_sensing});
                 this.climateFieldsSummarized = summarizedFields.filter((field) => {return field.climate && !field.required});
+				this.remoteSensingFieldsSummarized = summarizedFields.filter((field) => {return field.remote_sensing && !field.required});
                 this.defaultFieldsSummarized = summarizedFields.filter((field) => {return field.required});
 
                 if(this._npnPortalService.downloadType === "summarized")
@@ -156,8 +164,9 @@ export class OutputFieldsService {
                     }
                 }
                 
-                this.optionalFieldsSiteLevelSummarized = siteLevelSummarizedFields.filter((field) => {return !field.climate && !field.required});
+                this.optionalFieldsSiteLevelSummarized = siteLevelSummarizedFields.filter((field) => {return !field.climate && !field.required && !field.remote_sensing});
                 this.climateFieldsSiteLevelSummarized = siteLevelSummarizedFields.filter((field) => {return field.climate && !field.required});
+				this.remoteSensingFieldsSiteLevelSummarized = siteLevelSummarizedFields.filter((field) => {return field.remote_sensing && !field.required});
                 this.defaultFieldsSiteLevelSummarized = siteLevelSummarizedFields.filter((field) => {return field.required});
 
                 if(this._npnPortalService.downloadType === "siteLevelSummarized")
@@ -194,7 +203,7 @@ export class OutputFieldsService {
                     }
                 }
                 
-                this.optionalFieldsMagnitude = magnitudeFields.filter((field) => {return !field.climate && !field.required});
+                this.optionalFieldsMagnitude = magnitudeFields.filter((field) => {return !field.climate && !field.required && !field.remote_sensing});
                 this.climateFieldsMagnitude = magnitudeFields.filter((field) => {return field.climate && !field.required});
                 this.defaultFieldsMagnitude = magnitudeFields.filter((field) => {return field.required});
 
@@ -221,6 +230,7 @@ export class OutputFieldsService {
     reset() {
         this.selectAllOptional = false;
         this.selectAllClimate = false;
+		this.selectAllRemoteSensing = false;
 
         for(var field of this.rawFields) {
             field.selected = false;
@@ -229,6 +239,9 @@ export class OutputFieldsService {
             field.selected = false;
         }
         for(var field of this.climateFieldsRaw) {
+            field.selected = false;
+        }
+        for(var field of this.remoteSensingFieldsRaw) {
             field.selected = false;
         }
         for(var field of this.summarizedFields) {
@@ -240,6 +253,9 @@ export class OutputFieldsService {
         for(var field of this.climateFieldsSummarized) {
             field.selected = false;
         }
+        for(var field of this.remoteSensingFieldsSummarized) {
+            field.selected = false;
+        }		
         for(var field of this.siteLevelSummarizedFields) {
             field.selected = false;
         }
@@ -249,6 +265,9 @@ export class OutputFieldsService {
         for(var field of this.climateFieldsSiteLevelSummarized) {
             field.selected = false;
         }
+        for(var field of this.remoteSensingFieldsSiteLevelSummarized) {
+            field.selected = false;
+        }		
     }
 
 }

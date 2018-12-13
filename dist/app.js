@@ -3731,6 +3731,7 @@ var NpnPortalService = (function () {
             species_names: this.getSelectedSpecies().map(function (s) { return s.common_name + ' (' + s.genus + ' ' + s.species + ')'; }),
             phenophaseCategories: this.getSelectedPhenophases().map(function (phenophase) { return phenophase.phenophase_category; }),
             partnerGroups: this.getSelectedPartnerGroups().map(function (partnerGroup) { return partnerGroup.network_name; }),
+            network_ids: this.getSelectedPartnerGroups().map(function (partnerGroup) { return partnerGroup.network_id; }),
             additionalFields: this.getSelectedOptionalFields().map(function (optionalField) { return optionalField.machine_name; }),
             additionalFieldsDisplay: this.getSelectedOptionalFields().map(function (optionalField) { return optionalField.field_name; }),
             dataset_ids: this.getSelectedDatasets().map(function (dataset) { return dataset.dataset_id; }),
@@ -8239,7 +8240,7 @@ var Config = (function () {
             return "https://www-dev.usanpn.org";
         }
         else {
-            return "https:/www.usanpn.org";
+            return "https://www.usanpn.org";
         }
     };
     Config.prototype.getPopUrl = function () {
@@ -13729,6 +13730,7 @@ var OutputFieldsService = (function () {
         this.submitOptionalFields$ = new core_1.EventEmitter();
         this.selectAllOptional = false;
         this.selectAllClimate = false;
+		this.selectAllRemoteSensing = false;
         this._metadataFieldsUrl = this.config.getNpnPortalServerUrl() + '/npn_portal/metadata/getMetadataFields.json';
         this.rawFieldsReady = false;
         this.summarizedFieldsReady = false;
@@ -13737,14 +13739,17 @@ var OutputFieldsService = (function () {
         this.rawFields = [];
         this.optionalFieldsRaw = [];
         this.climateFieldsRaw = [];
+		this.remoteSensingFieldsRaw = [];
         this.defaultFieldsRaw = [];
         this.summarizedFields = [];
         this.optionalFieldsSummarized = [];
         this.climateFieldsSummarized = [];
+		this.remoteSensingFieldsSummarized = [];
         this.defaultFieldsSummarized = [];
         this.siteLevelSummarizedFields = [];
         this.optionalFieldsSiteLevelSummarized = [];
         this.climateFieldsSiteLevelSummarized = [];
+		this.remoteSensingFieldsSiteLevelSummarized = [];
         this.defaultFieldsSiteLevelSummarized = [];
         this.magnitudeFields = [];
         this.siteLevelMagnitude = [];
@@ -13762,6 +13767,7 @@ var OutputFieldsService = (function () {
         field.quality_check === 1 ? field.quality_check = true : field.quality_check = false;
         field.climate === 1 ? field.climate = true : field.climate = false;
         field.required === 1 ? field.required = true : field.required = false;
+		field.remote_sensing === 1 ? field.remote_sensing = true : field.remote_sensing = false;
         field.field_name = field.field_name.replace(/_/gi, ' ');
     };
     OutputFieldsService.prototype.initRawFields = function () {
@@ -13783,11 +13789,12 @@ var OutputFieldsService = (function () {
                     }
                 }
             }
-            _this.optionalFieldsRaw = rawFields.filter(function (field) { return !field.climate && !field.required; });
+            _this.optionalFieldsRaw = rawFields.filter(function (field) { return !field.climate && !field.required && !field.remote_sensing; });
             _this.climateFieldsRaw = rawFields.filter(function (field) { return field.climate && !field.required; });
+			_this.remoteSensingFieldsRaw = rawFields.filter(function (field) { return field.remote_sensing && !field.required; });
             _this.defaultFieldsRaw = rawFields.filter(function (field) { return field.required; });
             if (_this._npnPortalService.downloadType === "raw")
-                _this._npnPortalService.optionalFields = _this.optionalFieldsRaw.concat(_this.climateFieldsRaw).map(function (obj) { return Object.assign({}, obj); });
+                _this._npnPortalService.optionalFields = _this.optionalFieldsRaw.concat(_this.climateFieldsRaw).concat(_this.remoteSensingFieldsRaw).concat(_this.remoteSensingFieldsRaw).map(function (obj) { return Object.assign({}, obj); });
             _this.rawFieldsReady = true;
         }, function (error) { return _this.errorMessage = error; });
     };
@@ -13815,8 +13822,9 @@ var OutputFieldsService = (function () {
                     }
                 }
             }
-            _this.optionalFieldsSummarized = summarizedFields.filter(function (field) { return !field.climate && !field.required; });
+            _this.optionalFieldsSummarized = summarizedFields.filter(function (field) { return !field.climate && !field.required && !field.remote_sensing; });
             _this.climateFieldsSummarized = summarizedFields.filter(function (field) { return field.climate && !field.required; });
+			_this.remoteSensingFieldsSummarized = summarizedFields.filter(function (field) { return field.remote_sensing && !field.required; });
             _this.defaultFieldsSummarized = summarizedFields.filter(function (field) { return field.required; });
             if (_this._npnPortalService.downloadType === "summarized")
                 _this._npnPortalService.optionalFields = _this.optionalFieldsSummarized.concat(_this.climateFieldsSummarized).map(function (obj) { return Object.assign({}, obj); });
@@ -13847,8 +13855,9 @@ var OutputFieldsService = (function () {
                     }
                 }
             }
-            _this.optionalFieldsSiteLevelSummarized = siteLevelSummarizedFields.filter(function (field) { return !field.climate && !field.required; });
+            _this.optionalFieldsSiteLevelSummarized = siteLevelSummarizedFields.filter(function (field) { return !field.climate && !field.required && !field.remote_sensing; });
             _this.climateFieldsSiteLevelSummarized = siteLevelSummarizedFields.filter(function (field) { return field.climate && !field.required; });
+			_this.remoteSensingFieldsSiteLevelSummarized = siteLevelSummarizedFields.filter(function (field) { return field.remote_sensing && !field.required; });
             _this.defaultFieldsSiteLevelSummarized = siteLevelSummarizedFields.filter(function (field) { return field.required; });
             if (_this._npnPortalService.downloadType === "siteLevelSummarized")
                 _this._npnPortalService.optionalFields = _this.optionalFieldsSiteLevelSummarized.concat(_this.climateFieldsSiteLevelSummarized).map(function (obj) { return Object.assign({}, obj); });
@@ -13879,7 +13888,7 @@ var OutputFieldsService = (function () {
                     }
                 }
             }
-            _this.optionalFieldsMagnitude = magnitudeFields.filter(function (field) { return !field.climate && !field.required; });
+            _this.optionalFieldsMagnitude = magnitudeFields.filter(function (field) { return !field.climate && !field.required && !field.remote_sensing; });
             _this.climateFieldsMagnitude = magnitudeFields.filter(function (field) { return field.climate && !field.required; });
             _this.defaultFieldsMagnitude = magnitudeFields.filter(function (field) { return field.required; });
             if (_this._npnPortalService.downloadType === "magnitude")
@@ -13899,6 +13908,7 @@ var OutputFieldsService = (function () {
     OutputFieldsService.prototype.reset = function () {
         this.selectAllOptional = false;
         this.selectAllClimate = false;
+		this.selectAllRemoteSensing = false;
         for (var _i = 0, _a = this.rawFields; _i < _a.length; _i++) {
             var field = _a[_i];
             field.selected = false;
@@ -13911,6 +13921,10 @@ var OutputFieldsService = (function () {
             var field = _e[_d];
             field.selected = false;
         }
+        for (var _d = 0, _e = this.remoteSensingFieldsRaw; _d < _e.length; _d++) {
+            var field = _e[_d];
+            field.selected = false;
+        }		
         for (var _f = 0, _g = this.summarizedFields; _f < _g.length; _f++) {
             var field = _g[_f];
             field.selected = false;
@@ -13923,6 +13937,10 @@ var OutputFieldsService = (function () {
             var field = _l[_k];
             field.selected = false;
         }
+        for (var _k = 0, _l = this.remoteSensingFieldsSummarized; _k < _l.length; _k++) {
+            var field = _l[_k];
+            field.selected = false;
+        }		
         for (var _m = 0, _o = this.siteLevelSummarizedFields; _m < _o.length; _m++) {
             var field = _o[_m];
             field.selected = false;
@@ -13935,6 +13953,10 @@ var OutputFieldsService = (function () {
             var field = _s[_r];
             field.selected = false;
         }
+        for (var _r = 0, _s = this.remoteSensingFieldsSiteLevelSummarized; _r < _s.length; _r++) {
+            var field = _s[_r];
+            field.selected = false;
+        }		
     };
     OutputFieldsService = __decorate([
         core_1.Injectable(),
@@ -79128,7 +79150,14 @@ var IntegratedDatasetsComponent = (function () {
     IntegratedDatasetsComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.datasets = this._integratedDatasetService.datasets;
-        this.optionalFields = this._npnPortalService.downloadType === "raw" ? this._outputFieldsService.optionalFieldsRaw : (this._npnPortalService.downloadType === "summarized" ? this._outputFieldsService.optionalFieldsSummarized : this._outputFieldsService.optionalFieldsSiteLevelSummarized);
+        this.optionalFields =
+            (this._npnPortalService.downloadType === "raw" ?
+                this._outputFieldsService.optionalFieldsRaw :
+                (this._npnPortalService.downloadType === "summarized" ?
+                    this._outputFieldsService.optionalFieldsSummarized :
+                    (this._npnPortalService.downloadType === "magnitude" ?
+                        this._outputFieldsService.optionalFieldsMagnitude :
+                        this._outputFieldsService.optionalFieldsSiteLevelSummarized)));
         this.climateFields = this._npnPortalService.downloadType === "raw" ? this._outputFieldsService.climateFieldsRaw : (this._npnPortalService.downloadType === "summarized" ? this._outputFieldsService.climateFieldsSummarized : this._outputFieldsService.climateFieldsSiteLevelSummarized);
         this._integratedDatasetService.datasetRemoved$.subscribe(function (dataset) { _this.removeDataset(dataset); _this.submit(); });
         this._integratedDatasetService.submitDatasets$.subscribe(function () { return _this.submit(); });
@@ -79179,6 +79208,7 @@ var OutputFieldsComponent = (function () {
         this.tabs.push({ title: 'Optional Fields', view: 'optionalFieldsView' });
         if (this.getDownloadType() != 'magnitude') {
             this.tabs.push({ title: 'Climate Data Fields', view: 'climateFieldsView' });
+			this.tabs.push({ title: 'Remote Sensing Data Fields', view: 'remoteSensingFieldsView' });
         }
         this.tabs.push({ title: 'Default Data Fields', view: 'defaultFieldsView' });
     }
@@ -79198,6 +79228,11 @@ var OutputFieldsComponent = (function () {
         if (!climateField.selected && this.selectAllClimate)
             this.selectAllClimate = false;
     };
+    OutputFieldsComponent.prototype.toggleRemoteSensingField = function (remoteSensingField) {
+        remoteSensingField.selected = !remoteSensingField.selected;
+        if (!remoteSensingField.selected && this.selectAllRemoteSensing)
+            this.selectAllRemoteSensing = false;
+    };	
     OutputFieldsComponent.prototype.selectAll = function () {
         if (this.currentTab === 'optionalFieldsView') {
             this.selectAllOptional = !this.selectAllOptional;
@@ -79213,6 +79248,13 @@ var OutputFieldsComponent = (function () {
                 climateField.selected = this.selectAllClimate;
             }
         }
+        else if (this.currentTab === 'remoteSensingFieldsView') {
+            this.selectAllRemoteSensing = !this.selectAllRemoteSensing;
+            for (var _b = 0, _c = this.remoteSensingFields; _b < _c.length; _b++) {
+                var remoteSensingField = _c[_b];
+                remoteSensingField.selected = this.selectAllRemoteSensing;
+            }
+        }		
     };
     OutputFieldsComponent.prototype.removeOptionalField = function (optionalField) {
         for (var _i = 0, _a = this.optionalFields; _i < _a.length; _i++) {
@@ -79229,6 +79271,13 @@ var OutputFieldsComponent = (function () {
                 this.selectAllClimate = false;
             }
         }
+        for (var _b = 0, _c = this.remoteSensingFields; _b < _c.length; _b++) {
+            var field = _c[_b];
+            if (optionalField.machine_name === field.machine_name) {
+                field.selected = false;
+                this.selectAllRemoteSensing = false;
+            }
+        }		
     };
     OutputFieldsComponent.prototype.getQcFields = function () {
         return this.optionalFields.filter(function (field) { return field.quality_check; });
@@ -79240,7 +79289,7 @@ var OutputFieldsComponent = (function () {
         return this._npnPortalService.downloadType;
     };
     OutputFieldsComponent.prototype.submit = function () {
-        this._npnPortalService.optionalFields = this.optionalFields.concat(this.climateFields).map(function (obj) { return Object.assign({}, obj); });
+        this._npnPortalService.optionalFields = this.optionalFields.concat(this.climateFields).concat(this.remoteSensingFields).map(function (obj) { return Object.assign({}, obj); });
         this._npnPortalService.setObservationCount();
     };
     OutputFieldsComponent.prototype.onSelect = function (page) {
@@ -79255,6 +79304,7 @@ var OutputFieldsComponent = (function () {
         var _this = this;
         this.selectAllOptional = this._outputFieldsService.selectAllOptional;
         this.selectAllClimate = this._outputFieldsService.selectAllClimate;
+		this.selectAllRemoteSensing = this._outputFieldsService.selectAllRemoteSensing;
         this.optionalFields = this._npnPortalService.downloadType === "raw" ?
             this._outputFieldsService.optionalFieldsRaw :
             (this._npnPortalService.downloadType === "summarized") ?
@@ -79263,6 +79313,9 @@ var OutputFieldsComponent = (function () {
                     this._outputFieldsService.optionalFieldsMagnitude :
                     this._outputFieldsService.optionalFieldsSiteLevelSummarized;
         this.climateFields = this._npnPortalService.downloadType === "raw" ? this._outputFieldsService.climateFieldsRaw : (this._npnPortalService.downloadType === "summarized" ? this._outputFieldsService.climateFieldsSummarized : this._outputFieldsService.climateFieldsSiteLevelSummarized);
+		
+		this.remoteSensingFields = this._npnPortalService.downloadType === "raw" ? this._outputFieldsService.remoteSensingFieldsRaw : (this._npnPortalService.downloadType === "summarized" ? this._outputFieldsService.remoteSensingFieldsSummarized : this._outputFieldsService.remoteSensingFieldsSiteLevelSummarized);
+		
         this.defaultFields = this._npnPortalService.downloadType === "raw" ?
             this._outputFieldsService.defaultFieldsRaw :
             (this._npnPortalService.downloadType === "summarized" ?
@@ -79388,7 +79441,14 @@ var AncillaryDataComponent = (function () {
     AncillaryDataComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.datasheets = this._ancillaryDataService.datasheets;
-        this.optionalFields = this._npnPortalService.downloadType === "raw" ? this._outputFieldsService.optionalFieldsRaw : (this._npnPortalService.downloadType === "summarized" ? this._outputFieldsService.optionalFieldsSummarized : this._outputFieldsService.optionalFieldsSiteLevelSummarized);
+        this.optionalFields =
+            (this._npnPortalService.downloadType === "raw" ?
+                this._outputFieldsService.optionalFieldsRaw :
+                (this._npnPortalService.downloadType === "summarized" ?
+                    this._outputFieldsService.optionalFieldsSummarized :
+                    (this._npnPortalService.downloadType === "magnitude" ?
+                        this._outputFieldsService.optionalFieldsMagnitude :
+                        this._outputFieldsService.optionalFieldsSiteLevelSummarized)));
         this.climateFields = this._npnPortalService.downloadType === "raw" ? this._outputFieldsService.climateFieldsRaw : (this._npnPortalService.downloadType === "summarized" ? this._outputFieldsService.climateFieldsSummarized : this._outputFieldsService.climateFieldsSiteLevelSummarized);
         this._ancillaryDataService.ancillaryDataRemoved$.subscribe(function (dataset) { _this.removeAncillaryData(dataset); _this.submit(); });
         this._ancillaryDataService.submitAncillaryData$.subscribe(function () { return _this.submit(); });
