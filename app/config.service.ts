@@ -40,14 +40,14 @@ export class Config {
     }
     
     public getPopDownloadEndpoint() {
-        return ':3002/pop/download';
+        return '/popservices/pop/download';
     }
     
     public getPopSearchEndpoint() {
-        return ':3002/pop/search';
+        return '/popservices/pop/search';
     }
 
     public getPopFgdcEndpoint() {
-        return ':3002/pop/fgdc';
+        return '/popservices/pop/fgdc';
     }
 }
