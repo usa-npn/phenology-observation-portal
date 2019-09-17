@@ -14,6 +14,33 @@ export class OutputFieldsService {
                  private _persistentSearchService: PersistentSearchService, 
                  private _npnPortalService: NpnPortalService) {}
 
+    private remote_sensing_fields = [
+                        'evi_minimum_0',
+                        'evi_minimum_1',
+                        'evi_amplitude_0',
+                        'evi_amplitude_1',
+                        'evi_area_0',
+                        'evi_area_1',
+                        'greenup_0',
+                        'greenup_1',
+                        'midgreenup_0',
+                        'midgreenup_1',
+                        'peak_0',
+                        'peak_1',
+                        'numcycles',
+                        'maturity_0',
+                        'maturity_1',
+                        'midgreendown_0',
+                        'midgreendown_1',
+                        'senescence_0',
+                        'senescence_1',
+                        'dormancy_0',
+                        'dormancy_1',
+                        'qa_detailed_0',
+                        'qa_detailed_1',
+                        'qa_overall_0',
+                        'qa_overall_1'];
+
     public optionalFieldRemoved$ = new EventEmitter();
     public submitOptionalFields$ = new EventEmitter();
 
@@ -87,7 +114,7 @@ export class OutputFieldsService {
                     }
                 }
                 
-                this.optionalFieldsRaw = rawFields.filter((field) => {return !field.climate && !field.required && !field.remote_sensing});
+                this.optionalFieldsRaw = rawFields.filter((field) => {return !field.climate && !field.required && !field.remote_sensing && this.remote_sensing_fields.indexOf(field.machine_name) == -1});
                 this.climateFieldsRaw = rawFields.filter((field) => {return field.climate && !field.required});
 				this.remoteSensingFieldsRaw = rawFields.filter((field) => {return field.remote_sensing && !field.climate && !field.required});
                 this.defaultFieldsRaw = rawFields.filter((field) => {return field.required});
@@ -125,7 +152,7 @@ export class OutputFieldsService {
                     }
                 }
                 
-                this.optionalFieldsSummarized = summarizedFields.filter((field) => {return !field.climate && !field.required && !field.remote_sensing});
+                this.optionalFieldsSummarized = summarizedFields.filter((field) => {return !field.climate && !field.required && !field.remote_sensing && this.remote_sensing_fields.indexOf(field.machine_name) == -1});
                 this.climateFieldsSummarized = summarizedFields.filter((field) => {return field.climate && !field.required});
 				this.remoteSensingFieldsSummarized = summarizedFields.filter((field) => {return field.remote_sensing &&  !field.climate && !field.required});
                 this.defaultFieldsSummarized = summarizedFields.filter((field) => {return field.required});
@@ -163,7 +190,7 @@ export class OutputFieldsService {
                     }
                 }
                 
-                this.optionalFieldsSiteLevelSummarized = siteLevelSummarizedFields.filter((field) => {return !field.climate && !field.required && !field.remote_sensing});
+                this.optionalFieldsSiteLevelSummarized = siteLevelSummarizedFields.filter((field) => {return !field.climate && !field.required && !field.remote_sensing && this.remote_sensing_fields.indexOf(field.machine_name) == -1});
                 this.climateFieldsSiteLevelSummarized = siteLevelSummarizedFields.filter((field) => {return field.climate && !field.required});
 				this.remoteSensingFieldsSiteLevelSummarized = siteLevelSummarizedFields.filter((field) => {return field.remote_sensing &&  !field.climate && !field.required});
                 this.defaultFieldsSiteLevelSummarized = siteLevelSummarizedFields.filter((field) => {return field.required});
