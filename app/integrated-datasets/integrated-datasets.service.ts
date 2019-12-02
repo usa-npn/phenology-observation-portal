@@ -33,11 +33,16 @@ export class IntegratedDatasetService {
     initDatasets() {
         this.getDatasets().subscribe(
             datasets => {
+                // want NEON dataset to be second
+                let neonDataset = datasets.filter((d) => d.datatset_name == 'NEON 2013-Present');
+                
                 this.datasets = datasets.filter((d) => d.dataset_id === 7 
                 || d.dataset_id === 8 
                 || d.dataset_id === 11 
                 || d.dataset_id === 13
                 || d.dataset_id === 15);
+
+                this.datasets.unshift(neonDataset);
 
                 var nnDataset = <Dataset>{};
                 nnDataset.dataset_id = -9999;
@@ -45,6 +50,8 @@ export class IntegratedDatasetService {
                 nnDataset.dataset_description = 'Data from Nature\'s Notebook online and mobile apps';
                 nnDataset.dataset_documentation_url = 'https://www.usanpn.org/results/nndocumentation';      
                 this.datasets.unshift(nnDataset);
+
+                
 
 
                 let datasetIds = this._persistentSearchService.datasets;
