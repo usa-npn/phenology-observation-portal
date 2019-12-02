@@ -38,16 +38,14 @@ export class IntegratedDatasetService {
                 || d.dataset_name === 'ADF Nature Log'
                 || d.dataset_name === 'NYBG 2009-2013'
                 || d.dataset_name === 'GRSM Tremont 2010-2012'
-                // || d.dataset_name === 'NEON 2013-Present'
                 );
 
                 let neonDataset = datasets.filter((d) => d.dataset_name === 'NEON 2013-Present');
                 // move neon data to be second
-                console.log(datasets);
+                console.log(this.datasets);
                 // datasets.splice(0,0,datasets.splice(5, 1)[0]);
-                datasets = neonDataset.concat(datasets)
-
-                console.log(datasets);
+                this.datasets = neonDataset.concat(this.datasets)
+                console.log(this.datasets);
 
                 var nnDataset = <Dataset>{};
                 nnDataset.dataset_id = -9999;
