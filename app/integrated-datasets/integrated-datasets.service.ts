@@ -34,7 +34,7 @@ export class IntegratedDatasetService {
         this.getDatasets().subscribe(
             datasets => {
                 // want NEON dataset to be second
-                let neonDataset = datasets.filter((d) => d.datatset_name == 'NEON 2013-Present');
+                let neonDataset = datasets.filter((d) => d.dataset_name == 'NEON 2013-Present');
                 
                 this.datasets = datasets.filter((d) => d.dataset_id === 7 
                 || d.dataset_id === 8 
