@@ -34,7 +34,7 @@ export class IntegratedDatasetService {
         this.getDatasets().subscribe(
             datasets => {       
                 this.datasets = datasets.filter((d) => d.dataset_name === 'Legacy Lilac/Honeysuckle Data - East'
-                || d.dataset_name === 'Legacy Lilac/Honeysuckle Data - East'
+                || d.dataset_name === 'Legacy Lilac/Honeysuckle Data - West'
                 || d.dataset_name === 'ADF Nature Log'
                 || d.dataset_name === 'NYBG 2009-2013'
                 || d.dataset_name === 'GRSM Tremont 2010-2012'
