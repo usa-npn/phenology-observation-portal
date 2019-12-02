@@ -34,7 +34,12 @@ export class IntegratedDatasetService {
         this.getDatasets().subscribe(
             datasets => {
                 // want NEON dataset to be second
-                let neonDataset = datasets.filter((d) => d.dataset_name == 'NEON 2013-Present');
+                // let neonDataset = datasets.filter((d) => d.dataset_name == 'NEON 2013-Present');
+                let neonDataset = <Dataset>{};
+                neonDataset.dataset_id = 17;
+                neonDataset.dataset_name = 'NEON 2013-Present';
+                neonDataset.dataset_description = 'National Ecological Observatory Network phenology using USA-NPN protocols, 2013 to present';
+                neonDataset.dataset_documentation_url = 'https://docs.google.com/document/d/e/2PACX-1vRquPEazk0c99ShLV5_t_hGSjJPp7tPgEXVxhhOrrCyoFxzwruNcthbH3Z_jnaCglQfxsRGP0zVz6mA/pub';
                 
                 this.datasets = datasets.filter((d) => d.dataset_id === 7 
                 || d.dataset_id === 8 
