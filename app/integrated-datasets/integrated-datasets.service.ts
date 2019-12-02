@@ -42,10 +42,7 @@ export class IntegratedDatasetService {
 
                 let neonDataset = datasets.filter((d) => d.dataset_name === 'NEON 2013-Present');
                 // move neon data to be second
-                console.log(this.datasets);
-                // datasets.splice(0,0,datasets.splice(5, 1)[0]);
                 this.datasets = neonDataset.concat(this.datasets)
-                console.log(this.datasets);
 
                 var nnDataset = <Dataset>{};
                 nnDataset.dataset_id = -9999;
