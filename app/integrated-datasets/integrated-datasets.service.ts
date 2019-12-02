@@ -40,6 +40,8 @@ export class IntegratedDatasetService {
                 || d.dataset_name === 'GRSM Tremont 2010-2012'
                 || d.dataset_name === 'NEON 2013-Present');
 
+                // move neon data to be second
+                datasets.splice(0,0,datasets.splice(datasets.length-1, 1)[0]);
  
                 var nnDataset = <Dataset>{};
                 nnDataset.dataset_id = -9999;
@@ -47,9 +49,6 @@ export class IntegratedDatasetService {
                 nnDataset.dataset_description = 'Data from Nature\'s Notebook online and mobile apps';
                 nnDataset.dataset_documentation_url = 'https://www.usanpn.org/results/nndocumentation';      
                 this.datasets.unshift(nnDataset);
-
-                // move neon data to be second
-                datasets.splice(1,0,datasets.splice(6, 1)[0])
 
                 let datasetIds = this._persistentSearchService.datasets;
                 if(datasetIds) {
