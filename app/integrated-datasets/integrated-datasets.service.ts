@@ -32,23 +32,15 @@ export class IntegratedDatasetService {
 
     initDatasets() {
         this.getDatasets().subscribe(
-            datasets => {
-                // want NEON dataset to be second
-                // let neonDataset = datasets.filter((d) => d.dataset_name == 'NEON 2013-Present');
-                let neonDataset = <Dataset>{};
-                neonDataset.dataset_id = 17;
-                neonDataset.dataset_name = 'NEON 2013-Present';
-                neonDataset.dataset_description = 'National Ecological Observatory Network phenology using USA-NPN protocols, 2013 to present';
-                neonDataset.dataset_documentation_url = 'https://docs.google.com/document/d/e/2PACX-1vRquPEazk0c99ShLV5_t_hGSjJPp7tPgEXVxhhOrrCyoFxzwruNcthbH3Z_jnaCglQfxsRGP0zVz6mA/pub';
-                
-                this.datasets = datasets.filter((d) => d.dataset_id === 7 
-                || d.dataset_id === 8 
-                || d.dataset_id === 11 
-                || d.dataset_id === 13
-                || d.dataset_id === 15);
+            datasets => {       
+                this.datasets = datasets.filter((d) => d.dataset_name === 'Legacy Lilac/Honeysuckle Data - East'
+                || d.dataset_name === 'Legacy Lilac/Honeysuckle Data - East'
+                || d.dataset_name === 'ADF Nature Log'
+                || d.dataset_name === 'NYBG 2009-2013'
+                || d.dataset_name === 'GRSM Tremont 2010-2012'
+                || d.dataset_name === 'NEON 2013-Present');
 
-                this.datasets.unshift(neonDataset);
-
+ 
                 var nnDataset = <Dataset>{};
                 nnDataset.dataset_id = -9999;
                 nnDataset.dataset_name= 'Nature\'s Notebook';  
@@ -56,8 +48,8 @@ export class IntegratedDatasetService {
                 nnDataset.dataset_documentation_url = 'https://www.usanpn.org/results/nndocumentation';      
                 this.datasets.unshift(nnDataset);
 
-                
-
+                // move neon data to be second
+                datasets.splice(1,0,datasets.splice(6, 1)[0])
 
                 let datasetIds = this._persistentSearchService.datasets;
                 if(datasetIds) {
