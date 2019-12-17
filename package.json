@@ -1,5 +1,5 @@
 {
-  "name": "test-angular-proj",
+  "name": "phenology-observation-portal",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
