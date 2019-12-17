@@ -1,6 +1,6 @@
 # USA-NPN Phenology Observation Portal
 
-This repository contains the front end [angular2](https://angular.io/) code for the USA-NPN phenology observation portal. The main purpose of this project is to guide a user through downloading USA-NPN phenology observations. This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.0.4.
+This repository contains the front end [angular](https://angular.io/) code for the USA-NPN phenology observation portal. The main purpose of this project is to guide a user through downloading USA-NPN phenology observations. This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.0.4.
 
 ## Development server
 
