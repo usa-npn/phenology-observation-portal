@@ -19,7 +19,7 @@ import { BsModalComponent } from 'ng2-bs3-modal';
     styleUrls: ['download.css']
 })
 export class DownloadComponent {
-    constructor(private _npnPortalService: NpnPortalService,
+    constructor(public _npnPortalService: NpnPortalService,
                 private _dateService: DateService,
                 private _locationService: LocationsService,
                 private _speciesService: SpeciesService,
