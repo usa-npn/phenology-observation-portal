@@ -4,8 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "builddev": "ng build phenology-observation-portal --base-href /phenology-observation-portal/",
-    "buildprod": "ng build phenology-observation-portal --configuration=production --base-href /phenology-observation-portal/",
+    "builddev": "ng build phenology-observation-portal --base-href /observations/",
+    "buildprod": "ng build phenology-observation-portal --configuration=production --base-href /observations/",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
