@@ -1,0 +1,26 @@
+.submit-button {
+    width: 200px;
+}
+
+.badge {
+    float: right;
+}
+
+.modal:nth-of-type(n+2) {
+    z-index: 1042 !important;
+}
+
+.container {
+    width: 850px;
+}
+
+label {
+    float: left;
+}
+
+.well {
+    padding: 5px 5px 5px 5px;
+}
+.btn-long {
+    width: 200px;
+}

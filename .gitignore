@@ -6,3 +6,4 @@ nbproject/**
 *.js.map
 dist/**
 !webpack.config.js
+.DS_Store

@@ -1,0 +1,70 @@
+<h2>Output Fields</h2>
+<p>Select which optional fields you would like to have appear in your data output file. Use tabs to add climate data fields, derived from Daymet, and view default fields.</p>
+<ul class="nav nav-tabs">
+    <li role="presentation" *ngFor="let tab of tabs" [class.active]=isActiveTab(tab.view) (click)=onClickTab(tab)>
+        <a href="javascript:;">{{tab.title}}</a>
+    </li>
+</ul>
+
+<div class="panel panel-default">
+    <div id="mainView" class="panel-body">
+        <div id="optionalFieldsView" class="list-group" [class.hide]="!isActiveTab('optionalFieldsView')" style="height:400px;">
+            <table class="table table-striped table-hover table-responsive header-fixed table-condensed">
+                <tbody>
+                    <tr><td><input type="checkbox" name="selectAllOptional" value="{{selectAllOptional}}" [(ngModel)]="selectAllOptional" (change)="selectAll()"> <strong>Select All</strong></td></tr>
+                    <tr *ngFor="let optionalField of getNonQcFields()">
+                        <td><input type="checkbox" name="optionalField" value="{{optionalField.machine_name}}" [(ngModel)]="optionalField.selected" (change)="toggleOptionalField(optionalField)">
+                            <a class="outputfield" href="javascript:;" data-toggle="tooltip" title="{{optionalField.field_description}}">{{optionalField.field_name}}</a>
+                        </td>
+                    </tr>                
+                    <tr *ngIf="getQcFields().length > 0" style="height: 40px; line-height: 40px; vertical-align:middle"><td style="height: 40px; line-height: 40px; vertical-align:middle" align="center"><span class="glyphicon glyphicon-option-horizontal"></span>  <strong>Quality Control Fields</strong>  <span class="glyphicon glyphicon-option-horizontal"></span></td></tr>
+                    <tr *ngFor="let optionalField of getQcFields()">
+                        <td><input type="checkbox" name="optionalField" value="{{optionalField.machine_name}}" [(ngModel)]="optionalField.selected" (change)="toggleOptionalField(optionalField)">
+                            <a class="outputfield" href="javascript:;" data-toggle="tooltip" title="{{optionalField.field_description}}">{{optionalField.field_name}}</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div id="climateFieldsView" [class.hide]="!isActiveTab('climateFieldsView')" style="height:400px;" *ngIf="getDownloadType() != 'magnitude'">
+            <table class="table table-striped table-hover table-responsive header-fixed table-condensed">
+                <tbody>
+                    <tr><td><input type="checkbox" name="selectAllClimate" value="{{selectAllClimate}}" [(ngModel)]="selectAllClimate" (change)="selectAll()"> <strong>Select All</strong></td></tr>
+                    <tr *ngFor="let climateField of climateFields">
+                        <td><input type="checkbox" name="climateField" value="{{climateField.machine_name}}" [(ngModel)]="climateField.selected" (change)="toggleClimateField(climateField)">
+                            <a class="outputfield" href="javascript:;" data-toggle="tooltip" title="{{climateField.field_description}}">{{climateField.field_name}}</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+		
+        <div id="remoteSensingFieldsView" [class.hide]="!isActiveTab('remoteSensingFieldsView')" style="height:400px;" *ngIf="getDownloadType() != 'magnitude'">
+            <table class="table table-striped table-hover table-responsive header-fixed table-condensed">
+                <tbody>
+                    <tr><td><input type="checkbox" name="selectAllRemoteSensing" value="{{selectAllRemoteSensing}}" [(ngModel)]="selectAllRemoteSensing" (change)="selectAll()"> <strong>Select All</strong></td></tr>
+                    <tr *ngFor="let remoteSensingField of remoteSensingFields">
+                        <td><input type="checkbox" name="remoteSensingField" value="{{remoteSensingField.machine_name}}" [(ngModel)]="remoteSensingField.selected" (change)="toggleRemoteSensingField(remoteSensingField)">
+                            <a class="outputfield" href="javascript:;" data-toggle="tooltip" title="{{remoteSensingField.field_description}}">{{remoteSensingField.field_name}}</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>		
+		
+        <div id="defaultFieldsView" [class.hide]="!isActiveTab('defaultFieldsView')">
+            <table class="table table-striped table-hover table-responsive header-fixed">
+                <tbody>
+                    <tr *ngFor="let defaultField of defaultFields">
+                        <td>
+                            <a class="outputfield" href="javascript:;" data-toggle="tooltip" title="{{defaultField.field_description}}">{{defaultField.field_name}}</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<button type="button" class="btn btn-default" (click)="submit()">Set Optional Fields</button>
+<button type="button" class="btn btn-default" (click)="onSelect('ancillary-data')">Next</button>

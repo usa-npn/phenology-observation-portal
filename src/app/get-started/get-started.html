@@ -1,0 +1,53 @@
+<!--<h1 [hidden]="allDataLoaded()"><i class="fa fa-refresh fa-spin" style="font-size:30px"></i>  Loading</h1>-->
+<div [hidden]="allDataLoaded()">
+  <h1>Loading</h1>
+  <div class="progress">
+    <div class="progress-bar progress-bar-info progress-bar-striped active" aria-valuemin="0" aria-valuemax="100" role="progressbar" aria-valuenow="{dataLoaded()}" [ngStyle]="{width: dataLoaded() + '%'}"></div>
+  </div>
+</div>
+<div [hidden]="!allDataLoaded()">
+  <h2>Get Started!</h2>  
+  
+  <p id="viz-into-text" [hidden]="!fromVizTool()">Your data search has been preset with your selections from the USA-NPN Phenology Visualization Tool. Please select a data type to activate your download. You may also further customize your search.</p>
+  <p>Download customized datasets from the National Phenology
+    Database using the filters in the menu at left to specify dates,
+    locations, species, and phenophases of interest. Choose which data type you would like to download.</p>
+  <div id="search-type-button-grp" class="btn-group-lg" role="group" aria-label="...">
+    <button type="button" style="margin-right: 5px;" class="btn btn-default search-type-btn" [class.active]="isSelected('raw')" (click)="setDownloadType('raw')">Status<br/>and Intensity</button>
+    <button type="button" class="btn btn-default search-type-btn" [class.active]="isSelected('summarized')" (click)="setDownloadType('summarized')">Individual<br/>Phenometrics</button>
+  </div>
+  <div id="search-type-button-grp" class="btn-group-lg" role="group" aria-label="...">
+    <button type="button" style="margin-right: 5px;" class="btn btn-default search-type-btn" [class.active]="isSelected('siteLevelSummarized')" (click)="setDownloadType('siteLevelSummarized')">Site<br/>Phenometrics</button>
+    <button type="button" class="btn btn-default search-type-btn" [class.active]="isSelected('magnitude')" (click)="setDownloadType('magnitude')">Magnitude<br/>Phenometrics</button>      
+  </div>
+  <br/><br/>
+  <div class="panel panel-default" [class.hide]="!downloadTypeIsSet()">
+    <div class="panel-heading"><strong>Data Description</strong></div>
+    <div class="panel-body" [class.hide]="!isSelected('raw')">
+        <strong>Status and Intensity Data: </strong>This data type includes phenophase status records of presence ("yes") or absence ("no") of the phenophase, as well as information about the degree to which the phenophase was expressed. Each row represents the status and intensity or abundance of one phenophase on one individual plant or on one animal species at a given site, on a single visit. See the Metadata window for more information.
+    </div>    
+    <div class="panel-body" [class.hide]="!isSelected('summarized')">
+        <strong>Individual Phenometrics: </strong>This data type includes estimates of the dates of phenophase onsets and ends for individual plants and for animal species at a site during a user-defined time period. Each row represents a series of consecutive "yes" phenophase status records, beginning with the date of the first "yes" and ending with the date of the last "yes", submitted for a given phenophase on a given organism. Note that more than one consecutive series for an organism may be present within a single growing season or year. See the Metadata window for more information.
+    </div>
+    <div class="panel-body" [class.hide]="!isSelected('siteLevelSummarized')">
+        <strong>Site Phenometrics: </strong>This data type includes estimates of the overall onset and end of phenophase activity for plant and animal species at a site over a user-defined time period. Each row provides the first and last occurrences of a given phenophase on a given species, beginning with the date of the first observed “yes” phenophase status record and ending with the date of the last observed “yes” record of the user-defined time period. For plant species where multiple individuals are monitored at the site, the date provided for “first yes” is the mean of the first “yes” records for each individual plant at the site, and the date for “last yes” is the mean of the last “yes” records. Note that a phenophase may have ended and restarted during the overall period of its activity at the site. These more fine-scale patterns can be explored in the individual phenometrics data. See the Metadata window for more information.
+    </div>
+    <div class="panel-body" [class.hide]="!isSelected('magnitude')">
+        <strong>Magnitude Phenometrics: </strong>This data type includes various measures of the extent to which a phenophase for a plant or animal species is expressed across multiple individuals and sites over a user-selected set of time intervals. Each row provides up to eight calculated measures summarized weekly, bi-weekly, monthly or over a custom time interval. These measures include approaches to evaluate the shape of an annual activity curve, including the total number of “yes” records and the proportion of “yes” records relative to the total number of status records over the course of a calendar year for a region of interest. They also include several approaches for standardizing animal abundances by observer effort over time and space (e.g. mean active bird individuals per hour). See the Metadata window for more information.
+    </div>    
+  </div>
+  <button type="button" class="btn btn-default" [class.hide]="!downloadTypeIsSet()" (click)="onSelect('date-range')">Next</button>
+</div>
+
+<bs-modal #resetFiltersModal>
+  <bs-modal-header>
+    <h4 class="modal-title">Reset Search</h4>
+  </bs-modal-header>
+  <bs-modal-body>
+    Warning, changing your search type will remove all filters.
+  </bs-modal-body>
+  <bs-modal-footer>
+    <button type="button" class="btn btn-danger" (click)="resetFiltersModal.close();">Cancel</button>
+    <button type="button" class="btn btn-success" (click)="resetFiltersModal.close(); resetFilters()">Continue</button>
+  </bs-modal-footer>
+</bs-modal>

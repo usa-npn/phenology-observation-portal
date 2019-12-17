@@ -1,0 +1,9 @@
+#map_canvas {
+  /*width: 525px;*/
+  height: 275px;
+  background-color: #CCC;
+  margin-bottom: 5px;
+}
+.table tr td:nth-child(1){
+  width:10%;
+}

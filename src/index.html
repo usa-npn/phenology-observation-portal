@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Phenology Observation Portal</title>
+
+  <!-- Google Maps Initialization -->
+  <script>
+    function initMap() {
+      //the holding container must not be hidden or the map will display grey upon becoming unhidden
+      $('#regionView').removeClass('hidden');
+      var mapDiv = document.getElementById('map_canvas');
+      if (!mapDiv.getAttribute("intialized")) {
+        var map = new google.maps.Map(mapDiv, {
+          center: {lat: 40.750289, lng: -89.583163},
+          zoom: 5
+        });
+
+        map.enableKeyDragZoom();
+        var dz = map.getDragZoomObject();
+
+        google.maps.event.addListener(dz, "dragend", function(bnds) {
+
+          document.getElementById("ObservationBottomLeftX1").value = bnds.getSouthWest().lat();
+          document.getElementById("ObservationBottomLeftY1").value = bnds.getSouthWest().lng();
+          document.getElementById("ObservationUpperRightX2").value = bnds.getNorthEast().lat();
+          document.getElementById("ObservationUpperRightY2").value = bnds.getNorthEast().lng();
+
+          document.getElementById("necoords").innerHTML = "<span style='font-weight:bold'>North East Corner</span>: " + bnds.getNorthEast().lat() + ", " + bnds.getNorthEast().lng();
+          document.getElementById("swcoords").innerHTML = "<span style='font-weight:bold'>South West Corner</span>: " + bnds.getSouthWest().lat() + ", " + bnds.getSouthWest().lng();
+        });
+
+        google.maps.event.addListener(map, 'zoom_changed',
+            function() {
+              if (map.getZoom() < 3) {
+                map.setZoom(3);
+              }
+            });
+
+        document.getElementById('map_canvas').setAttribute("intialized", true);
+      }
+    }
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCQeZJowbULLpq8QuPwBBbeoCEZcdv1Or8"></script>
+  <script src="assets/js/keydragzoom.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+
+  <base href="/">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+  <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <!--http://stackoverflow.com/questions/8678254/datetimepicker-is-not-a-function-jquery-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+</head>
+<body>
+  <app-root></app-root>
+</body>
+</html>

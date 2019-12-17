@@ -1,0 +1,39 @@
+.panel-heading-sm{
+    height: 35px;
+    padding: 1px 10px;
+}
+
+.panel-body-sm{
+    height: 35px;
+    padding: 1px 10px;
+}
+
+.glyphicon-collapse-up {
+    float: right;
+    font-size: 20px;
+    margin-top: -6px;
+    color: #bdbdbd;
+}
+
+.glyphicon-collapse-down {
+    float: right;
+    font-size: 20px;
+    margin-top: -6px;
+    color: #bdbdbd;
+}
+
+a {
+    display: inline-block;
+}
+
+.primary a {
+    width: 510px;
+}
+
+.secondary a {
+    width: 480px;
+}
+
+.tertiary a {
+    width: 455px;
+}

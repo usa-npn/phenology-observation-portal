@@ -1,0 +1,59 @@
+<h2>Species</h2>
+<p>Limit your dataset to particular species. Use the species type or functional type to narrow down the list of species.</p>
+<div class="panel panel-default" id="species-filters">
+    <div class="panel-heading"><strong>Filters</strong></div>
+    <div class="panel-body">
+        <div class="input-group">
+            <span class="input-group-addon">Species Name:</span>
+            <input type="text" class="form-control" placeholder="" aria-describedby="basic-addon1" name="nameFilter" [(ngModel)]="nameFilter" (keyup)="filterChange()">
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon">Species Type:</span>
+            <select class="form-control" aria-describedby="basic-addon1" name="speciesType" [(ngModel)]="speciesType" (change)="filterChange()">
+                <option value="All" selected="selected">All</option>
+                <option *ngFor="let speciesType of speciesTypes | sort:'species_type'" [value]="speciesType.species_type">{{speciesType.species_type}}</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon">Functional Type:</span>
+            <select class="form-control" aria-describedby="basic-addon1" name="functionalType" [(ngModel)]="functionalType" (change)="filterChange()">
+                <option value="All" selected="selected">All</option>
+                <option *ngFor="let functionalType of functionalTypes | sort:'functional_type'" [value]="functionalType.type_name">{{functionalType.type_name}}</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-body panel-body-tight">
+        <table class="table table-striped table-hover table-responsive header-fixed">
+            <thead>
+            <tr>
+                <th>
+                    <input type="checkbox" name="selectAll" value="" [(ngModel)]="selectAll" (click)="toggleSelectAll()"> Selected
+                </th>
+                <th>
+                    <a href="javascript:;" (click)="applySort('common')">
+                        Common Name &#8645;
+                    </a>
+                </th>
+                <th>
+                    <a href="javascript:;" (click)="applySort('scientific')">
+                        Scientific Name &#8645;
+                    </a>
+                </th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr *ngFor="let sp of species | speciessearchpipe:nameFilter:sortType:sortReverse:functionalType:speciesType">
+                <td><input type="checkbox" name="species" value="{{sp.common_name}}" [(ngModel)]="sp.selected"></td>
+                <td>{{sp.common_name}}</td>
+                <td>{{sp.genus + ' ' + sp.species}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<button type="button" class="btn btn-default" (click)="submit()">Set Species</button>
+<button type="button" class="btn btn-default" (click)="onSelect('phenophases')">Next</button>
