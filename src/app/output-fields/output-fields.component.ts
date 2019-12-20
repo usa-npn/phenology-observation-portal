@@ -46,38 +46,32 @@ export class OutputFieldsComponent implements OnInit {
     }
 
     toggleOptionalField(optionalField) {
-        optionalField.selected = !optionalField.selected;
         if(!optionalField.selected && this.selectAllOptional)
             this.selectAllOptional = false;
     }
 
     toggleClimateField(climateField) {
-        climateField.selected = !climateField.selected;
         if(!climateField.selected && this.selectAllClimate)
             this.selectAllClimate = false;
     }
 	
     toggleRemoteSensingField(remoteSensingField) {
-        remoteSensingField.selected = !remoteSensingField.selected;
         if(!remoteSensingField.selected && this.selectAllRemoteSensing)
             this.selectAllRemoteSensing = false;
     }	
     
     selectAll() {
         if(this.currentTab === 'optionalFieldsView') {
-            this.selectAllOptional = !this.selectAllOptional;
             for(var optionalField of this.optionalFields) {
                 optionalField.selected = this.selectAllOptional;
             }
         }
         else if(this.currentTab === 'climateFieldsView') {
-            this.selectAllClimate = !this.selectAllClimate;
             for(var climateField of this.climateFields) {
                 climateField.selected = this.selectAllClimate;
             }
         }
         else if(this.currentTab === 'remoteSensingFieldsView') {
-            this.selectAllRemoteSensing = !this.selectAllRemoteSensing;
             for(var remoteSensingField of this.remoteSensingFields) {
                 remoteSensingField.selected = this.selectAllRemoteSensing;
             }
