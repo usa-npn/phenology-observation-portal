@@ -328,7 +328,7 @@ export class NpnPortalService {
       is_magnitude: (this.downloadType == 'magnitude') ? 1 : 0
     });
 
-    return this.http.post(this.config.getNpnPortalServerUrl() + '/npn_portal/observations/getObservationsCount.json', httpOptions);
+    return this.http.post(this.config.getNpnPortalServerUrl() + '/npn_portal/observations/getObservationsCount.json', data, httpOptions);
   }
 
   //called when download is pressed //////////////////////////////////////
