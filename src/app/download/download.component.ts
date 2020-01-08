@@ -170,6 +170,7 @@ export class DownloadComponent {
             && this._npnPortalService.getSelectedOptionalFields().length == 0
             // && this._npnPortalService.getSelectedDatasheets().length == 0
         ) {
+            console.log('here');
             // this.noFiltersModal.open();
         }
         // else if(!this._npnPortalService.startDate || !this._npnPortalService.endDate) {
@@ -181,7 +182,7 @@ export class DownloadComponent {
     }
     
     continueDownload() {
-        // this.downloadModal.open('lg');
+        this.downloadModal.open('lg');
         this._npnPortalService.download();
     }
     
