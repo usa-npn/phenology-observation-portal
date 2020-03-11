@@ -40,7 +40,7 @@ export class IntegratedDatasetsComponent implements OnInit {
 
     submit() {
         this._npnPortalService.datasets = this.datasets.map(obj => Object.assign({}, obj));
-        this._npnPortalService.optionalFields = this.optionalFields.concat(this.climateFields).map(obj => Object.assign({}, obj));
+        this._outputFieldsService.optionalFields = this.optionalFields.concat(this.climateFields).map(obj => Object.assign({}, obj));
         this._npnPortalService.setObservationCount();
     }
 

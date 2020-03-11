@@ -30,6 +30,8 @@ import { NpnPortalService } from './npn-portal.service';
 import { ActivateGuard } from './activate.guard';
 import { DeactivateDateRangeGuard } from './date-range/deactivate-date-range.gaurd';
 import { DeactivateGuard } from './deactivate.guard';
+import { OutputFieldsService } from './output-fields/output-fields.service';
+import { PersistentSearchService } from './persistent-search.service';
 
 
 @NgModule({
@@ -67,6 +69,8 @@ import { DeactivateGuard } from './deactivate.guard';
   ],
   providers: [
     Config,
+    OutputFieldsService,
+    PersistentSearchService,
     NpnPortalService,
     ActivateGuard,
     DeactivateGuard,

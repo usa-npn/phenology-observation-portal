@@ -112,7 +112,7 @@ export class OutputFieldsComponent implements OnInit {
     }    
 
     submit() {
-        this._npnPortalService.optionalFields = this.optionalFields.concat(this.climateFields).concat(this.remoteSensingFields).map(obj => Object.assign({}, obj));
+        this._outputFieldsService.optionalFields = this.optionalFields.concat(this.climateFields).concat(this.remoteSensingFields).map(obj => Object.assign({}, obj));
         this._npnPortalService.setObservationCount();
     }
 
@@ -131,6 +131,7 @@ export class OutputFieldsComponent implements OnInit {
         this.selectAllClimate = this._outputFieldsService.selectAllClimate;
 		this.selectAllRemoteSensing = this._outputFieldsService.selectAllRemoteSensing;
         
+        // this.optionalFields = this._npnPortalService.optionalFields;
         this.optionalFields = this._npnPortalService.downloadType === "raw" ? 
             this._outputFieldsService.optionalFieldsRaw : 
             (this._npnPortalService.downloadType === "summarized") ? 

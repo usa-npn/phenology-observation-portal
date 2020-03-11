@@ -23,7 +23,7 @@ import {PersistentSearchService, savedSearch} from "./persistent-search.service"
       PhenophasesService, 
       PartnerGroupsService, 
       IntegratedDatasetService, 
-      OutputFieldsService, 
+    //   OutputFieldsService, 
       AncillaryDataService
     ]
 })
@@ -77,9 +77,9 @@ export class AppComponent {
             && this._phenophasesService.ready
             && this._speciesService.ready
             && this._partnerGroupsService.ready
-            && this._outputFieldsService.rawFieldsReady
-            && this._outputFieldsService.summarizedFieldsReady
-            && this._outputFieldsService.siteLevelSummarizedFieldsReady
+            // && this._outputFieldsService.rawFieldsReady
+            // && this._outputFieldsService.summarizedFieldsReady
+            // && this._outputFieldsService.siteLevelSummarizedFieldsReady
             && this._integratedDatasetService.ready
     }
     
@@ -89,10 +89,10 @@ export class AppComponent {
         this._speciesService.initFunctionalTypes();
         this._partnerGroupsService.initPartnerGroups();
         this._phenophasesService.initPhenophases();
-        this._outputFieldsService.initRawFields();
-        this._outputFieldsService.initSummarizedFields();
-        this._outputFieldsService.initSiteLevelSummarizedFields();
-        this._outputFieldsService.initMagnitudeFields();
+        // this._outputFieldsService.initRawFields();
+        // this._outputFieldsService.initSummarizedFields();
+        // this._outputFieldsService.initSiteLevelSummarizedFields();
+        // this._outputFieldsService.initMagnitudeFields();
         this._integratedDatasetService.initDatasets();
         this._ancillaryDataService.initDatasheets();
     }

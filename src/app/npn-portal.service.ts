@@ -6,13 +6,17 @@ import {Species} from './species/species';
 import {Phenophase} from './phenophases/phenophase';
 import {PartnerGroup} from './partner-groups/partner-group';
 import {Dataset} from './integrated-datasets/dataset'
-import {OutputField} from './output-fields/output-field';
 import {AncillaryData} from "./ancillary-data/ancillaryData";
 import {Config} from "./config.service";
+import { OutputFieldsService } from './output-fields/output-fields.service';
 
 @Injectable()
 export class NpnPortalService {
-  constructor (private http: HttpClient, private config: Config) {}
+  constructor (
+    private http: HttpClient, 
+    private config: Config,
+    private _outputFieldsService: OutputFieldsService) {
+    }
 
   activePage = "get-started";
   downloadType:string;
@@ -25,7 +29,6 @@ export class NpnPortalService {
   phenophases:Phenophase[] = [];
   partnerGroups:PartnerGroup[] = [];
   datasets:Dataset[] = [];
-  optionalFields:OutputField[] = [];
   datasheets:AncillaryData[] = [];
 
   stations = [];
@@ -54,7 +57,7 @@ export class NpnPortalService {
         || this.getSelectedSpecies().length > 0
         || this.getSelectedPhenophases().length > 0
         || this.getSelectedPartnerGroups().length > 0
-        || this.getSelectedOptionalFields().length > 0 
+        || this._outputFieldsService.getSelectedOptionalFields().length > 0 
         || this.getSelectedDatasets().length > 0
         || this.getSelectedDatasheets().length > 0)
         return true;
@@ -73,7 +76,7 @@ export class NpnPortalService {
     this.phenophases = [];
     this.partnerGroups = [];
     this.datasets = [];
-    this.optionalFields = [];
+    this._outputFieldsService.optionalFields = [];
     this.datasheets = [];
     this.observationCount = null;
     this.startDate = null;
@@ -83,7 +86,6 @@ export class NpnPortalService {
     this.dataPrecision = null;
     this.periodInterest = null;
   }
-
 
   getReportType():string {
     if(this.downloadType === 'raw'){
@@ -163,20 +165,6 @@ export class NpnPortalService {
   //   return datasetIds;
   // }
 
-  getSelectedOptionalFields() {
-    return this.optionalFields.filter(function(f) {
-      return f.selected;
-    })
-  }
-
-  dataQualityChecksSelected() {
-    for (var field of this.optionalFields) {
-      if (field.selected && field.machine_name === 'observed_status_conflict_flag')
-          return true;
-    }
-    return false
-  }
-  
   getSelectedDatasheets() {
     return this.datasheets.filter((datasheet) => datasheet.selected)
   }
@@ -360,12 +348,12 @@ export class NpnPortalService {
       phenophaseCategories: this.getSelectedPhenophases().map((phenophase) => phenophase.phenophase_category),
       partnerGroups: this.getSelectedPartnerGroups().map((partnerGroup) => partnerGroup.network_name),
       network_ids: this.getSelectedPartnerGroups().map((partnerGroup) => partnerGroup.network_id),
-      additionalFields: this.getSelectedOptionalFields().map((optionalField) => optionalField.machine_name),
-      additionalFieldsDisplay: this.getSelectedOptionalFields().map((optionalField) => optionalField.field_name),
+      additionalFields: this._outputFieldsService.getSelectedOptionalFields().map((optionalField) => optionalField.machine_name),
+      additionalFieldsDisplay: this._outputFieldsService.getSelectedOptionalFields().map((optionalField) => optionalField.field_name),
       dataset_ids: this.getSelectedDatasets().map((dataset) => dataset.dataset_id),
       integrated_datasets: this.getSelectedDatasets().map((dataset) => dataset.dataset_name),
       ancillary_data: this.getSelectedDatasheets().map((datasheet) => datasheet.name),
-      qualityFlags: this.dataQualityChecksSelected() ? null : 'ignored',
+      qualityFlags: this._outputFieldsService.dataQualityChecksSelected() ? null : 'ignored',
       stations: this.stations
     });
 

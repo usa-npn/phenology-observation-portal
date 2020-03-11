@@ -35,9 +35,9 @@ export class GetStartedComponent implements OnInit {
         && this._phenophasesService.ready 
         && this._speciesService.ready
         && this._partnerGroupsService.ready
-        && this._outputFieldsService.rawFieldsReady
-        && this._outputFieldsService.summarizedFieldsReady
-        && this._outputFieldsService.siteLevelSummarizedFieldsReady
+        // && this._outputFieldsService.rawFieldsReady
+        // && this._outputFieldsService.summarizedFieldsReady
+        // && this._outputFieldsService.siteLevelSummarizedFieldsReady
   }
 
   fromVizTool() {
@@ -47,21 +47,21 @@ export class GetStartedComponent implements OnInit {
   dataLoaded() {
     var numLoaded:number = 5;
     if(this._locationsService.ready)
-      numLoaded = numLoaded + 12;
+      numLoaded = numLoaded + 18;
     if(this._phenophasesService.ready)
-      numLoaded = numLoaded + 12;
+      numLoaded = numLoaded + 18;
     if(this._speciesService.ready)
-      numLoaded = numLoaded + 12;
+      numLoaded = numLoaded + 18;
     if(this._partnerGroupsService.ready)
-      numLoaded = numLoaded + 12;
-    if(this._outputFieldsService.rawFieldsReady)
-      numLoaded = numLoaded + 12;
-    if(this._outputFieldsService.summarizedFieldsReady)
-      numLoaded = numLoaded + 12;
-    if(this._outputFieldsService.siteLevelSummarizedFieldsReady)
-      numLoaded = numLoaded + 12;
+      numLoaded = numLoaded + 18;
+    // if(this._outputFieldsService.rawFieldsReady)
+    //   numLoaded = numLoaded + 12;
+    // if(this._outputFieldsService.summarizedFieldsReady)
+    //   numLoaded = numLoaded + 12;
+    // if(this._outputFieldsService.siteLevelSummarizedFieldsReady)
+    //   numLoaded = numLoaded + 12;
     if(this._integratedDatasetService.ready)
-      numLoaded = numLoaded + 12;
+      numLoaded = numLoaded + 18;
     return numLoaded;
   }
 
@@ -96,6 +96,14 @@ export class GetStartedComponent implements OnInit {
       this._npnPortalService.downloadType = type;
       this._npnPortalService.setObservationCount();
     }
+    if(type === 'raw')
+      this._outputFieldsService.initRawFields();
+    else if(type === 'siteLevelSummarized')
+      this._outputFieldsService.initSiteLevelSummarizedFields();
+    else if(type === 'summarized')
+      this._outputFieldsService.initSummarizedFields();
+    else if(type === 'magnitude')
+      this._outputFieldsService.initMagnitudeFields();
   }
   
   getDownloadType(){

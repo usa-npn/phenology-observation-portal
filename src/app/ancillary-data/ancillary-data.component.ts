@@ -16,7 +16,7 @@ export class AncillaryDataComponent implements OnInit {
     constructor(private _router: Router,
                 public _npnPortalService: NpnPortalService,
                 private _ancillaryDataService: AncillaryDataService,
-                private _outputFieldsService: OutputFieldsService) {}
+                public _outputFieldsService: OutputFieldsService) {}
 
     @ViewChild('citationModal', {static: false}) 
     citationModal: BsModalComponent;
@@ -64,7 +64,7 @@ export class AncillaryDataComponent implements OnInit {
     
     submit() {
         this._npnPortalService.datasheets = this.datasheets.map(obj => Object.assign({}, obj));
-        this._npnPortalService.optionalFields = this.optionalFields.concat(this.climateFields).map(obj => Object.assign({}, obj));
+        this._outputFieldsService.optionalFields = this.optionalFields.concat(this.climateFields).map(obj => Object.assign({}, obj));
         this._npnPortalService.setObservationCount();
     }
 
@@ -84,7 +84,7 @@ export class AncillaryDataComponent implements OnInit {
             && this._npnPortalService.getSelectedPhenophases().length == 0
             && this._npnPortalService.getSelectedPartnerGroups().length == 0
             && this._npnPortalService.getSelectedDatasets().length == 0
-            && this._npnPortalService.getSelectedOptionalFields().length == 0
+            && this._outputFieldsService.getSelectedOptionalFields().length == 0
         // && this._npnPortalService.getSelectedDatasheets().length == 0
         ) {
             this.noFiltersWarningModal.open();
@@ -95,9 +95,10 @@ export class AncillaryDataComponent implements OnInit {
     }
 
     continueDownload() {
-        this.summaryModal.close();
-        this.downloadModal.open('lg');
-        this._npnPortalService.download();
+        this.summaryModal.close().then(()=>{
+            this.downloadModal.open('lg');
+            this._npnPortalService.download();
+        });
     }
 
     ngOnInit() {

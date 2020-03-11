@@ -26,7 +26,7 @@ export class DownloadComponent {
                 private _phenophaseService: PhenophasesService,
                 private _partnerGroupsService: PartnerGroupsService,
                 private _integratedDatasetService: IntegratedDatasetService,
-                private _outputFieldsService: OutputFieldsService,
+                public _outputFieldsService: OutputFieldsService,
                 private _ancillaryDataService: AncillaryDataService,
                 private _router: Router,
                 private _persistentSearchService: PersistentSearchService,
@@ -116,7 +116,7 @@ export class DownloadComponent {
     }
 
     getSelectedOptionalFields() {
-        return this._npnPortalService.getSelectedOptionalFields();
+        return this._outputFieldsService.getSelectedOptionalFields();
     }
     
     getSelectedAncillaryData() {
@@ -167,7 +167,7 @@ export class DownloadComponent {
             && this._npnPortalService.getSelectedPhenophases().length == 0
             && this._npnPortalService.getSelectedPartnerGroups().length == 0
             && this._npnPortalService.getSelectedDatasets().length == 0
-            && this._npnPortalService.getSelectedOptionalFields().length == 0
+            && this._outputFieldsService.getSelectedOptionalFields().length == 0
             // && this._npnPortalService.getSelectedDatasheets().length == 0
         ) {
             console.log('here');
@@ -237,7 +237,7 @@ export class DownloadComponent {
              phenophases: this._npnPortalService.getSelectedPhenophases().map((phenophase) => phenophase.phenophase_id),
              partnerGroups: this._npnPortalService.getSelectedPartnerGroups().map((group) => group.network_id),
              datasets: this._npnPortalService.getSelectedDatasets().map((dataset) => dataset.dataset_id),
-             optionalFields: this._npnPortalService.getSelectedOptionalFields().map((field) => field.metadata_field_id),
+             optionalFields: this._outputFieldsService.getSelectedOptionalFields().map((field) => field.metadata_field_id),
              datasheets: this._npnPortalService.getSelectedDatasheets().map((datasheet) => datasheet.id),
              dataPrecision: this._npnPortalService.dataPrecision,
              periodInterest: this._npnPortalService.periodInterest,

@@ -286,7 +286,7 @@
                     </div>
                 </div>
             </div>
-            <div class="panel panel-default" [class.hide]="_npnPortalService.getSelectedOptionalFields().length == 0">
+            <div class="panel panel-default" [class.hide]="_outputFieldsService.getSelectedOptionalFields().length == 0">
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <a data-toggle="collapse" data-parent="#filterAccordion" href="#outputFieldsCollapse">
@@ -336,6 +336,6 @@
 <div [class.hide]="!(downloadTypeIsSet() && dateRangeIsValid())">
     <div class="well">
     <label class="checkbox-inline"><input type="checkbox" name="agree" value="agree" [(ngModel)]="hasAgreed"> I have read and acknowledged the USA-NPN <a href ='https://www.usanpn.org/terms#DataUse' target='_blank' >data use</a> and <a href ='https://www.usanpn.org/terms#DataAttribution' target='_blank' >attribution</a> policies.</label>
-        <button type="button" id="download-btn" class="btn btn-block btn-success" (click)="download()">Download</button>
+        <button type="button" id="download-btn" class="btn btn-block btn-success" (click)="filterModal.close(); download()">Download</button>
     </div>
 </div>

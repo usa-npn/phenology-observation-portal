@@ -161,11 +161,11 @@
                     </div>
                 </div>
             </div>
-            <div class="panel panel-default" [class.hide]="_npnPortalService.getSelectedOptionalFields().length == 0">
+            <div class="panel panel-default" [class.hide]="_outputFieldsService.getSelectedOptionalFields().length == 0">
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <a data-toggle="collapse" data-parent="#summaryAccordion" href="#outputFieldsCollap">
-                            Output Fields: <span class="badge">{{_npnPortalService.getSelectedOptionalFields().length}}</span></a>
+                            Output Fields: <span class="badge">{{_outputFieldsService.getSelectedOptionalFields().length}}</span></a>
                     </h4>
                 </div>
                 <div id="outputFieldsCollap" class="panel-collapse collapse">
@@ -173,7 +173,7 @@
                         <div id="outputFieldView" style="overflow-y: scroll; height:100px;">
                             <table class="table table-striped table-hover table-responsive header-fixed">
                                 <tbody>
-                                    <tr *ngFor="let outputField of _npnPortalService.getSelectedOptionalFields()">
+                                    <tr *ngFor="let outputField of _outputFieldsService.getSelectedOptionalFields()">
                                         <td>{{outputField.field_name}}</td>
                                     </tr>
                                 </tbody>

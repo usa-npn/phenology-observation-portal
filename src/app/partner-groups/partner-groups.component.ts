@@ -4,6 +4,7 @@ import {NpnPortalService} from "../npn-portal.service";
 import {PartnerGroup} from "./partner-group";
 import {SearchPipe} from "./search-pipe";
 import {PartnerGroupsService} from "./partner-groups.service";
+import { OutputFieldsService } from '../output-fields/output-fields.service';
 
 @Component({
     templateUrl: 'partner-groups.html',
@@ -11,6 +12,7 @@ import {PartnerGroupsService} from "./partner-groups.service";
 })
 export class PartnerGroupsComponent implements OnInit {
     constructor(private _npnPortalService: NpnPortalService,
+                private _outputFieldsService: OutputFieldsService,
                 private _partnerGroupsService: PartnerGroupsService,
                 private _router: Router) {}
 
@@ -185,8 +187,38 @@ export class PartnerGroupsComponent implements OnInit {
                     }
             }
     }
+
+    aPartnerGroupIsSelected() {
+        if(this.partnerGroups) {
+            for(var partnerGroup of this.partnerGroups) {
+                if(partnerGroup.selected) {
+                    return true;
+                }
+                if(partnerGroup.secondary_network)
+                    for(var secondaryGroup of partnerGroup.secondary_network) {
+                        if(secondaryGroup.selected) {
+                            return true;
+                        }
+                        if(secondaryGroup.tertiary_network)
+                            for (var tertiaryGroup of secondaryGroup.tertiary_network) {
+                                if(tertiaryGroup.selected) {
+                                    return true;
+                                }
+                                if(tertiaryGroup.quaternary_network)
+                                    for(var quaternaryGroup of tertiaryGroup.quaternary_network) {
+                                        if(quaternaryGroup.selected) {
+                                            return true;
+                                        }
+                                    }
+                            }
+                    }
+            }
+        } 
+        return false;
+    }
     
     submit() {
+        this._outputFieldsService.togglePartnerGroupOptionalField(this.aPartnerGroupIsSelected(), this._npnPortalService.downloadType);
         this._npnPortalService.partnerGroups = JSON.parse(JSON.stringify(this.partnerGroups));
         this._partnerGroupsService.partnerGroups = JSON.parse(JSON.stringify(this.partnerGroups));
         this._npnPortalService.setObservationCount();

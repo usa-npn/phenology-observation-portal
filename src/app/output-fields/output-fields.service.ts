@@ -3,15 +3,14 @@ import {OutputField} from './output-field';
 import { HttpClient } from '@angular/common/http';
 import {Config} from '../config.service';
 import {PersistentSearchService} from "../persistent-search.service";
-import {NpnPortalService} from "../npn-portal.service";
 
 @Injectable()
 export class OutputFieldsService {
 
     constructor (private http: HttpClient, 
                  private config: Config, 
-                 private _persistentSearchService: PersistentSearchService, 
-                 private _npnPortalService: NpnPortalService) {}
+                 private _persistentSearchService: PersistentSearchService
+                 ) {}
 
     private remote_sensing_fields = [
                         'evi_minimum_0',
@@ -84,7 +83,54 @@ export class OutputFieldsService {
     public siteLevelMagnitude:OutputField[] = [];
     public optionalFieldsMagnitude:OutputField[]= [];
     public climateFieldsMagnitude:OutputField[] = [];
-    public defaultFieldsMagnitude:OutputField[] = [];    
+    public defaultFieldsMagnitude:OutputField[] = [];   
+    
+    optionalFields:OutputField[] = [];
+
+    dataQualityChecksSelected() {
+        for (var field of this.optionalFields) {
+            if (field.selected && field.machine_name === 'observed_status_conflict_flag')
+                return true;
+        }
+        return false
+    }
+
+    getSelectedOptionalFields() {
+        return this.optionalFields.filter(function(f) {
+            return f.selected;
+        })
+    }
+
+    togglePartnerGroupOptionalField(selected, downloadType) {
+        if(downloadType === 'raw') {
+            for (var field of this.optionalFieldsRaw) {
+                if (field.machine_name === 'partner_group')
+                    field.selected =  selected;
+            }
+            this.optionalFields = this.optionalFieldsRaw.concat(this.climateFieldsRaw).concat(this.remoteSensingFieldsRaw).map(obj => Object.assign({}, obj));
+        }
+        if(downloadType === 'summarized') {
+            for (var field of this.optionalFieldsSummarized) {
+                if (field.machine_name === 'partner_group')
+                    field.selected =  selected;
+            }
+            this.optionalFields = this.optionalFieldsSummarized.concat(this.climateFieldsSummarized).concat(this.remoteSensingFieldsSummarized).map(obj => Object.assign({}, obj));
+        }
+        if(downloadType === 'siteLevelSummarized') {
+            for (var field of this.optionalFieldsSiteLevelSummarized) {
+                if (field.machine_name === 'partner_group')
+                    field.selected =  selected;
+            }
+            this.optionalFields = this.optionalFieldsSiteLevelSummarized.concat(this.climateFieldsSiteLevelSummarized).concat(this.remoteSensingFieldsSiteLevelSummarized).map(obj => Object.assign({}, obj));
+        }
+        if(downloadType === 'magnitude') {
+            for (var field of this.optionalFieldsMagnitude) {
+                if (field.machine_name === 'partner_group')
+                    field.selected =  selected;
+            }
+            this.optionalFields = this.optionalFieldsMagnitude.concat(this.climateFieldsMagnitude).map(obj => Object.assign({}, obj));
+        }
+    }
 
     mapBooleans(field) {
         field.quality_check === 1 ? field.quality_check = true : field.quality_check = false;
@@ -101,14 +147,12 @@ export class OutputFieldsService {
                 rawFields.map(this.mapBooleans);
                 this.rawFields = rawFields;
 
-                if(this._npnPortalService.downloadType === "raw") {
-                    let fieldIds = this._persistentSearchService.optionalFields;
-                    if(fieldIds) {
-                        for(var fieldId of fieldIds) {
-                            for(var rawField of this.rawFields) {
-                                if(rawField.metadata_field_id === fieldId)
-                                    rawField.selected = true;
-                            }
+                let fieldIds = this._persistentSearchService.optionalFields;
+                if(fieldIds) {
+                    for(var fieldId of fieldIds) {
+                        for(var rawField of this.rawFields) {
+                            if(rawField.metadata_field_id === fieldId)
+                                rawField.selected = true;
                         }
                     }
                 }
@@ -118,8 +162,7 @@ export class OutputFieldsService {
 				this.remoteSensingFieldsRaw = rawFields.filter((field) => {return field.remote_sensing && !field.climate && !field.required});
                 this.defaultFieldsRaw = rawFields.filter((field) => {return field.required});
 
-                if(this._npnPortalService.downloadType === "raw")
-                    this._npnPortalService.optionalFields = this.optionalFieldsRaw.concat(this.climateFieldsRaw).concat(this.remoteSensingFieldsRaw).map(obj => Object.assign({}, obj));                    
+                this.optionalFields = this.optionalFieldsRaw.concat(this.climateFieldsRaw).concat(this.remoteSensingFieldsRaw).map(obj => Object.assign({}, obj));                    
                 
                 this.rawFieldsReady = true;
             },
@@ -137,14 +180,12 @@ export class OutputFieldsService {
                 summarizedFields.map(this.mapBooleans);
                 this.summarizedFields = summarizedFields;
 
-                if(this._npnPortalService.downloadType === "summarized") {
-                    let fieldIds = this._persistentSearchService.optionalFields;
-                    if(fieldIds) {
-                        for(var fieldId of fieldIds) {
-                            for(var summarizedField of this.summarizedFields) {
-                                if(summarizedField.metadata_field_id === fieldId)
-                                    summarizedField.selected = true;
-                            }
+                let fieldIds = this._persistentSearchService.optionalFields;
+                if(fieldIds) {
+                    for(var fieldId of fieldIds) {
+                        for(var summarizedField of this.summarizedFields) {
+                            if(summarizedField.metadata_field_id === fieldId)
+                                summarizedField.selected = true;
                         }
                     }
                 }
@@ -154,8 +195,7 @@ export class OutputFieldsService {
 				this.remoteSensingFieldsSummarized = summarizedFields.filter((field) => {return field.remote_sensing &&  !field.climate && !field.required});
                 this.defaultFieldsSummarized = summarizedFields.filter((field) => {return field.required});
 
-                if(this._npnPortalService.downloadType === "summarized")
-                    this._npnPortalService.optionalFields = this.optionalFieldsSummarized.concat(this.climateFieldsSummarized).map(obj => Object.assign({}, obj));
+                this.optionalFields = this.optionalFieldsSummarized.concat(this.climateFieldsSummarized).map(obj => Object.assign({}, obj));
                 
                 this.summarizedFieldsReady = true;
             },
@@ -173,14 +213,12 @@ export class OutputFieldsService {
                 siteLevelSummarizedFields.map(this.mapBooleans);
                 this.siteLevelSummarizedFields = siteLevelSummarizedFields;
 
-                if(this._npnPortalService.downloadType === "siteLevelSummarized") {
-                    let fieldIds = this._persistentSearchService.optionalFields;
-                    if(fieldIds) {
-                        for(var fieldId of fieldIds) {
-                            for(var siteLevelSummarizedField of this.siteLevelSummarizedFields) {
-                                if(siteLevelSummarizedField.metadata_field_id === fieldId)
-                                    siteLevelSummarizedField.selected = true;
-                            }
+                let fieldIds = this._persistentSearchService.optionalFields;
+                if(fieldIds) {
+                    for(var fieldId of fieldIds) {
+                        for(var siteLevelSummarizedField of this.siteLevelSummarizedFields) {
+                            if(siteLevelSummarizedField.metadata_field_id === fieldId)
+                                siteLevelSummarizedField.selected = true;
                         }
                     }
                 }
@@ -190,8 +228,7 @@ export class OutputFieldsService {
 				this.remoteSensingFieldsSiteLevelSummarized = siteLevelSummarizedFields.filter((field) => {return field.remote_sensing &&  !field.climate && !field.required});
                 this.defaultFieldsSiteLevelSummarized = siteLevelSummarizedFields.filter((field) => {return field.required});
 
-                if(this._npnPortalService.downloadType === "siteLevelSummarized")
-                    this._npnPortalService.optionalFields = this.optionalFieldsSiteLevelSummarized.concat(this.climateFieldsSiteLevelSummarized).map(obj => Object.assign({}, obj));
+                this.optionalFields = this.optionalFieldsSiteLevelSummarized.concat(this.climateFieldsSiteLevelSummarized).map(obj => Object.assign({}, obj));
                 
                 this.siteLevelSummarizedFieldsReady = true;
             },
@@ -210,24 +247,22 @@ export class OutputFieldsService {
                 magnitudeFields.map(this.mapBooleans);
                 this.magnitudeFields = magnitudeFields;
 
-                if(this._npnPortalService.downloadType === "magnitude") {
-                    let fieldIds = this._persistentSearchService.optionalFields;
-                    if(fieldIds) {
-                        for(var fieldId of fieldIds) {
-                            for(var magnitudeField of this.magnitudeFields) {
-                                if(magnitudeField.metadata_field_id === fieldId)
-                                    magnitudeField.selected = true;
-                            }
+                let fieldIds = this._persistentSearchService.optionalFields;
+                if(fieldIds) {
+                    for(var fieldId of fieldIds) {
+                        for(var magnitudeField of this.magnitudeFields) {
+                            if(magnitudeField.metadata_field_id === fieldId)
+                                magnitudeField.selected = true;
                         }
                     }
                 }
+                
                 
                 this.optionalFieldsMagnitude = magnitudeFields.filter((field) => {return !field.climate && !field.required && !field.remote_sensing});
                 this.climateFieldsMagnitude = magnitudeFields.filter((field) => {return field.climate && !field.required});
                 this.defaultFieldsMagnitude = magnitudeFields.filter((field) => {return field.required});
 
-                if(this._npnPortalService.downloadType === "magnitude")
-                    this._npnPortalService.optionalFields = this.optionalFieldsMagnitude.concat(this.climateFieldsMagnitude).map(obj => Object.assign({}, obj));
+                this.optionalFields = this.optionalFieldsMagnitude.concat(this.climateFieldsMagnitude).map(obj => Object.assign({}, obj));
                 
                 this.magnitudeFieldsReady = true;
             },
@@ -238,6 +273,34 @@ export class OutputFieldsService {
     getMagnitudeFields() {
         return this.http.get<OutputField[]>(this._metadataFieldsUrl + '?type=magnitude');
     }    
+
+    togglePartnerGroupField(selected) {
+        for(var field of this.rawFields) {
+            if(field.machine_name == '') {
+                field.selected = selected;
+            }
+        }
+        for(var field of this.optionalFieldsRaw) {
+            if(field.machine_name == '') {
+                field.selected = selected;
+            }
+        }
+        for(var field of this.optionalFieldsSummarized) {
+            if(field.machine_name == '') {
+                field.selected = selected;
+            }
+        }
+        for(var field of this.optionalFieldsSiteLevelSummarized) {
+            if(field.machine_name == '') {
+                field.selected = selected;
+            }
+        }
+        for(var field of this.optionalFieldsMagnitude) {
+            if(field.machine_name == '') {
+                field.selected = selected;
+            }
+        }
+    }
     
     reset() {
         this.selectAllOptional = false;
