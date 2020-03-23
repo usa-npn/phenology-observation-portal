@@ -211,7 +211,7 @@
         <div class="well">
             <div *ngIf="showHasNotAgreedWarning" class="error" role="alert">
                 <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                Please check that you've read and acknowledge the <a href ='https://www.usanpn.org/terms#DataAttribution' target='_blank' >USA-NPN data citation policy.</a>
+                Check that you've read and acknowledge the <a href ='https://www.usanpn.org/terms#DataAttribution' target='_blank' >USA-NPN data citation policy.</a>
             </div>
             <label><input type="checkbox" name="agree" value="agree" [(ngModel)]="hasAgreed" (change)="showHasNotAgreedWarning=false"> I have read and acknowledged the USA-NPN <a href ='https://www.usanpn.org/terms#DataUse' target='_blank' >data use</a> and <a href ='https://www.usanpn.org/terms#DataAttribution' target='_blank' >attribution</a> policies.</label> <!--[ngStyle]="showHasNotAgreedWarning?{'background-color':'#a94442', 'border-radius':'5px'} : {'background-color': 'white', 'border-radius':'5px'}"-->
             <button type="button" class="btn btn-block btn-success" (click)="download()">Download</button>
