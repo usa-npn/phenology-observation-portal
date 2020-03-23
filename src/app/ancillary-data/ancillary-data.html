@@ -209,7 +209,11 @@
         <button type="button" class="btn btn-block btn-primary" (click)="summaryModal.close()">Go Back to Modify Filters</button>
         <br/>
         <div class="well">
-            <label><input type="checkbox" name="agree" value="agree" [(ngModel)]="hasAgreed"> I have read and acknowledged the USA-NPN <a href ='https://www.usanpn.org/terms#DataUse' target='_blank' >data use</a> and <a href ='https://www.usanpn.org/terms#DataAttribution' target='_blank' >attribution</a> policies.</label>
+            <div *ngIf="showHasNotAgreedWarning" class="error" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                Please check that you have read and acknowledged the <a href ='https://www.usanpn.org/terms#DataAttribution' target='_blank' >USA-NPN data citation policy.</a>
+            </div>
+            <label><input type="checkbox" name="agree" value="agree" [(ngModel)]="hasAgreed" (change)="showHasNotAgreedWarning=false"> I have read and acknowledged the USA-NPN <a href ='https://www.usanpn.org/terms#DataUse' target='_blank' >data use</a> and <a href ='https://www.usanpn.org/terms#DataAttribution' target='_blank' >attribution</a> policies.</label> <!--[ngStyle]="showHasNotAgreedWarning?{'background-color':'#a94442', 'border-radius':'5px'} : {'background-color': 'white', 'border-radius':'5px'}"-->
             <button type="button" class="btn btn-block btn-success" (click)="download()">Download</button>
         </div>
 
@@ -235,7 +239,7 @@
     </bs-modal-body>
     <bs-modal-footer>
         <button type="button" class="btn btn-danger btn-long" (click)="noFiltersWarningModal.close()">No, let me add filters</button>
-        <button type="button" class="btn btn-success btn-long" (click)="noFiltersWarningModal.close(); continueDownload()">Yes, continue <br/>with download</button>
+        <button type="button" class="btn btn-success btn-long" (click)="noFiltersWarningModal.close(); continueDownloadWithNoFilters()">Yes, continue <br/>with download</button>
     </bs-modal-footer>
 </bs-modal>
 

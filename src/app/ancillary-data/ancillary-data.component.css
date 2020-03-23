@@ -24,3 +24,10 @@ label {
 .btn-long {
     width: 200px;
 }
+
+.error {
+    color: #a94442;
+    /* padding: 0px;
+    margin: 0px; */
+    font-weight: bold;
+  }

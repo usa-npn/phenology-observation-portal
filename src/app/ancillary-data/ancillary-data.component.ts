@@ -31,6 +31,7 @@ export class AncillaryDataComponent implements OnInit {
     summaryModal: BsModalComponent;
 
     hasAgreed:boolean = false;
+    public showHasNotAgreedWarning:boolean = false;
     
     datasheets:AncillaryData[];
     optionalFields:OutputField[];
@@ -74,7 +75,9 @@ export class AncillaryDataComponent implements OnInit {
 
     download() {
         if(!this.hasAgreed) {
-            this.citationModal.open();
+            this.showHasNotAgreedWarning = true;
+            // this.citationModal.open();
+            // this.citationModal.backdrop = false;
         }
         else if(this._npnPortalService.getDateFilter() == ''
             && !this._npnPortalService.dataPrecision
@@ -87,11 +90,18 @@ export class AncillaryDataComponent implements OnInit {
             && this._outputFieldsService.getSelectedOptionalFields().length == 0
         // && this._npnPortalService.getSelectedDatasheets().length == 0
         ) {
-            this.noFiltersWarningModal.open();
+            this.summaryModal.close().then(()=>{
+                this.noFiltersWarningModal.open();
+            });
         }
         else {
             this.continueDownload();
         }
+    }
+
+    continueDownloadWithNoFilters() {
+        this.downloadModal.open('lg');
+        this._npnPortalService.download();
     }
 
     continueDownload() {

@@ -171,11 +171,11 @@ export class DownloadComponent {
             // && this._npnPortalService.getSelectedDatasheets().length == 0
         ) {
             console.log('here');
-            // this.noFiltersModal.open();
+            this.noFiltersModal.open();
         }
-        // else if(!this._npnPortalService.startDate || !this._npnPortalService.endDate) {
-        //    this.noDateModal.open();
-        // }
+        else if(!this._npnPortalService.startDate || !this._npnPortalService.endDate) {
+           this.noDateModal.open();
+        }
         else {
             this.continueDownload();
         }
