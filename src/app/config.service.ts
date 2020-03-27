@@ -19,17 +19,17 @@ export class Config {
         //     return location.protocol + '//' + location.hostname;
         // }
         
-        // if(location.hostname.includes('dev')){
+        if(location.hostname.includes('dev')){
             return "https://www-dev.usanpn.org";
-        // }else{
-        //     return "https://www.usanpn.org";
-        // }
+        }else{
+            return "https://www.usanpn.org";
+        }
     }
 
     public getPopUrl() {
-        if(location.hostname.includes('local')){
-            return window.location.origin;
-        }
+        // if(location.hostname.includes('local')){
+        //     return window.location.origin;
+        // }
         
         if(location.hostname.includes('dev')){
             return window.location.origin + "/observations";
