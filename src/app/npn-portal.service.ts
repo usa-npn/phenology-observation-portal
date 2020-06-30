@@ -264,20 +264,17 @@ export class NpnPortalService {
   }
   
   getMagnitudeEstimate(estimatedCount : number){
-
       var result : any;
 
-      if (this.startYear == null || this.endYear == null){
-          
+      if (this.startDate == null || this.endDate == null){
         result = 'N/a';
         
       }else{
-      
-        var sDate = new Date(this.startYear, this.getMonthString(this.startMonth), this.startDay);
-        var eDate = new Date(this.startYear, this.getMonthString(this.endMonth), this.endDay);
+        var sDate = new Date(this.startDate);
+        var eDate = new Date(this.endDate);
 
         let diff:number = eDate.getTime()-sDate.getTime();
-        var number_periods = ( ((diff/1000/60/60/24) + 1) / this.periodInterest) * ( (this.endYear - this.startYear) + 1 );
+        var number_periods = ( ((diff/1000/60/60/24) + 1) / this.periodInterest) * ( (eDate.getFullYear() - sDate.getFullYear()) + 1 );
  
         result = number_periods * estimatedCount;
       }
