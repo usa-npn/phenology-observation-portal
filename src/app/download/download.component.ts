@@ -73,6 +73,8 @@ export class DownloadComponent {
             return "Status and Intensity";
         else if(this._npnPortalService.downloadType == "summarized")
             return "Individual Phenometrics";
+        else if(this._npnPortalService.downloadType == "magnitude")
+            return "Magnitude Phenometrics";
     }
     
     downloadTypeIsSet() {
