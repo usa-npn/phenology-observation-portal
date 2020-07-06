@@ -243,12 +243,8 @@ export class DateRangeComponent implements OnInit, AfterViewInit {
             this._npnPortalService.periodInterest = periodToSet;
 
             this._dateService.startDate = new Date(startYear, 0, 1).toISOString().split('T')[0];
-            // if start and end year are the same, take the full year
-            if(startYear == endYear){
-                this._dateService.endDate = new Date(endYear, 11, 31).toISOString().split('T')[0];
-            } else {
-                this._dateService.endDate = new Date(endYear, 0, 1).toISOString().split('T')[0];
-            }
+
+            this._dateService.endDate = new Date(endYear, 11, 31).toISOString().split('T')[0];
         }
       else if (this.getDownloadType() != 'raw') {
         let startYear = this.dateForm.controls.startDateGroup.value.year;
