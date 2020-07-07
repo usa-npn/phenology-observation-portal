@@ -274,7 +274,7 @@ export class NpnPortalService {
         var eDate = new Date(this.endDate);
 
         let diff:number = eDate.getTime()-sDate.getTime();
-        var number_periods = ( ((diff/1000/60/60/24) + 1) / this.periodInterest) * ( (eDate.getFullYear() - sDate.getFullYear()) + 1 );
+        var number_periods = ( ((diff/1000/60/60/24) + 1) / this.periodInterest);
  
         result = number_periods * estimatedCount;
       }
