@@ -33,16 +33,16 @@ export class DownloadComponent {
                 private _configService: Config
     ) {}
 
-    @ViewChild('citationModal', {static: false})
+    @ViewChild('citationModal')
     citationModal: BsModalComponent;
 
-    @ViewChild('noDateModal', {static: false})
+    @ViewChild('noDateModal')
     noDateModal: BsModalComponent;
 
-    @ViewChild('noFiltersModal', {static: false})
+    @ViewChild('noFiltersModal')
     noFiltersModal: BsModalComponent;
 
-    @ViewChild('downloadModal', {static: false})
+    @ViewChild('downloadModal')
     downloadModal: BsModalComponent;
     
     hasAgreed:boolean = false;

@@ -49,7 +49,7 @@ export class DateRangeComponent implements OnInit, AfterViewInit {
 
     
 
-    @ViewChild('invalidDateRangeModal', {static: false})
+    @ViewChild('invalidDateRangeModal')
 
     invalidDateRangeModal: BsModalComponent;
     

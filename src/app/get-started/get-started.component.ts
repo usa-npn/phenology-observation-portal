@@ -27,7 +27,7 @@ export class GetStartedComponent implements OnInit {
               private _router: Router) {}
 
   //todo fix modal
-  @ViewChild('resetFiltersModal', {static: false})
+  @ViewChild('resetFiltersModal')
   resetFiltersModal: BsModalComponent;
   
   allDataLoaded() {

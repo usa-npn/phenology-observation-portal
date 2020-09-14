@@ -18,16 +18,16 @@ export class AncillaryDataComponent implements OnInit {
                 private _ancillaryDataService: AncillaryDataService,
                 public _outputFieldsService: OutputFieldsService) {}
 
-    @ViewChild('citationModal', {static: false}) 
+    @ViewChild('citationModal') 
     citationModal: BsModalComponent;
 
-    @ViewChild('noFiltersWarningModal', {static: false})
+    @ViewChild('noFiltersWarningModal')
     noFiltersWarningModal: BsModalComponent;
 
-    @ViewChild('downloadModal', {static: false})
+    @ViewChild('downloadModal')
     downloadModal: BsModalComponent;
     
-    @ViewChild('summaryModal', {static: false}) 
+    @ViewChild('summaryModal') 
     summaryModal: BsModalComponent;
 
     hasAgreed:boolean = false;
