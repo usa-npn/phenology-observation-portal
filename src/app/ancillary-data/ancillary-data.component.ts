@@ -65,6 +65,16 @@ export class AncillaryDataComponent implements OnInit {
     
     submit() {
         this._npnPortalService.datasheets = this.datasheets.map(obj => Object.assign({}, obj));
+        //autoselect site visit id if ancilary site visit details is selected
+        for(var datasheet of this.datasheets) {
+            if(datasheet.selected && datasheet.name === "Site Visit Details") {
+                for(var field of this.optionalFields) {
+                    if ("observation_group_id" === field.machine_name) {
+                        field.selected = true;
+                    }
+                }
+            }
+        }
         this._outputFieldsService.optionalFields = this.optionalFields.concat(this.climateFields).map(obj => Object.assign({}, obj));
         this._npnPortalService.setObservationCount();
     }
