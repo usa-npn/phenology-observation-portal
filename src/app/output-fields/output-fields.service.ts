@@ -87,6 +87,9 @@ export class OutputFieldsService {
     
     optionalFields:OutputField[] = [];
 
+    public site_visit_datasheet_selected = false;
+    public observers_datasheet_selected = false;
+
     dataQualityChecksSelected() {
         for (var field of this.optionalFields) {
             if (field.selected && field.machine_name === 'observed_status_conflict_flag')
@@ -97,7 +100,9 @@ export class OutputFieldsService {
 
     getSelectedOptionalFields() {
         return this.optionalFields.filter(function(f) {
-            return f.selected;
+            return f.selected 
+                || (f.machine_name == 'observation_group_id' && this.site_visit_datasheet_selected)
+                || (f.machine_name == 'observedby_person_id' && this.observers_datasheet_selected)
         })
     }
 

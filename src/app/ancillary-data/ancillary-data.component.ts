@@ -37,25 +37,6 @@ export class AncillaryDataComponent implements OnInit {
     optionalFields:OutputField[];
     climateFields:OutputField[];
 
-    // toggleDatasheet(datasheet:AncillaryData) {
-    //     datasheet.selected = !datasheet.selected;
-    //     // these ancillary reports require specific optional fields to be selected
-    //     if(datasheet.selected && datasheet.name === "Observers") {
-    //         for(var field of this.optionalFields) {
-    //             if ("observedby_person_id" === field.machine_name) {
-    //                 field.selected = true;
-    //             }
-    //         }
-    //     }
-    //     if(datasheet.selected && datasheet.name === "Site Visit Details") {
-    //         for(var field of this.optionalFields) {
-    //             if ("observation_group_id" === field.machine_name) {
-    //                 field.selected = true;
-    //             }
-    //         }
-    //     }
-    // }
-
     removeAncillaryData(datasheet:AncillaryData) {
         for(var d of this.datasheets) {
             if(datasheet.id === d.id)
@@ -66,11 +47,22 @@ export class AncillaryDataComponent implements OnInit {
     submit() {
         this._npnPortalService.datasheets = this.datasheets.map(obj => Object.assign({}, obj));
         //autoselect site visit id if ancilary site visit details is selected
+        this._outputFieldsService.site_visit_datasheet_selected = false;
+        this._outputFieldsService.observers_datasheet_selected = false;
         for(var datasheet of this.datasheets) {
             if(datasheet.selected && datasheet.name === "Site Visit Details") {
                 for(var field of this.optionalFields) {
                     if ("observation_group_id" === field.machine_name) {
                         field.selected = true;
+                        this._outputFieldsService.site_visit_datasheet_selected = true;
+                    }
+                }
+            }
+            if(datasheet.selected && datasheet.name === "Observers") {
+                for(var field of this.optionalFields) {
+                    if ("observedby_person_id" === field.machine_name) {
+                        field.selected = true;
+                        this._outputFieldsService.observers_datasheet_selected = true;
                     }
                 }
             }
