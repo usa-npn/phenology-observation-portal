@@ -99,7 +99,7 @@ export class OutputFieldsService {
     }
 
     getSelectedOptionalFields() {
-        return this.optionalFields.filter(function(f) {
+        return this.optionalFields.filter((f) => {
             return f.selected 
                 || (f.machine_name == 'observation_group_id' && this.site_visit_datasheet_selected)
                 || (f.machine_name == 'observedby_person_id' && this.observers_datasheet_selected)
