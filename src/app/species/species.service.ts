@@ -52,15 +52,6 @@
              image_path: ''
          },
          {
-             species_type_id: 29,
-             network_id: 1,
-             species_type: 'Calibration',
-             comment: '',
-             user_display: 1,
-             kingdom: 'Plantae',
-             image_path: ''
-         },
-         {
              species_type_id: 10,
              network_id: 1,
              species_type: 'Cloned',
@@ -79,6 +70,15 @@
              image_path: ''
          },
          {
+            species_type_id: 35,
+            network_id: 1,
+            species_type: 'Flowers for Bats Campaign',
+            comment: '',
+            user_display: 1,
+            kingdom: 'Plantae',
+            image_path: ''
+         },
+         {
              species_type_id: 31,
              network_id: 1,
              species_type: 'Green Wave Campaign',
@@ -87,6 +87,15 @@
              kingdom: 'Plantae',
              image_path: ''
          },
+         {
+            species_type_id: 28,
+            network_id: 1,
+            species_type: 'Invasive Animals',
+            comment: '',
+            user_display: 1,
+            kingdom: 'Plantae',
+            image_path: ''
+        },
          {
              species_type_id: 4,
              network_id: 1,
@@ -105,6 +114,24 @@
              kingdom: 'Plantae',
              image_path: ''
          },
+         {
+            species_type_id: 41,
+            network_id: 1,
+            species_type: 'Pesky Plant Trackers Campaign',
+            comment: '',
+            user_display: 1,
+            kingdom: 'Plantae',
+            image_path: ''
+        },
+        {
+            species_type_id: 38,
+            network_id: 1,
+            species_type: 'Pest Patrol Campaign',
+            comment: '',
+            user_display: 1,
+            kingdom: 'Plantae',
+            image_path: ''
+        },
         {
             species_type_id: 34,
             network_id: 1,
