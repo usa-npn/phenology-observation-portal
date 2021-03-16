@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import {State} from './locations/state';
 import {Extent} from './locations/extent';
 import {Species} from './species/species';
@@ -287,9 +287,6 @@ export class NpnPortalService {
       return new Date(Date.parse(month+" 1, 2012")).getMonth()+1;
     }
 
-      
-  
-
   getObservationCount() {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -314,6 +311,23 @@ export class NpnPortalService {
     });
 
     return this.http.post(this.config.getNpnPortalServerUrl() + '/npn_portal/observations/getObservationsCount.json', data, httpOptions);
+  }
+
+  checkPopDownloadStatus(zipFileName: string) {
+    console.log("checking download status");
+    const options = { params: new HttpParams().set('zipFileName', zipFileName) };
+    this.http.get(this.config.getPopServerUrl() + this.config.getPopDownloadStatusEndpoint(), options)
+    .subscribe((res) => {
+      if(res['file_complete']) {
+        console.log("downloading zipfile");
+        this.downloadStatus = 'complete';
+        window.location.assign(res['download_path']);
+      } else {
+        setTimeout(()=>{
+          this.checkPopDownloadStatus(zipFileName);
+        }, 5000);
+      }
+    })
   }
 
   //called when download is pressed //////////////////////////////////////
@@ -357,14 +371,11 @@ export class NpnPortalService {
     //always use https on dev/prod servers, but not necessarily locally
     this.http.post(this.config.getPopServerUrl() + this.config.getPopDownloadEndpoint(), data, httpOptions)
         .subscribe((res) => {
-          console.log(res['download_path']);
-          if(res['download_path'] === "error") {
-            this.downloadStatus = 'error';
+          if(res['zip_file_name'] != null) {
+            this.checkPopDownloadStatus(res['zip_file_name'])
           }
-          else {
-            this.downloadStatus = 'complete';
-            window.location.assign(res['download_path']);
-          }
+        }, (err) => {
+          this.downloadStatus = 'error';
         });
   }
 

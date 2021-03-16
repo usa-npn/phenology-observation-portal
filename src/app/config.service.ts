@@ -41,6 +41,10 @@ export class Config {
     public getPopDownloadEndpoint() {
         return '/popservices/pop/download';
     }
+
+    public getPopDownloadStatusEndpoint() {
+        return '/popservices/pop/downloadstatus';
+    }
     
     public getPopSearchEndpoint() {
         return '/popservices/pop/search';
