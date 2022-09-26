@@ -7,10 +7,10 @@ export class Config {
         // if(location.hostname.includes('local')){
         //     return location.protocol + '//' + location.hostname;
         // }
-        if(location.hostname.includes('dev')){
-            return "https://data-dev.usanpn.org";
+        if(location.hostname.includes('staging')){
+            return "https://services-staging.usanpn.org/pop-services";
         }else{
-            return "https://data.usanpn.org";
+            return "https://services.usanpn.org/pop-services";
         }
     }
 
@@ -19,10 +19,10 @@ export class Config {
         //     return location.protocol + '//' + location.hostname;
         // }
         
-        if(location.hostname.includes('dev')){
-            return "https://www-dev.usanpn.org";
+        if(location.hostname.includes('staging')){
+            return "https://services-staging.usanpn.org";
         }else{
-            return "https://www.usanpn.org";
+            return "https://services.usanpn.org";
         }
     }
 
@@ -31,7 +31,7 @@ export class Config {
         //     return window.location.origin;
         // }
         
-        if(location.hostname.includes('dev')){
+        if(location.hostname.includes('staging')){
             return window.location.origin + "/observations";
         }else{
             return window.location.origin + "/observations";
@@ -39,18 +39,18 @@ export class Config {
     }
     
     public getPopDownloadEndpoint() {
-        return '/popservices/pop/download';
+        return '/download';
     }
 
     public getPopDownloadStatusEndpoint() {
-        return '/popservices/pop/downloadstatus';
+        return '/downloadstatus';
     }
     
     public getPopSearchEndpoint() {
-        return '/popservices/pop/search';
+        return '/search';
     }
 
     public getPopFgdcEndpoint() {
-        return '/popservices/pop/fgdc';
+        return '/fgdc';
     }
 }
