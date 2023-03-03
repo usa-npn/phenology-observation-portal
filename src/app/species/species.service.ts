@@ -158,6 +158,15 @@
             user_display: 1,
             kingdom: 'Plantae',
             image_path: ''
+        },
+        {
+            species_type_id: 43,
+            network_id: 1,
+            species_type: 'Quercus Quest Campaign',
+            comment: '',
+            user_display: 1,
+            kingdom: 'Plantae',
+            image_path: ''
         }
     ];
 

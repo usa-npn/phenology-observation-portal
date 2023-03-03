@@ -10,7 +10,7 @@ export class Config {
         if(location.hostname.includes('staging')){
             return "https://services-staging.usanpn.org/pop-services";
         }else{
-            return "https://services.usanpn.org/pop-services";
+            return "https://services-staging.usanpn.org/pop-services";
         }
     }
 
@@ -22,7 +22,15 @@ export class Config {
         if(location.hostname.includes('staging')){
             return "https://services-staging.usanpn.org";
         }else{
-            return "https://services.usanpn.org";
+            return "https://services-staging.usanpn.org";
+        }
+    }
+
+    public getWebServicesUrl() {
+        if(location.hostname.includes('staging')){
+            return "https://services-staging.usanpn.org/web-services";
+        }else{
+            return "https://services-staging.usanpn.org/web-services";
         }
     }
 

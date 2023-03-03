@@ -129,21 +129,6 @@ export class NpnPortalService {
     for(var group of this.partnerGroups) {
       if(group.selected)
         selectedGroups.push(group);
-      if(group.secondary_network)
-        for(var secondaryGroup of group.secondary_network) {
-          if(secondaryGroup.selected)
-            selectedGroups.push(secondaryGroup);
-          if(secondaryGroup.tertiary_network)
-            for(var tertiaryGroup of secondaryGroup.tertiary_network) {
-              if(tertiaryGroup.selected)
-                selectedGroups.push(tertiaryGroup);
-              if(tertiaryGroup.quaternary_network)
-                for(var quaternaryGroup of tertiaryGroup.quaternary_network) {
-                  if(quaternaryGroup.selected)
-                    selectedGroups.push(quaternaryGroup);
-                }
-            }
-        }
     }
     return selectedGroups;
   }
@@ -305,7 +290,7 @@ export class NpnPortalService {
       species_id: this.getSelectedSpecies().map(function(s) { return s.species_id; }),
       phenophase_category: this.getSelectedPhenophases().map(function(p) { return p.phenophase_category; }),
       dataset_ids: this.getSelectedDatasets().map((dataset) => dataset.dataset_id),
-      network: this.getSelectedPartnerGroups().map(function(p) { return p.network_name; }),
+      network: this.getSelectedPartnerGroups().map(function(p) { return p.name; }),
       stations: this.stations,
       is_magnitude: (this.downloadType == 'magnitude') ? 1 : 0
     });
@@ -357,7 +342,7 @@ export class NpnPortalService {
       species_ids: this.getSelectedSpecies().map((species) => species.species_id),
       species_names: this.getSelectedSpecies().map((s) => { return s.common_name + ' ('  + s.genus + ' ' + s.species + ')' }),
       phenophaseCategories: this.getSelectedPhenophases().map((phenophase) => phenophase.phenophase_category),
-      partnerGroups: this.getSelectedPartnerGroups().map((partnerGroup) => partnerGroup.network_name),
+      partnerGroups: this.getSelectedPartnerGroups().map((partnerGroup) => partnerGroup.name),
       network_ids: this.getSelectedPartnerGroups().map((partnerGroup) => partnerGroup.network_id),
       additionalFields: this._outputFieldsService.getSelectedOptionalFields().map((optionalField) => optionalField.machine_name),
       additionalFieldsDisplay: this._outputFieldsService.getSelectedOptionalFields().map((optionalField) => optionalField.field_name),

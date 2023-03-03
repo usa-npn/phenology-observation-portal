@@ -16,9 +16,6 @@ export class SearchPipe {
 
             groupName = groupName.toString().toLowerCase();
             var foundPrimaryGroup = false;
-            var foundSecondaryGroup = false;
-            var foundTertiaryGroup = false;
-            var foundQuaternaryGroup = false;
 
             //TODO: this iterative approach works, but would be generalized an much cleaner if written recursively
             // the gist of this filter is to:
@@ -28,56 +25,9 @@ export class SearchPipe {
             // 4. if subnetwork found propagate back up that you need to keep the parent network
             
             return value.filter(function(group) {
-                foundPrimaryGroup = false;
-
-                if (group.network_name.toLowerCase().includes(groupName)) {
-                    foundPrimaryGroup = true;
+                if (group.Name.toLowerCase().includes(groupName)) {
                     return true;
                 }
-                foundSecondaryGroup = false;
-                if (group.secondary_network) {
-                    group.secondary_network = group.secondary_network.filter(function(secondaryGroup) {
-                        
-                        if (secondaryGroup.network_name.toLowerCase().includes(groupName)) {
-                            foundSecondaryGroup = true;
-                            return true;
-                        }
-                        foundTertiaryGroup = false;    
-                        if (secondaryGroup.tertiary_network) {
-                            secondaryGroup.tertiary_network = secondaryGroup.tertiary_network.filter(function(tertiaryGroup) {
-                                
-                                if (tertiaryGroup.network_name.toLowerCase().includes(groupName)) {
-                                    foundTertiaryGroup = true;
-                                    return true;
-                                }
-                                foundQuaternaryGroup = false;
-                                if (tertiaryGroup.quaternary_network) {
-                                    tertiaryGroup.quaternary_network = tertiaryGroup.quaternary_network.filter(function(quaternaryGroup) {
-                                        
-                                        if (quaternaryGroup.network_name.toLowerCase().includes(groupName)) {
-                                            foundQuaternaryGroup = true;
-                                            return true;
-                                        }
-                                        return false;
-                                    });
-                                }
-                                if(foundQuaternaryGroup) {
-                                    foundTertiaryGroup = true;
-                                }
-                                return foundQuaternaryGroup;
-                            });
-                        }
-                        if(foundTertiaryGroup) {
-                            foundSecondaryGroup = true;
-                        }
-                        return foundTertiaryGroup || foundQuaternaryGroup;
-                    });
-                    
-                }
-                if(foundSecondaryGroup) {
-                    foundPrimaryGroup = true;
-                }
-                return foundSecondaryGroup || foundTertiaryGroup || foundQuaternaryGroup;
             });
         }
         // else {

@@ -5,6 +5,7 @@ import {PartnerGroup} from "./partner-group";
 import {SearchPipe} from "./search-pipe";
 import {PartnerGroupsService} from "./partner-groups.service";
 import { OutputFieldsService } from '../output-fields/output-fields.service';
+import { PartnerGroupTag } from "./partner-group-tag";
 
 @Component({
     templateUrl: 'partner-groups.html',
@@ -17,27 +18,13 @@ export class PartnerGroupsComponent implements OnInit {
                 private _router: Router) {}
 
     partnerGroups:PartnerGroup[];
+    partnerGroupTags:PartnerGroupTag[];
     nameFilter = this._partnerGroupsService.nameFilter;
 
     removeGroup(group:PartnerGroup) {
         for (var partnerGroup of this.partnerGroups) {
             if (partnerGroup.network_id === group.network_id)
                 partnerGroup.selected = false;
-            if (partnerGroup.secondary_network)
-                for (var secondaryGroup of partnerGroup.secondary_network) {
-                    if (secondaryGroup.network_id === group.network_id)
-                        secondaryGroup.selected = false;
-                    if (secondaryGroup.tertiary_network)
-                        for (var tertiaryGroup of secondaryGroup.tertiary_network) {
-                            if (tertiaryGroup.network_id === group.network_id)
-                                tertiaryGroup.selected = false;
-                            if (tertiaryGroup.quaternary_network)
-                                for (var quaternaryGroup of tertiaryGroup.quaternary_network) {
-                                    if (quaternaryGroup.network_id === group.network_id)
-                                        quaternaryGroup.selected = false;
-                                }
-                        }
-                }
         } 
         var temp:PartnerGroup[] = JSON.parse(JSON.stringify(this.partnerGroups));
         this.partnerGroups = temp;
@@ -47,8 +34,6 @@ export class PartnerGroupsComponent implements OnInit {
 
     toggleGroup(group:PartnerGroup) {
         var primaryUnselected:boolean = false;
-        var secondaryUnselected:boolean = false;
-        var tertiaryUnselected:boolean = false;
         for(var partnerGroup of this.partnerGroups) {
             primaryUnselected = false;
             if(partnerGroup.network_id === group.network_id) {
@@ -57,54 +42,6 @@ export class PartnerGroupsComponent implements OnInit {
                     primaryUnselected = true;
                 }
             }
-            if(partnerGroup.secondary_network) {
-                for(var secondaryGroup of partnerGroup.secondary_network) {
-                    secondaryUnselected = false;
-                    if(secondaryGroup.network_id === group.network_id) {
-                        secondaryGroup.selected = !secondaryGroup.selected;
-                        if(!secondaryGroup.selected) {
-                            secondaryUnselected = true;
-                        }
-                    }
-                    if(partnerGroup.selected) {
-                        secondaryGroup.selected = true;
-                    }
-                    else if(primaryUnselected) {
-                        secondaryGroup.selected = false;
-                    }
-                    if(secondaryGroup.tertiary_network) {
-                        tertiaryUnselected = false;
-                        for (var tertiaryGroup of secondaryGroup.tertiary_network) {
-                            if(tertiaryGroup.network_id === group.network_id) {
-                                tertiaryGroup.selected = !tertiaryGroup.selected;
-                                if(!tertiaryGroup.selected) {
-                                    tertiaryUnselected = true;
-                                }
-                            }
-                            if(secondaryGroup.selected) {
-                                tertiaryGroup.selected = true;
-                            }
-                            else if(primaryUnselected || secondaryUnselected) {
-                                tertiaryGroup.selected = false;
-                            }
-                            if(tertiaryGroup.quaternary_network) {
-                                for (var quaternaryGroup of tertiaryGroup.quaternary_network) {
-                                    if(quaternaryGroup.network_id === group.network_id) {
-                                        quaternaryGroup.selected = !quaternaryGroup.selected;
-                                    }
-                                    if(tertiaryGroup.selected) {
-                                        quaternaryGroup.selected = true;
-                                    }
-                                    else if(primaryUnselected || secondaryUnselected || tertiaryUnselected) {
-                                        quaternaryGroup.selected = false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            
         }
         var temp:PartnerGroup[] = JSON.parse(JSON.stringify(this.partnerGroups));
         this.partnerGroups = temp;
@@ -117,7 +54,7 @@ export class PartnerGroupsComponent implements OnInit {
     }
 
     checkForSubgroups(group:PartnerGroup) {
-        return group.hasOwnProperty('secondary_network') || group.hasOwnProperty('tertiary_network') || group.hasOwnProperty('quaternary_network')
+        return false;
     }
 
     getPanelClasses(group:PartnerGroup) {
@@ -148,18 +85,6 @@ export class PartnerGroupsComponent implements OnInit {
         if(this.partnerGroups)
             for(var partnerGroup of this.partnerGroups) {
                 partnerGroup.collapsed = collapsed;
-                if(partnerGroup.secondary_network)
-                    for(var secondaryGroup of partnerGroup.secondary_network) {
-                        secondaryGroup.collapsed = collapsed;
-                        if(secondaryGroup.tertiary_network)
-                            for (var tertiaryGroup of secondaryGroup.tertiary_network) {
-                                tertiaryGroup.collapsed = collapsed;
-                                if(tertiaryGroup.quaternary_network)
-                                    for(var quaternaryGroup of tertiaryGroup.quaternary_network) {
-                                        quaternaryGroup.collapsed = collapsed;
-                                    }
-                            }
-                    }
             }
     }
 
@@ -170,21 +95,6 @@ export class PartnerGroupsComponent implements OnInit {
             for(var partnerGroup of this.partnerGroups) {
                 if(partnerGroup.network_id === group.network_id)
                     partnerGroup.collapsed = group.collapsed;
-                if(partnerGroup.secondary_network)
-                    for(var secondaryGroup of partnerGroup.secondary_network) {
-                        if(secondaryGroup.network_id === group.network_id)
-                            secondaryGroup.collapsed = group.collapsed;
-                        if(secondaryGroup.tertiary_network)
-                            for (var tertiaryGroup of secondaryGroup.tertiary_network) {
-                                if(tertiaryGroup.network_id === group.network_id)
-                                    tertiaryGroup.collapsed = group.collapsed;
-                                if(tertiaryGroup.quaternary_network)
-                                    for(var quaternaryGroup of tertiaryGroup.quaternary_network) {
-                                        if(quaternaryGroup.network_id === group.network_id)
-                                            quaternaryGroup.collapsed = group.collapsed;
-                                    }
-                            }
-                    }
             }
     }
 
@@ -194,27 +104,9 @@ export class PartnerGroupsComponent implements OnInit {
                 if(partnerGroup.selected) {
                     return true;
                 }
-                if(partnerGroup.secondary_network)
-                    for(var secondaryGroup of partnerGroup.secondary_network) {
-                        if(secondaryGroup.selected) {
-                            return true;
-                        }
-                        if(secondaryGroup.tertiary_network)
-                            for (var tertiaryGroup of secondaryGroup.tertiary_network) {
-                                if(tertiaryGroup.selected) {
-                                    return true;
-                                }
-                                if(tertiaryGroup.quaternary_network)
-                                    for(var quaternaryGroup of tertiaryGroup.quaternary_network) {
-                                        if(quaternaryGroup.selected) {
-                                            return true;
-                                        }
-                                    }
-                            }
-                    }
-            }
-        } 
-        return false;
+            } 
+            return false;
+        }
     }
     
     submit() {
@@ -226,6 +118,7 @@ export class PartnerGroupsComponent implements OnInit {
 
     ngOnInit() {
         this.partnerGroups = this._partnerGroupsService.partnerGroups;
+        this.partnerGroupTags = this._partnerGroupsService.partnerGroupTags;
         this.setAllCollapsed('');
         //this is called when removing a group from the view filters page
         this._partnerGroupsService.groupRemoved$.subscribe(group => {this.removeGroup(group); this.submit();});
