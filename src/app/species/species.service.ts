@@ -167,6 +167,15 @@
             user_display: 1,
             kingdom: 'Plantae',
             image_path: ''
+        },
+        {
+            species_type_id: 40,
+            network_id: 1,
+            species_type: 'Pollen Trackers Campaign',
+            comment: '',
+            user_display: 1,
+            kingdom: 'Plantae',
+            image_path: ''
         }
     ];
 
