@@ -44,7 +44,7 @@ export class PartnerGroupsService {
                 if(partnerGroupIds) {
                     for(var partnerGroupId of partnerGroupIds) {
                         for(var partnerGroup of this.partnerGroups) {
-                            if(partnerGroup.network_id === partnerGroupId)
+                            if(partnerGroup.Network_ID === partnerGroupId)
                                 partnerGroup.selected = true;
                         }
                     }

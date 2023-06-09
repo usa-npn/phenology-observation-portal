@@ -1,57 +1,46 @@
 <h2>Partner Groups</h2>
 <p>Limit your dataset to data collected by a particular Partner Group, either at the parent group or subgroup level.</p>
 
-<div class="panel panel-default" style="height: 200px;">
+<div id="partner-group-filters" class="panel panel-default" style="height: 180px;">
     <div class="panel-heading"><strong>Filters</strong></div>
     <div class="panel-body">
         <div class="input-group">
             <span class="input-group-addon">Search:</span>
-            <input #filterText type="text" class="form-control" placeholder="" aria-describedby="basic-addon1" (keyup)="setAllCollapsed(filterText.value)" name="nameFilter" [(ngModel)]="nameFilter"> <!-- (keyup)="setAllCollapsed(filterText.value)" -->
+            <input #filterText type="text" class="form-control" placeholder="" aria-describedby="basic-addon1" (keyup)="filterChange()" name="nameFilter" [(ngModel)]="nameFilter"> <!-- (keyup)="setAllCollapsed(filterText.value)" -->
         </div>
         <div class="input-group">
             <span class="input-group-addon">Regional Phenology Effort:</span>
-            <select class="form-control" aria-describedby="basic-addon1" name="partnerGroupTags" [(ngModel)]="partnerGroupTags"> <!--(change)="filterChange()"-->
-                <option value="All" selected="selected">All</option>
-                <option *ngFor="let lppTag of partnerGroupTags | sort:'Name'" [value]="lppTag.Name">{{lppTag.Name}}</option>
+            <select name="partnerGroupTagsParent" class="form-control selectpicker bs-select" multiple="multiple" data-width="auto" aria-describedby="basic-addon1" (change)="filterChange()" [(ngModel)]="partnerGroupTagsParent"> <!--(change)="filterChange()"-->
+                <!-- <option value="All" selected="selected">All</option> -->
+                <ng-container *ngFor="let lppTag of partnerGroupTags">
+                    <option *ngIf="lppTag.is_group" [value]="lppTag">{{lppTag.Name}}</option>
+                </ng-container>
             </select>
         </div>
 
-        <div class="input-group" style="display:block; height: 50px; overflow-y:scroll;">
-            <!-- <span class="input-group-addon">LPP Tags:</span> -->
-            <!-- <div class="panel panel-default" style="height: 50px; overflow-y:scroll;">
-                <div class="panel-body panel-body-tight"> -->
-                    <table class="table table-striped table-hover table-responsive header-fixed">
-                        <!-- <thead>
-                        <tr>
-                            <th>
-                                Tags
-                            </th>
-                        </tr>
-                        </thead> -->
+        <div class="input-group">
+            <span class="input-group-addon">Category:</span>
 
-                        <tbody>
-                        <tr *ngFor="let lppTag of partnerGroupTags | sort:'Name'">
-                            <td><input type="checkbox"></td>
-                            <td>{{lppTag.Name}}</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                <!-- </div>
-
-        </div> -->
+            <select id="lppTags" name="selectedTags" class="form-control selectpicker bs-select" multiple="multiple" data-width="auto" data-actions-box="true" data-width="auto" data-live-search="true" aria-label="Category" (change)="filterChange()" [(ngModel)]="selectedTags">
+                <ng-container *ngFor="let lppTag of partnerGroupTags">
+                    <option *ngIf="!lppTag.is_group" [value]="lppTag">{{lppTag.Name}}</option>
+                </ng-container>
+            </select>
+  
+        </div>
     </div>
 </div>
 
-<div class="panel panel-default" style="height: 200px; overflow-y:scroll;">
+<div class="panel panel-default">
     <div class="panel-body panel-body-tight">
         <table class="table table-striped table-hover table-responsive header-fixed">
             <thead>
             <tr>
                 <th>
-                    <!-- <input type="checkbox" name="selectAll" value="" [(ngModel)]="selectAll" (click)="toggleSelectAll()"> Selected -->
+                    <input type="checkbox" name="selectAll" value="" [(ngModel)]="selectAll" (click)="toggleSelectAll()"> Selected 
                 </th>
                 <th>
-                    LPP Name
+                    Name
                 </th>
                 <th>
                     Tags
@@ -60,8 +49,8 @@
             </thead>
 
             <tbody>
-            <tr *ngFor="let partnerGroup of partnerGroups | networkSearch:nameFilter">
-                <td><input type="checkbox" name="partnerGroup" [(ngModel)]="partnerGroup.selected" (change)="toggleGroup(partnerGroup)"></td>
+            <tr *ngFor="let partnerGroup of partnerGroups | networkSearch:nameFilter:selectedTags:partnerGroupTagsParent">
+                <td><input type="checkbox" name="partnerGroup" value="{{partnerGroup.selected}}" [(ngModel)]="partnerGroup.selected" (click)="toggleGroup(partnerGroup)"></td>
                 <td>{{partnerGroup.Name}}</td>
                 <td>
                     <div *ngFor="let tag of partnerGroup.tags">
