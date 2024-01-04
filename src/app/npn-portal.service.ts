@@ -290,7 +290,7 @@ export class NpnPortalService {
       species_id: this.getSelectedSpecies().map(function(s) { return s.species_id; }),
       phenophase_category: this.getSelectedPhenophases().map(function(p) { return p.phenophase_category; }),
       dataset_ids: this.getSelectedDatasets().map((dataset) => dataset.dataset_id),
-      network: this.getSelectedPartnerGroups().map(function(p) { return p.name; }),
+      network: this.getSelectedPartnerGroups().map(function(p) { return p.Name; }),
       stations: this.stations,
       is_magnitude: (this.downloadType == 'magnitude') ? 1 : 0
     });
@@ -342,8 +342,8 @@ export class NpnPortalService {
       species_ids: this.getSelectedSpecies().map((species) => species.species_id),
       species_names: this.getSelectedSpecies().map((s) => { return s.common_name + ' ('  + s.genus + ' ' + s.species + ')' }),
       phenophaseCategories: this.getSelectedPhenophases().map((phenophase) => phenophase.phenophase_category),
-      partnerGroups: this.getSelectedPartnerGroups().map((partnerGroup) => partnerGroup.name),
-      network_ids: this.getSelectedPartnerGroups().map((partnerGroup) => partnerGroup.network_id),
+      partnerGroups: this.getSelectedPartnerGroups().map((partnerGroup) => partnerGroup.Name),
+      network_ids: this.getSelectedPartnerGroups().map((partnerGroup) => partnerGroup.Network_ID),
       additionalFields: this._outputFieldsService.getSelectedOptionalFields().map((optionalField) => optionalField.machine_name),
       additionalFieldsDisplay: this._outputFieldsService.getSelectedOptionalFields().map((optionalField) => optionalField.field_name),
       dataset_ids: this.getSelectedDatasets().map((dataset) => dataset.dataset_id),

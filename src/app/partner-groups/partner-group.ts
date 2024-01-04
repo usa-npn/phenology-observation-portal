@@ -1,6 +1,6 @@
 export interface PartnerGroup {
-  network_id: number;
-  name: string;
+  Network_ID: number;
+  Name: string;
   selected: boolean;
   collapsed: boolean;
 }

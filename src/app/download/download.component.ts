@@ -237,7 +237,7 @@ export class DownloadComponent {
              species: this._npnPortalService.getSelectedSpecies().map((species) => species.species_id),
              states: this._npnPortalService.getSelectedStates().map((state) => state.state_id),
              phenophases: this._npnPortalService.getSelectedPhenophases().map((phenophase) => phenophase.phenophase_id),
-             partnerGroups: this._npnPortalService.getSelectedPartnerGroups().map((group) => group.network_id),
+             partnerGroups: this._npnPortalService.getSelectedPartnerGroups().map((group) => group.Network_ID),
              datasets: this._npnPortalService.getSelectedDatasets().map((dataset) => dataset.dataset_id),
              optionalFields: this._outputFieldsService.getSelectedOptionalFields().map((field) => field.metadata_field_id),
              datasheets: this._npnPortalService.getSelectedDatasheets().map((datasheet) => datasheet.id),

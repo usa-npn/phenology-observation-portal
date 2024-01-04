@@ -10,7 +10,7 @@
   font-family: 'Frutiger';
   font-style: normal;
   font-weight: normal;
-  src: url('/assets/fonts/Frutiger.woff') format('woff');
+  src: url('assets/fonts/Frutiger.woff') format('woff');
   }
   
   
@@ -18,7 +18,7 @@
   font-family: 'Frutiger Bold';
   font-style: normal;
   font-weight: normal;
-  src: url('/assets/fonts/Frutiger_bold.woff') format('woff');
+  src: url('assets/fonts/Frutiger_bold.woff') format('woff');
   }
 
  
@@ -243,13 +243,27 @@
  #species-filters .input-group{
      margin-bottom:5px;
  }
+
+ #partner-group-filters .input-group{
+  margin-bottom:5px;
+}
  
  #search-type-button-grp .search-type-btn{
      width:48%;
      height:auto;
  }
  
- 
+ @import "../node_modules/bootstrap-select/dist/css/bootstrap-select.css";
+
+ //Overide default button styling for bs-select button placeholders
+ button.btn.dropdown-toggle.btn-default {
+  height: auto;
+  margin: 0;
+  background-color: white !important;
+  border: 1px solid #ccc;
+  border-color: #ccc !important;
+  color: #555 !important;
+}
  
  
  

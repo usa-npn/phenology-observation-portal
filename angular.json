@@ -31,7 +31,8 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "src/assets/js/keydragzoom.js"
+              "src/assets/js/keydragzoom.js",
+              "node_modules/bootstrap-select/dist/js/bootstrap-select.min.js"
             ]
           },
           "configurations": {
