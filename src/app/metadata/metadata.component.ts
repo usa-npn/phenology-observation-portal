@@ -10,7 +10,7 @@ export class MetadataComponent {
     constructor(private config: Config) {}
     
     downloadFile(fileLocation) {
-        window.location.replace(this.config.getNpnPortalServerUrl() + fileLocation);
+        window.location.replace('https://www.usanpn.org' + fileLocation);
     }
 
     fgdcLink = this.config.getPopServerUrl() + this.config.getPopFgdcEndpoint();
