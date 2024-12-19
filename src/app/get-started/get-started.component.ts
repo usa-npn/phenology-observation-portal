@@ -1,71 +1,60 @@
-import {Component, OnInit, ViewChild} from "@angular/core";
-import {Router} from "@angular/router";
-import {NpnPortalService} from "../npn-portal.service";
-import {LocationsService} from "../locations/locations.service";
-import {PhenophasesService} from "../phenophases/phenophases.service";
-import {SpeciesService} from "../species/species.service";
-import {PartnerGroupsService} from "../partner-groups/partner-groups.service";
-import {OutputFieldsService} from "../output-fields/output-fields.service";
-import {DateService} from "../date-range/date.service";
-import {IntegratedDatasetService} from "../integrated-datasets/integrated-datasets.service";
-import {AncillaryDataService} from "../ancillary-data/ancillary-data.service";
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { Router } from "@angular/router";
+import { NpnPortalService } from "../npn-portal.service";
+import { LocationsService } from "../locations/locations.service";
+import { PhenophasesService } from "../phenophases/phenophases.service";
+import { SpeciesService } from "../species/species.service";
+import { PartnerGroupsService } from "../partner-groups/partner-groups.service";
+import { OutputFieldsService } from "../output-fields/output-fields.service";
+import { DateService } from "../date-range/date.service";
+import { IntegratedDatasetService } from "../integrated-datasets/integrated-datasets.service";
+import { AncillaryDataService } from "../ancillary-data/ancillary-data.service";
 import { BsModalComponent } from 'ng2-bs3-modal';
+import { NpnUsageService } from '../services/npn-usage.service'; // Import the NpnUsageService
 
 @Component({
   templateUrl: 'get-started.html',
-  styleUrls: ['get-started.component.css']})
+  styleUrls: ['get-started.component.css']
+})
 export class GetStartedComponent implements OnInit {
-  constructor(private _npnPortalService: NpnPortalService, 
+  constructor(private _npnPortalService: NpnPortalService,
               private _dateService: DateService,
-              private _locationsService: LocationsService, 
+              private _locationsService: LocationsService,
               private _phenophasesService: PhenophasesService,
               private _speciesService: SpeciesService,
               private _partnerGroupsService: PartnerGroupsService,
               private _outputFieldsService: OutputFieldsService,
               private _integratedDatasetService: IntegratedDatasetService,
               private _ancillaryDataService: AncillaryDataService,
-              private _router: Router) {}
+              private _router: Router,
+              private npnUsageService: NpnUsageService // Inject the NpnUsageService
+  ) {}
 
-  //todo fix modal
-  @ViewChild('resetFiltersModal')
-  resetFiltersModal: BsModalComponent;
-  
+  @ViewChild('resetFiltersModal') resetFiltersModal: BsModalComponent;
+
+  // Function to check if all data is loaded
   allDataLoaded() {
     return this._locationsService.ready
         && this._phenophasesService.ready 
         && this._speciesService.ready
-        && this._partnerGroupsService.ready
-        // && this._outputFieldsService.rawFieldsReady
-        // && this._outputFieldsService.summarizedFieldsReady
-        // && this._outputFieldsService.siteLevelSummarizedFieldsReady
+        && this._partnerGroupsService.ready;
   }
 
   fromVizTool() {
-    return this._npnPortalService.fromVizTool
+    return this._npnPortalService.fromVizTool;
   }
-  
+
   dataLoaded() {
-    var numLoaded:number = 5;
-    if(this._locationsService.ready)
-      numLoaded = numLoaded + 18;
-    if(this._phenophasesService.ready)
-      numLoaded = numLoaded + 18;
-    if(this._speciesService.ready)
-      numLoaded = numLoaded + 18;
-    if(this._partnerGroupsService.ready)
-      numLoaded = numLoaded + 18;
-    // if(this._outputFieldsService.rawFieldsReady)
-    //   numLoaded = numLoaded + 12;
-    // if(this._outputFieldsService.summarizedFieldsReady)
-    //   numLoaded = numLoaded + 12;
-    // if(this._outputFieldsService.siteLevelSummarizedFieldsReady)
-    //   numLoaded = numLoaded + 12;
-    if(this._integratedDatasetService.ready)
-      numLoaded = numLoaded + 18;
+    let numLoaded = 5;
+    if (this._locationsService.ready) numLoaded += 18;
+    if (this._phenophasesService.ready) numLoaded += 18;
+    if (this._speciesService.ready) numLoaded += 18;
+    if (this._partnerGroupsService.ready) numLoaded += 18;
+    if (this._integratedDatasetService.ready) numLoaded += 18;
     return numLoaded;
   }
 
-  newType:string;
+  newType: string;
   resetFilters() {
     this._npnPortalService.resettingFilters = true;
     this._dateService.reset();
@@ -81,64 +70,53 @@ export class GetStartedComponent implements OnInit {
     this._npnPortalService.downloadType = this.newType;
     this._npnPortalService.setObservationCount();
   }
-  
-  setDownloadType(type:string){
-      
-    console.log("fa fa");
 
-    if(type === this._npnPortalService.downloadType)
-        return;
-    if(this._npnPortalService.filtersAreSet() && !this._npnPortalService.allowDownloadTypeChangeWithoutReset) {
+  setDownloadType(type: string) {
+    if (type === this._npnPortalService.downloadType) return;
+    if (this._npnPortalService.filtersAreSet() && !this._npnPortalService.allowDownloadTypeChangeWithoutReset) {
       this.resetFiltersModal.open();
       this.newType = type;
-    }
-    else {
+    } else {
       this._npnPortalService.downloadType = type;
       this._npnPortalService.setObservationCount();
     }
-    if(type === 'raw')
-      this._outputFieldsService.initRawFields();
-    else if(type === 'siteLevelSummarized')
-      this._outputFieldsService.initSiteLevelSummarizedFields();
-    else if(type === 'summarized')
-      this._outputFieldsService.initSummarizedFields();
-    else if(type === 'magnitude')
-      this._outputFieldsService.initMagnitudeFields();
-  }
-  
-  getDownloadType(){
-    return this._npnPortalService.downloadType
-  }
-  
-  downloadTypeIsSet() {
-    
-    return this._npnPortalService.downloadType == "raw"
-        || this._npnPortalService.downloadType == "summarized"
-        || this._npnPortalService.downloadType == "siteLevelSummarized"
-        || this._npnPortalService.downloadType == "magnitude"
-  }
-  
-  isSelected(button) {
-    return button == this._npnPortalService.downloadType;
+
+    if (type === 'raw') this._outputFieldsService.initRawFields();
+    else if (type === 'siteLevelSummarized') this._outputFieldsService.initSiteLevelSummarizedFields();
+    else if (type === 'summarized') this._outputFieldsService.initSummarizedFields();
+    else if (type === 'magnitude') this._outputFieldsService.initMagnitudeFields();
   }
 
+  getDownloadType() {
+    return this._npnPortalService.downloadType;
+  }
+
+  downloadTypeIsSet() {
+    return this._npnPortalService.downloadType === "raw"
+        || this._npnPortalService.downloadType === "summarized"
+        || this._npnPortalService.downloadType === "siteLevelSummarized"
+        || this._npnPortalService.downloadType === "magnitude";
+  }
+
+  isSelected(button) {
+    return button === this._npnPortalService.downloadType;
+  }
+  
+  // Method to handle navigation (onSelect) and route transition
   onSelect(page) {
-    if(page == "get-started" || page == "metadata" || page == "help") {
-      // this._npnPortalService.activePage = page;
+    if (page === "get-started" || page === "metadata" || page === "help") {
       this._npnPortalService.allowDownloadTypeChangeWithoutReset = false;
-      this._router.navigate( [page] );
-    }
-    else {
+      this._router.navigate([page]);
+    } else {
       if (this._npnPortalService.reportTypeSelected()) {
-        // this._npnPortalService.activePage = page;
         this._npnPortalService.allowDownloadTypeChangeWithoutReset = false;
-        this._router.navigate( [page] );
+        this._router.navigate([page]);
       }
     }
   }
-  
+
   ngOnInit() {
     this._npnPortalService.resettingFilters = false;
   }
-  
+ 
 }

@@ -23,7 +23,7 @@ import { HelpComponent } from './help/help.component';
 import { BsModalModule } from 'ng2-bs3-modal';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 // import {FORM_DIRECTIVES, REACTIVE_FORM_DIRECTIVES} from '@angular/forms';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SpeciesSearchPipe } from './species/search-pipe';
 import { Config } from './config.service';
 import { NpnPortalService } from './npn-portal.service';
@@ -33,6 +33,9 @@ import { DeactivateGuard } from './deactivate.guard';
 import { OutputFieldsService } from './output-fields/output-fields.service';
 import { PersistentSearchService } from './persistent-search.service';
 
+
+// Import the NpnUsageService
+import { NpnUsageService } from './services/npn-usage.service';
 
 @NgModule({
   declarations: [
@@ -59,9 +62,9 @@ import { PersistentSearchService } from './persistent-search.service';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule,
+    HttpClientModule, // Ensure HttpClientModule is imported
     BsModalModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule, //Import ReactiveFormsModule for the form functionality(mighnt not be used currently)
     FormsModule
   ],
   exports: [
@@ -74,7 +77,8 @@ import { PersistentSearchService } from './persistent-search.service';
     NpnPortalService,
     ActivateGuard,
     DeactivateGuard,
-    DeactivateDateRangeGuard
+    DeactivateDateRangeGuard,
+    NpnUsageService // Provide NpnUsageService to make HTTP requests
   ],
   bootstrap: [AppComponent]
 })

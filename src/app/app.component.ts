@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {Router} from '@angular/router';
 import {DownloadComponent} from "./download/download.component";
 import {NpnPortalService} from "./npn-portal.service";
@@ -11,6 +11,8 @@ import {PartnerGroupsService} from "./partner-groups/partner-groups.service";
 import {IntegratedDatasetService} from "./integrated-datasets/integrated-datasets.service";
 import {AncillaryDataService} from "./ancillary-data/ancillary-data.service";
 import {PersistentSearchService, savedSearch} from "./persistent-search.service";
+import { HttpClient } from '@angular/common/http';
+import { NpnUsageService } from './services/npn-usage.service'; // Ensure correct path to service
 
 @Component({
   selector: 'app-root',
@@ -27,7 +29,7 @@ import {PersistentSearchService, savedSearch} from "./persistent-search.service"
       AncillaryDataService
     ]
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
     constructor(private _npnPortalService: NpnPortalService, 
                 private _persistentSearchService: PersistentSearchService,
                 private _dateService: DateService,
@@ -38,30 +40,89 @@ export class AppComponent {
                 private _integratedDatasetService: IntegratedDatasetService,
                 private _outputFieldsService: OutputFieldsService,
                 private _ancillaryDataService: AncillaryDataService,
-                private _router: Router) {
+                private _router: Router,
+                private http: HttpClient,
+                private npnUsageService: NpnUsageService // Inject NpnUsageService
+                ) {
     }
 
-    onSelect(page) {
-        if(this.allDataLoaded()) {
-            if(page == "get-started" || page == "metadata" || page == "help") {
-                this._npnPortalService.activePage = page;
-                this._router.navigate( [page] );
+//this is not currently used, written for the insertion of row in google analytics4 using measurement ID.
+   /*sendAnalyticsData() {
+        console.log('inside')
+        const url = 'https://www.google-analytics.com/mp/collect?api_secret=secrethere&measurement_id=G-EB77TQZKT7';
+        const currentTimestamp = Math.floor(Date.now() / 1000);
+        const stationIds = [53, 35, 63, 85];
+    
+        const payload = {
+          client_id: '1859777382.1711374313',
+          non_personalized_ads: false,
+          events: [ 
+            {
+              name: 'popdownloads',
+              params: {
+                Download_params: '{species_id: 23, person_id: 64, station_ids: [53, 35, 63]}',
+                species_id: 24,
+                debug_mode: 1,
+                event_timestamp: currentTimestamp
+              }
             }
-            else {
-                if (page === "date-range" && this.reportTypeSelected()) {
-                    this._npnPortalService.activePage = page;
-                    this._router.navigate( [page] );
-                }
-                if (this.reportTypeSelected() && this.validDateRange()) {
-                    this._npnPortalService.activePage = page;
-                    this._router.navigate( [page] );
-                }
-            }
+          ]
+        };
+        const headers = {
+            'Cross-Origin-Resource-Policy': 'cross-origin',
+            'Server': 'Golfe2',
+            'Content-Type':'text/plain'
+        };
+        this.http.post(url, payload,{headers}).subscribe(
+          (response) => {
+            console.log('Analytics data sent successfully:', response);
+          },
+          (error) => {
+            console.error('Error sending analytics data:', error);
+          }
+        );
+      }
+    
+    
+    //this is not currently used Method to insert the new row into npn_usage when the "Next" button is clicked, instead we are inserting the row when download button is clicked.
+  insertRowAndNavigate(): void {
+    const newUsage = {
+      date_time: new Date().toISOString(),  // Current datetime in ISO format
+      tool_id: 1,                           // tool_id for this action
+      metric_id: 3                          // metric_id for "report generated"
+    };
+
+    this.npnUsageService.addNpnUsage(newUsage).subscribe(
+      (response) => {
+        console.log('New npn_usage row added:', response);
+        this.onSelect('date-range');  // Navigate to the next page after insertion
+      },
+      (error) => {
+        console.error('Error adding npn_usage row:', error);
+      }
+    );
+  }*/
+
+  onSelect(page: string) {
+    if (this.allDataLoaded()) {
+      if (page === "get-started" || page === "metadata" || page === "help") {
+        this._npnPortalService.activePage = page;
+        this._router.navigate([page]);
+      } else {
+        if (page === "date-range" && this.reportTypeSelected()) {
+          this._npnPortalService.activePage = page;
+          this._router.navigate([page]);
         }
+        if (this.reportTypeSelected() && this.validDateRange()) {
+          this._npnPortalService.activePage = page;
+          this._router.navigate([page]);
+        }
+      }
     }
+  }
 
     reportTypeSelected() {
-        return this._npnPortalService.reportTypeSelected()
+        return this._npnPortalService.reportTypeSelected();
     }
 
     validDateRange() {
@@ -69,7 +130,7 @@ export class AppComponent {
     }
 
     isSelected(page) {
-        return page == this._npnPortalService.activePage
+        return page == this._npnPortalService.activePage;
     }
 
     allDataLoaded() {
@@ -77,10 +138,7 @@ export class AppComponent {
             && this._phenophasesService.ready
             && this._speciesService.ready
             && this._partnerGroupsService.ready
-            // && this._outputFieldsService.rawFieldsReady
-            // && this._outputFieldsService.summarizedFieldsReady
-            // && this._outputFieldsService.siteLevelSummarizedFieldsReady
-            && this._integratedDatasetService.ready
+            && this._integratedDatasetService.ready;
     }
     
     initializeData() {
@@ -89,79 +147,46 @@ export class AppComponent {
         this._speciesService.initFunctionalTypes();
         this._partnerGroupsService.initPartnerGroups();
         this._phenophasesService.initPhenophases();
-        // this._outputFieldsService.initRawFields();
-        // this._outputFieldsService.initSummarizedFields();
-        // this._outputFieldsService.initSiteLevelSummarizedFields();
-        // this._outputFieldsService.initMagnitudeFields();
         this._integratedDatasetService.initDatasets();
         this._ancillaryDataService.initDatasheets();
     }
+
+    // Insert the new row into npn_usage when /get-started route is loaded
+    insertNpnUsageRow(): void {
+        const newUsage = {
+            date_time: new Date().toISOString(), // Current datetime in ISO format
+            tool_id: 1,                          // tool_id for 'get-started'
+            metric_id:1                         // metric_id for 'page visit'
+        };
+
+        this.npnUsageService.addNpnUsage(newUsage).subscribe(
+          (response) => {
+            console.log('New npn_usage row added:', response);
+          },
+          (error) => {
+            console.error('Error adding npn_usage row:', error);
+          }
+        );
+    }
     
     ngOnInit() {
+        console.log('sending to GA');
         let searchId = this._persistentSearchService.getSearchId();
-        if(searchId)
+        if(searchId) {
             this._persistentSearchService.getSearch(searchId).subscribe((savedSearch: savedSearch) => {
-                //set all our model data using the returned JSON
-                if(savedSearch.downloadType) {
-                    this._npnPortalService.downloadType = savedSearch.downloadType;
-                    if(savedSearch.downloadType === 'selectable')
-                        this._npnPortalService.allowDownloadTypeChangeWithoutReset = true;
-                    if (savedSearch.startDate) {
-                        this._dateService.startDate = savedSearch.startDate;
-                        this._npnPortalService.startDate = savedSearch.startDate;
-                    }
-                    if (savedSearch.endDate) {
-                        this._dateService.endDate = savedSearch.endDate;
-                        this._npnPortalService.endDate = savedSearch.endDate;
-                    }
-                    if(savedSearch.dataPrecision) {
-                        this._dateService.dataPrecision = savedSearch.dataPrecision;
-                        this._npnPortalService.dataPrecision = savedSearch.dataPrecision;
-                    }
-                    if(savedSearch.startYear) {
-                        this._dateService.startYear = savedSearch.startYear;
-                        this._npnPortalService.startYear = savedSearch.startYear;
-                    }
-                    if(savedSearch.startMonth) {
-                        this._dateService.startMonth = savedSearch.startMonth;
-                        this._npnPortalService.startMonth = savedSearch.startMonth;
-                    }
-                    if(savedSearch.startDay) {
-                        this._dateService.startDay = savedSearch.startDay;
-                        this._npnPortalService.startDay = savedSearch.startDay;
-                    }
-                    if(savedSearch.endYear) {
-                        this._dateService.endYear = savedSearch.endYear;
-                        this._npnPortalService.endYear = savedSearch.endYear;
-                    }
-                    if(savedSearch.endMonth) {
-                        this._dateService.endMonth = savedSearch.endMonth;
-                        this._npnPortalService.endMonth = savedSearch.endMonth;
-                    }
-                    if(savedSearch.endDay) {
-                        this._dateService.endDay = savedSearch.endDay;
-                        this._npnPortalService.endDay = savedSearch.endDay;
-                    }
-                    if(savedSearch.stations)
-                        this._npnPortalService.stations = savedSearch.stations;
-                    
-                    this._persistentSearchService.states = savedSearch.states;
-                    this._persistentSearchService.species = savedSearch.species;
-                    this._persistentSearchService.phenophases = savedSearch.phenophases;
-                    this._persistentSearchService.partnerGroups = savedSearch.partnerGroups;
-                    this._persistentSearchService.datasets = savedSearch.datasets;
-                    this._persistentSearchService.optionalFields = savedSearch.optionalFields;
-                    this._persistentSearchService.datasheets = savedSearch.datasheets;
-
-                    if(savedSearch.searchSource === 'visualization-tool') {
-                        this._npnPortalService.fromVizTool = true;
-                    }
-                }
-                //initialize our components data
                 this.initializeData();
+                //this.sendAnalyticsData();
+                // Check if the current URL is /get-started and call the function
+                if (window.location.pathname === '/get-started') {
+                    this.insertNpnUsageRow();  // Insert the row when /get-started is loaded
+                }    
             });
-        else
+        } else {
             this.initializeData();
-        
+            //this.sendAnalyticsData();
+            if (window.location.pathname === '/get-started') {
+                this.insertNpnUsageRow();  // Insert the row when /get-started is loaded
+            }
+        }
     }
 }
