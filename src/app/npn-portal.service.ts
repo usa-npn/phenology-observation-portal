@@ -137,18 +137,18 @@ export class NpnPortalService {
     return this.datasets.filter((dataset) => dataset.selected);
   }
 
-  // // this function is here because there are two lilac datasets combined into one checkbox for lilac
-  // getSelectedDatasetIds() {
-  //   let datasetIds = [];
-  //   let selectedSets: Dataset[] = this.datasets.filter((dataset) => dataset.selected);
-  //   for(var set of selectedSets) {
-  //     datasetIds.push(set.dataset_id);
-  //     // east and west lilac are combined
-  //     if(set.dataset_id == 7)
-  //       datasetIds.push(8);
-  //   }
-  //   return datasetIds;
-  // }
+  // this function is here because the "Nature's Notebook" checkbox (id -9999, the Java app)
+  // also needs to include the Nature's Notebook mobile app data (id 3)
+  getSelectedDatasetIds() {
+    let datasetIds = [];
+    for(var set of this.getSelectedDatasets()) {
+      datasetIds.push(set.dataset_id);
+      // the Nature's Notebook checkbox covers both the Java app (-9999) and the mobile app (3)
+      if(set.dataset_id == -9999)
+        datasetIds.push(3);
+    }
+    return datasetIds;
+  }
 
   getSelectedDatasheets() {
     return this.datasheets.filter((datasheet) => datasheet.selected)
@@ -289,7 +289,7 @@ export class NpnPortalService {
       upper_right_y2: this.extent.upper_right_y2,
       species_id: this.getSelectedSpecies().map(function(s) { return s.species_id; }),
       phenophase_category: this.getSelectedPhenophases().map(function(p) { return p.phenophase_category; }),
-      dataset_ids: this.getSelectedDatasets().map((dataset) => dataset.dataset_id),
+      dataset_ids: this.getSelectedDatasetIds(),
       network: this.getSelectedPartnerGroups().map(function(p) { return p.Name; }),
       stations: this.stations,
       is_magnitude: (this.downloadType == 'magnitude') ? 1 : 0
@@ -346,7 +346,7 @@ export class NpnPortalService {
       network_ids: this.getSelectedPartnerGroups().map((partnerGroup) => partnerGroup.Network_ID),
       additionalFields: this._outputFieldsService.getSelectedOptionalFields().map((optionalField) => optionalField.machine_name),
       additionalFieldsDisplay: this._outputFieldsService.getSelectedOptionalFields().map((optionalField) => optionalField.field_name),
-      dataset_ids: this.getSelectedDatasets().map((dataset) => dataset.dataset_id),
+      dataset_ids: this.getSelectedDatasetIds(),
       integrated_datasets: this.getSelectedDatasets().map((dataset) => dataset.dataset_name),
       ancillary_data: this.getSelectedDatasheets().map((datasheet) => datasheet.name),
       qualityFlags: this._outputFieldsService.dataQualityChecksSelected() ? null : 'ignored',
