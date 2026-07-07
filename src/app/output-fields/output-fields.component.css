@@ -31,3 +31,39 @@ a.outputfield{
     color: #666;
     text-decoration: none;
 }
+
+#rawOptionalFieldsView {
+    column-count: 2;
+    -moz-column-count: 2;
+    -webkit-column-count: 2;
+    column-gap: 24px;
+}
+
+#rawOptionalFieldsView .field-group {
+    break-inside: avoid-column;
+    -webkit-column-break-inside: avoid;
+    page-break-inside: avoid;
+    margin-bottom: 12px;
+}
+
+#rawClimateDataView {
+    display: flex;
+    gap: 24px;
+}
+
+#rawClimateDataView .field-group {
+    flex: 1 1 0;
+    min-width: 0;
+    margin-bottom: 12px;
+}
+
+#rawDefaultFieldsView tbody {
+    column-count: 2;
+    -moz-column-count: 2;
+    -webkit-column-count: 2;
+}
+
+#rawDefaultFieldsView tbody, #rawDefaultFieldsView tr, #rawDefaultFieldsView td {
+    display: block;
+    width: 100%;
+}

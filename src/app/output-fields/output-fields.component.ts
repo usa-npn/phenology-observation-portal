@@ -15,7 +15,11 @@ export class OutputFieldsComponent implements OnInit {
                 private _outputFieldsService: OutputFieldsService,
                 private _router: Router) {
 
-        if (this.getDownloadType() !== 'raw') {
+        if (this.getDownloadType() === 'raw') {
+            this.tabs.push({title: 'Optional Fields', view: 'optionalFieldsView'});
+            this.tabs.push({title: 'Climate Data', view: 'climateDataView'});
+            this.tabs.push({title: 'Default Fields', view: 'defaultFieldsView'});
+        } else {
             this.tabs.push({title: 'Optional Fields',     view: 'optionalFieldsView'});
             if (this.getDownloadType() != 'magnitude'){
                 this.tabs.push({title: 'Climate Data Fields', view: 'climateFieldsView'});
@@ -119,8 +123,12 @@ export class OutputFieldsComponent implements OnInit {
 
     // --- Raw group methods ---
 
-    getRawGroups(): OptionalFieldGroup[] {
-        return RAW_OPTIONAL_FIELD_GROUPS;
+    getOptionalGroups(): OptionalFieldGroup[] {
+        return RAW_OPTIONAL_FIELD_GROUPS.filter(group => !group.fieldCategory);
+    }
+
+    getClimateGroups(): OptionalFieldGroup[] {
+        return RAW_OPTIONAL_FIELD_GROUPS.filter(group => !!group.fieldCategory);
     }
 
     isGroupSelected(group: OptionalFieldGroup): boolean {

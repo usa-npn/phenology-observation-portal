@@ -1,43 +1,67 @@
 <h2>Output Fields</h2>
 <p>Select which optional fields you would like to have appear in your data output file. Use tabs to add climate data fields, derived from Daymet, and view default fields.</p>
 
-<!-- Raw (Status and Intensity): grouped checkboxes + default fields -->
+<!-- Raw (Status and Intensity): tabbed Optional Fields / Climate Data / Default Fields -->
 <ng-container *ngIf="getDownloadType() === 'raw'">
+    <ul class="nav nav-tabs">
+        <li role="presentation" *ngFor="let tab of tabs" [class.active]=isActiveTab(tab.view) (click)=onClickTab(tab)>
+            <a href="javascript:;">{{tab.title}}</a>
+        </li>
+    </ul>
+
     <div class="panel panel-default">
-        <div class="panel-heading"><strong>Optional Fields</strong></div>
-        <div class="panel-body" style="height:400px; overflow-y:auto;">
-            <div *ngFor="let group of getRawGroups()" style="margin-bottom:12px;">
-                <label style="font-weight:bold; cursor:pointer;">
-                    <input type="checkbox"
-                           [checked]="isGroupSelected(group)"
-                           (change)="onToggleGroup(group, $event.target.checked)">
-                    &nbsp;{{group.label}}
-                </label>
-                <table class="table table-condensed" style="margin-left:20px; margin-bottom:2px;">
+        <div class="panel-body">
+            <div id="rawOptionalFieldsView" [class.hide]="!isActiveTab('optionalFieldsView')" style="height:400px; overflow-y:auto;">
+                <div *ngFor="let group of getOptionalGroups()" class="field-group">
+                    <label style="font-weight:bold; cursor:pointer;">
+                        <input type="checkbox"
+                               [checked]="isGroupSelected(group)"
+                               (change)="onToggleGroup(group, $event.target.checked)">
+                        &nbsp;{{group.label}}
+                    </label>
+                    <table class="table table-condensed" style="margin-left:20px; margin-bottom:2px;">
+                        <tbody>
+                            <tr *ngFor="let item of getGroupDisplayItems(group)">
+                                <td>
+                                    <a class="outputfield" href="javascript:;" data-toggle="tooltip" title="{{item.tooltip}}">{{item.label}}</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="rawClimateDataView" [class.hide]="!isActiveTab('climateDataView')" style="height:400px; overflow-y:auto;">
+                <div *ngFor="let group of getClimateGroups()" class="field-group">
+                    <label style="font-weight:bold; cursor:pointer;">
+                        <input type="checkbox"
+                               [checked]="isGroupSelected(group)"
+                               (change)="onToggleGroup(group, $event.target.checked)">
+                        &nbsp;{{group.label}}
+                    </label>
+                    <table class="table table-condensed" style="margin-left:20px; margin-bottom:2px;">
+                        <tbody>
+                            <tr *ngFor="let item of getGroupDisplayItems(group)">
+                                <td>
+                                    <a class="outputfield" href="javascript:;" data-toggle="tooltip" title="{{item.tooltip}}">{{item.label}}</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="rawDefaultFieldsView" [class.hide]="!isActiveTab('defaultFieldsView')">
+                <table class="table table-striped table-hover table-responsive header-fixed">
                     <tbody>
-                        <tr *ngFor="let item of getGroupDisplayItems(group)">
+                        <tr *ngFor="let defaultField of defaultFields">
                             <td>
-                                <a class="outputfield" href="javascript:;" data-toggle="tooltip" title="{{item.tooltip}}">{{item.label}}</a>
+                                <a class="outputfield" href="javascript:;" data-toggle="tooltip" title="{{defaultField.field_description}}">{{defaultField.field_name}}</a>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-        </div>
-    </div>
-
-    <div class="panel panel-default">
-        <div class="panel-heading"><strong>Default Fields</strong></div>
-        <div class="panel-body">
-            <table class="table table-striped table-hover table-responsive header-fixed">
-                <tbody>
-                    <tr *ngFor="let defaultField of defaultFields">
-                        <td>
-                            <a class="outputfield" href="javascript:;" data-toggle="tooltip" title="{{defaultField.field_description}}">{{defaultField.field_name}}</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
     </div>
 </ng-container>
