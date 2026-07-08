@@ -9,6 +9,7 @@ import {Dataset} from './integrated-datasets/dataset'
 import {AncillaryData} from "./ancillary-data/ancillaryData";
 import {Config} from "./config.service";
 import { OutputFieldsService } from './output-fields/output-fields.service';
+import { TinybirdService } from './tinybird.service';
 import { environment } from '../environments/environment'
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -16,9 +17,10 @@ import { map } from 'rxjs/operators';
 @Injectable()
 export class NpnPortalService {
   constructor (
-    private http: HttpClient, 
+    private http: HttpClient,
     private config: Config,
-    private _outputFieldsService: OutputFieldsService) {
+    private _outputFieldsService: OutputFieldsService,
+    private _tinybirdService: TinybirdService) {
     }
 
   activePage = "get-started";
@@ -37,6 +39,7 @@ export class NpnPortalService {
   stations = [];
 
   observationCount;
+  countRequestId = 0;
   startDate = null;
   endDate = null;
 
@@ -212,36 +215,40 @@ export class NpnPortalService {
       return null;
   }
 
-  setObservationCount() {      
-            
-    this.observationCount = -1;
-    
+  setObservationCount() {
 
+    this.observationCount = -1;
+
+    const requestId = ++this.countRequestId;
 
     this.getObservationCount().subscribe(
         (observationCount: any) => {
+          if (requestId !== this.countRequestId) return;
 
           let estimatedCount = observationCount.obsCount;
-          
+
           if(this.downloadType === 'summarized'){
               estimatedCount = estimatedCount / 20;
           }
-          
+
           if(this.downloadType === 'siteLevelSummarized'){
             estimatedCount = estimatedCount / 115;
           }
-          
+
           if(this.downloadType === 'magnitude'){
             estimatedCount = this.getMagnitudeEstimate(estimatedCount);
-          }          
+          }
 
           this.observationCount = this.roundEstimate(estimatedCount);
         },
         (error) => {
+          if (requestId !== this.countRequestId) return;
+
           this.errorMessage = <any>error;
           console.log(this.errorMessage);
+          this.observationCount = 'N/a';
         })
-    
+
   }
   
   roundEstimate(estimatedCount : any){
@@ -291,14 +298,57 @@ export class NpnPortalService {
     }
 
   getObservationCount() {
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    };
-    // const url = this.config.getObservationCountUrl();
-    // const body = this.buildRequestPayload();
-    // return this.http.post(url, body, httpOptions)
-    //   .pipe(map((r: any) => ({ obsCount: r.total_records })));
-    return of({ obsCount: 50000000 }); // mock until the count endpoint exists
+    if (this.downloadType === 'raw') {
+      return this._tinybirdService.getCount(
+          this.config.getObservationCountUrl(), this.buildCountParams())
+        .pipe(map((total: number) => ({ obsCount: total })));
+    }
+    return of({ obsCount: 50000000 }); // other types: mock until their retrofits land
+  }
+
+  buildCountParams(): HttpParams {
+    let params = new HttpParams();
+
+    if (this.startDate) {
+      params = params.set('start_date', this.startDate);
+    }
+    if (this.endDate) {
+      params = params.set('end_date', this.endDate);
+    }
+
+    const speciesIds = this.getSelectedSpecies().map((s) => s.species_id).join(',');
+    if (speciesIds) {
+      params = params.set('species_ids', speciesIds);
+    }
+
+    const phenophaseCategories = this.getSelectedPhenophases().map((p) => p.phenophase_category).join(',');
+    if (phenophaseCategories) {
+      params = params.set('phenophase_short_names', phenophaseCategories);
+    }
+
+    const networkIds = this.getSelectedPartnerGroups().map((g) => g.network_id).join(',');
+    if (networkIds) {
+      params = params.set('network_ids', networkIds);
+    }
+
+    const datasetIds = this.getSelectedDatasets().map((d) => d.dataset_id).join(',');
+    if (datasetIds) {
+      params = params.set('dataset_ids', datasetIds);
+    }
+
+    const stateCodes = this.getSelectedStates().map((s) => s.state_code).join(',');
+    if (stateCodes) {
+      params = params.set('states', stateCodes);
+    }
+
+    if (this.extent.bottom_left_x1 !== null) {
+      params = params.set('bottom_left_lat', String(this.extent.bottom_left_x1));
+      params = params.set('bottom_left_lng', String(this.extent.bottom_left_y1));
+      params = params.set('upper_right_lat', String(this.extent.upper_right_x2));
+      params = params.set('upper_right_lng', String(this.extent.upper_right_y2));
+    }
+
+    return params;
   }
 
   pollJobStatus(jobId: string, startTime: number): void {

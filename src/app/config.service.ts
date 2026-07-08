@@ -44,5 +44,8 @@ export class Config {
         return environment.OBSERVATION_COUNT_URL;
     }
 
+    public getTokenUrl() {
+        return environment.TOKEN_URL;
+    }
 
 }
