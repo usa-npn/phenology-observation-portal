@@ -27,6 +27,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { SpeciesSearchPipe } from './species/search-pipe';
 import { Config } from './config.service';
 import { NpnPortalService } from './npn-portal.service';
+import { TinybirdService } from './tinybird.service';
 import { ActivateGuard } from './activate.guard';
 import { DeactivateDateRangeGuard } from './date-range/deactivate-date-range.gaurd';
 import { DeactivateGuard } from './deactivate.guard';
@@ -72,6 +73,7 @@ import { PersistentSearchService } from './persistent-search.service';
     OutputFieldsService,
     PersistentSearchService,
     NpnPortalService,
+    TinybirdService,
     ActivateGuard,
     DeactivateGuard,
     DeactivateDateRangeGuard

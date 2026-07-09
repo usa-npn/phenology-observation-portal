@@ -3,6 +3,7 @@ import {OutputField} from './output-field';
 import { HttpClient } from '@angular/common/http';
 import {Config} from '../config.service';
 import {PersistentSearchService} from "../persistent-search.service";
+import { OptionalFieldGroup, RAW_OPTIONAL_FIELD_GROUPS } from './optional-field-groups';
 
 @Injectable()
 export class OutputFieldsService {
@@ -278,6 +279,56 @@ export class OutputFieldsService {
     getMagnitudeFields() {
         return this.http.get<OutputField[]>(this._metadataFieldsUrl + '?type=magnitude');
     }    
+
+    // --- Raw group helpers ---
+
+    getGroupMembers(group: OptionalFieldGroup): OutputField[] {
+        if (group.fieldCategory === 'climate') return this.climateFieldsRaw;
+        if (group.fieldCategory === 'remoteSensing') return this.remoteSensingFieldsRaw;
+        return group.machineNames
+            .map(name => this.optionalFieldsRaw.find(f => f.machine_name === name))
+            .filter((f): f is OutputField => f !== undefined);
+    }
+
+    getGroupDisplayItems(group: OptionalFieldGroup): Array<{label: string; tooltip: string}> {
+        if (group.fieldCategory === 'climate') {
+            return this.climateFieldsRaw.map(f => ({ label: f.field_name, tooltip: f.field_description }));
+        }
+        if (group.fieldCategory === 'remoteSensing') {
+            return this.remoteSensingFieldsRaw.map(f => ({ label: f.field_name, tooltip: f.field_description }));
+        }
+        return group.machineNames.map(name => {
+            const field = this.optionalFieldsRaw.find(f => f.machine_name === name);
+            if (field) return { label: field.field_name, tooltip: field.field_description };
+            const fallback = group.fallbacks && group.fallbacks[name];
+            if (fallback) return { label: fallback.label, tooltip: fallback.tooltip };
+            return { label: name.replace(/_/g, ' '), tooltip: '' };
+        });
+    }
+
+    isGroupSelected(group: OptionalFieldGroup): boolean {
+        const members = this.getGroupMembers(group);
+        return members.length > 0 && members.every(f => f.selected);
+    }
+
+    toggleGroup(group: OptionalFieldGroup, selected: boolean): void {
+        const members = this.getGroupMembers(group);
+        for (const field of members) {
+            field.selected = selected;
+        }
+    }
+
+    getSelectedIncludeFlags(): { [key: string]: string } {
+        const flags: { [key: string]: string } = {};
+        for (const group of RAW_OPTIONAL_FIELD_GROUPS) {
+            if (this.isGroupSelected(group)) {
+                flags[group.flag] = '1';
+            }
+        }
+        return flags;
+    }
+
+    // --- End raw group helpers ---
 
     togglePartnerGroupField(selected) {
         for(var field of this.rawFields) {

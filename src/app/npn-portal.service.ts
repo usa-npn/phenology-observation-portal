@@ -9,13 +9,18 @@ import {Dataset} from './integrated-datasets/dataset'
 import {AncillaryData} from "./ancillary-data/ancillaryData";
 import {Config} from "./config.service";
 import { OutputFieldsService } from './output-fields/output-fields.service';
+import { TinybirdService } from './tinybird.service';
+import { environment } from '../environments/environment'
+import { of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class NpnPortalService {
   constructor (
-    private http: HttpClient, 
+    private http: HttpClient,
     private config: Config,
-    private _outputFieldsService: OutputFieldsService) {
+    private _outputFieldsService: OutputFieldsService,
+    private _tinybirdService: TinybirdService) {
     }
 
   activePage = "get-started";
@@ -34,6 +39,7 @@ export class NpnPortalService {
   stations = [];
 
   observationCount;
+  countRequestId = 0;
   startDate = null;
   endDate = null;
 
@@ -194,36 +200,40 @@ export class NpnPortalService {
       return null;
   }
 
-  setObservationCount() {      
-            
-    this.observationCount = -1;
-    
+  setObservationCount() {
 
+    this.observationCount = -1;
+
+    const requestId = ++this.countRequestId;
 
     this.getObservationCount().subscribe(
         (observationCount: any) => {
+          if (requestId !== this.countRequestId) return;
 
           let estimatedCount = observationCount.obsCount;
-          
+
           if(this.downloadType === 'summarized'){
               estimatedCount = estimatedCount / 20;
           }
-          
+
           if(this.downloadType === 'siteLevelSummarized'){
             estimatedCount = estimatedCount / 115;
           }
-          
+
           if(this.downloadType === 'magnitude'){
             estimatedCount = this.getMagnitudeEstimate(estimatedCount);
-          }          
+          }
 
           this.observationCount = this.roundEstimate(estimatedCount);
         },
         (error) => {
+          if (requestId !== this.countRequestId) return;
+
           this.errorMessage = <any>error;
           console.log(this.errorMessage);
+          this.observationCount = 'N/a';
         })
-    
+
   }
   
   roundEstimate(estimatedCount : any){
@@ -273,60 +283,95 @@ export class NpnPortalService {
     }
 
   getObservationCount() {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type':  'application/json'
-      })
-    };
-    var data = JSON.stringify({
-      downloadType: this.downloadType,
-      start_date: this.startDate,
-      end_date: this.endDate,
-      state: this.getSelectedStates().map(function(s) { return s.state_code;}),
-      bottom_left_x1: this.extent.bottom_left_x1,
-      bottom_left_y1: this.extent.bottom_left_y1,
-      upper_right_x2: this.extent.upper_right_x2,
-      upper_right_y2: this.extent.upper_right_y2,
-      species_id: this.getSelectedSpecies().map(function(s) { return s.species_id; }),
-      phenophase_category: this.getSelectedPhenophases().map(function(p) { return p.phenophase_category; }),
-      dataset_ids: this.getSelectedDatasetIds(),
-      network: this.getSelectedPartnerGroups().map(function(p) { return p.Name; }),
-      stations: this.stations,
-      is_magnitude: (this.downloadType == 'magnitude') ? 1 : 0
-    });
-
-    return this.http.post(this.config.getNpnPortalServerUrl() + '/npn_portal/observations/getObservationsCount.json', data, httpOptions);
+    if (this.downloadType === 'raw') {
+      return this._tinybirdService.getCount(
+          this.config.getObservationCountUrl(), this.buildCountParams())
+        .pipe(map((total: number) => ({ obsCount: total })));
+    }
+    return of({ obsCount: 50000000 }); // other types: mock until their retrofits land
   }
 
-  checkPopDownloadStatus(zipFileName: string) {
-    console.log("checking download status");
-    const options = { params: new HttpParams().set('zipFileName', zipFileName) };
-    this.http.get(this.config.getPopServerUrl() + this.config.getPopDownloadStatusEndpoint(), options)
-    .subscribe((res) => {
-      if(res['file_complete']) {
-        console.log("downloading zipfile");
-        this.downloadStatus = 'complete';
-        window.location.assign(res['download_path']);
-      } else {
-        setTimeout(()=>{
-          this.checkPopDownloadStatus(zipFileName);
-        }, 5000);
-      }
-    })
+  buildCountParams(): HttpParams {
+    let params = new HttpParams();
+
+    if (this.startDate) {
+      params = params.set('start_date', this.startDate);
+    }
+    if (this.endDate) {
+      params = params.set('end_date', this.endDate);
+    }
+
+    const speciesIds = this.getSelectedSpecies().map((s) => s.species_id).join(',');
+    if (speciesIds) {
+      params = params.set('species_ids', speciesIds);
+    }
+
+    const phenophaseCategories = this.getSelectedPhenophases().map((p) => p.phenophase_category).join(',');
+    if (phenophaseCategories) {
+      params = params.set('phenophase_short_names', phenophaseCategories);
+    }
+
+    const networkIds = this.getSelectedPartnerGroups().map((g) => g.Network_ID).join(',');
+    if (networkIds) {
+      params = params.set('network_ids', networkIds);
+    }
+
+    const datasetIds = this.getSelectedDatasets().map((d) => d.dataset_id).join(',');
+    if (datasetIds) {
+      params = params.set('dataset_ids', datasetIds);
+    }
+
+    const stateCodes = this.getSelectedStates().map((s) => s.state_code).join(',');
+    if (stateCodes) {
+      params = params.set('states', stateCodes);
+    }
+
+    if (this.extent.bottom_left_x1 !== null) {
+      params = params.set('bottom_left_lat', String(this.extent.bottom_left_x1));
+      params = params.set('bottom_left_lng', String(this.extent.bottom_left_y1));
+      params = params.set('upper_right_lat', String(this.extent.upper_right_x2));
+      params = params.set('upper_right_lng', String(this.extent.upper_right_y2));
+    }
+
+    return params;
+  }
+
+  pollJobStatus(jobId: string, startTime: number): void {
+    const elapsed = Date.now() - startTime;
+    if (elapsed >= 935000) {
+      this.downloadStatus = 'error';
+      return;
+    }
+    this.http.get<any>(this.config.getStatusEndpoint() + '/' + jobId)
+      .subscribe((res: any) => {
+        if (res.status === 'complete') {
+          this.downloadStatus = 'complete';
+          window.location.assign(res.download_url);
+        } else if (res.status === 'failed') {
+          this.downloadStatus = 'error';
+        } else {
+          const nextDelay = elapsed < 35000 ? 10000 : 120000;
+          setTimeout(() => this.pollJobStatus(jobId, startTime), nextDelay);
+        }
+      }, () => {
+        this.downloadStatus = 'error';
+      });
   }
 
   //called when download is pressed //////////////////////////////////////
   downloadStatus: string = 'testing';
   download() {
     this.downloadStatus = "downloading";
-    
+
+    const isRaw = this.downloadType === 'raw';
+
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
       })
     };
 
-    var data = JSON.stringify({
+    const payload: any = {
       downloadType: this.getReportType(),
       startDate: this.startDate,
       endDate: this.endDate,
@@ -351,13 +396,28 @@ export class NpnPortalService {
       ancillary_data: this.getSelectedDatasheets().map((datasheet) => datasheet.name),
       qualityFlags: this._outputFieldsService.dataQualityChecksSelected() ? null : 'ignored',
       stations: this.stations
-    });
+    };
 
-    //always use https on dev/prod servers, but not necessarily locally
-    this.http.post(this.config.getPopServerUrl() + this.config.getPopDownloadEndpoint(), data, httpOptions)
-        .subscribe((res) => {
-          if(res['zip_file_name'] != null) {
-            this.checkPopDownloadStatus(res['zip_file_name'])
+    if (isRaw) {
+      Object.assign(payload, this._outputFieldsService.getSelectedIncludeFlags());
+    } else {
+      payload.additionalFields = this._outputFieldsService.getSelectedOptionalFields().map((f) => f.machine_name);
+      payload.additionalFieldsDisplay = this._outputFieldsService.getSelectedOptionalFields().map((f) => f.field_name);
+    }
+
+    const data = JSON.stringify(payload);
+
+    console.log("Making download request: "  + this.config.getLambdaEndpoint());
+
+    this.http.post(this.config.getLambdaEndpoint(), data, httpOptions)
+        .subscribe((res: any) => {
+          console.log("Got response from lambda: ");
+          console.log(res);
+          if (res.job_id != null) {
+            const startTime = Date.now();
+            setTimeout(() => this.pollJobStatus(res.job_id, startTime), 5000);
+          } else {
+            this.downloadStatus = 'error';
           }
         }, (err) => {
           this.downloadStatus = 'error';

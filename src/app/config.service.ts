@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import { environment } from '../environments/environment';
 
 @Injectable()
 export class Config {
@@ -45,7 +46,7 @@ export class Config {
             return window.location.origin + "/observations";
         }
     }
-    
+
     public getPopDownloadEndpoint() {
         return '/download';
     }
@@ -53,7 +54,7 @@ export class Config {
     public getPopDownloadStatusEndpoint() {
         return '/downloadstatus';
     }
-    
+
     public getPopSearchEndpoint() {
         return '/search';
     }
@@ -61,4 +62,21 @@ export class Config {
     public getPopFgdcEndpoint() {
         return '/fgdc';
     }
+
+    public getLambdaEndpoint() {
+        return environment.CREATE_REQUEST_URL;
+    }
+
+    public getStatusEndpoint() {
+        return environment.STATUS_REQUEST_URL;
+    }
+
+    public getObservationCountUrl() {
+        return environment.OBSERVATION_COUNT_URL;
+    }
+
+    public getTokenUrl() {
+        return environment.TOKEN_URL;
+    }
+
 }
