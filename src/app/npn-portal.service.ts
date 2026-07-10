@@ -393,7 +393,8 @@ export class NpnPortalService {
       additionalFieldsDisplay: this._outputFieldsService.getSelectedOptionalFields().map((optionalField) => optionalField.field_name),
       dataset_ids: this.getSelectedDatasetIds(),
       integrated_datasets: this.getSelectedDatasets().map((dataset) => dataset.dataset_name),
-      ancillary_data: this.getSelectedDatasheets().map((datasheet) => datasheet.name),
+      // the download service's ancillary_data enum has no Observers file; sending it fails the whole request
+      ancillary_data: this.getSelectedDatasheets().map((datasheet) => datasheet.name).filter((name) => name !== 'Observers'),
       qualityFlags: this._outputFieldsService.dataQualityChecksSelected() ? null : 'ignored',
       stations: this.stations
     };

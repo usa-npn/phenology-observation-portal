@@ -5,7 +5,8 @@ import {Pipe} from "@angular/core";
 })
 export class AvailabilityPipe {
     transform(value, reportType) {
-        return value.filter((datasheet) => !(datasheet.name === "Observers" && reportType === "Site Phenometrics")
+        return value.filter((datasheet) => !(datasheet.name === "Observers" && reportType === "Status and Intensity")
+                                        && !(datasheet.name === "Observers" && reportType === "Site Phenometrics")
                                         && !(datasheet.name === "Individual Plants" && reportType === "Site Phenometrics")
                                         && !(datasheet.name === "Observation Details" && reportType != "Status and Intensity")
                                         && !(datasheet.name === "Site Visit Details" && reportType != "Status and Intensity")
