@@ -161,18 +161,26 @@
                     </div>
                 </div>
             </div>
-            <div class="panel panel-default" [class.hide]="_outputFieldsService.getSelectedOptionalFields().length == 0">
+            <div class="panel panel-default" [class.hide]="(_npnPortalService.downloadType === 'raw' || _npnPortalService.downloadType === 'summarized' ? _outputFieldsService.getSelectedGroups(_npnPortalService.downloadType).length : _outputFieldsService.getSelectedOptionalFields().length) == 0">
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <a data-toggle="collapse" data-parent="#summaryAccordion" href="#outputFieldsCollap">
-                            Output Fields: <span class="badge">{{_outputFieldsService.getSelectedOptionalFields().length}}</span></a>
+                            Output Fields: <span class="badge">{{(_npnPortalService.downloadType === 'raw' || _npnPortalService.downloadType === 'summarized') ? _outputFieldsService.getSelectedGroups(_npnPortalService.downloadType).length : _outputFieldsService.getSelectedOptionalFields().length}}</span></a>
                     </h4>
                 </div>
                 <div id="outputFieldsCollap" class="panel-collapse collapse">
                     <div class="panel-body">
                         <div id="outputFieldView" style="overflow-y: scroll; height:100px;">
                             <table class="table table-striped table-hover table-responsive header-fixed">
-                                <tbody>
+                                <tbody *ngIf="_npnPortalService.downloadType === 'raw' || _npnPortalService.downloadType === 'summarized'">
+                                    <ng-container *ngFor="let group of _outputFieldsService.getSelectedGroups(_npnPortalService.downloadType)">
+                                        <tr><td><strong>{{group.label}}</strong></td></tr>
+                                        <tr *ngFor="let item of _outputFieldsService.getGroupDisplayItems(group, _npnPortalService.downloadType)">
+                                            <td style="padding-left:30px;">{{item.label}}</td>
+                                        </tr>
+                                    </ng-container>
+                                </tbody>
+                                <tbody *ngIf="!(_npnPortalService.downloadType === 'raw' || _npnPortalService.downloadType === 'summarized')">
                                     <tr *ngFor="let outputField of _outputFieldsService.getSelectedOptionalFields()">
                                         <td>{{outputField.field_name}}</td>
                                     </tr>

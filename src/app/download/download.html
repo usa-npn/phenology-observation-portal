@@ -55,7 +55,7 @@
             <li [class.hide]="getSelectedPhenophases().length == 0" class="list-group-item"><span class="badge">{{getSelectedPhenophases().length}}</span>Phenophases:</li>
             <li [class.hide]="getSelectedPartnerGroups().length == 0" class="list-group-item"><span class="badge">{{getSelectedPartnerGroups().length}}</span>PartnerGroups:</li>
             <li [class.hide]="getSelectedIntegratedDatasets().length == 0" class="list-group-item"><span class="badge">{{getSelectedIntegratedDatasets().length}}</span>Source Datasets:</li>
-            <li [class.hide]="getSelectedOptionalFields().length == 0" class="list-group-item"><span class="badge">{{getSelectedOptionalFields().length}}</span>Output Fields:</li>
+            <li [class.hide]="getOutputFieldsCount() == 0" class="list-group-item"><span class="badge">{{getOutputFieldsCount()}}</span>Output Fields:</li>
             <li [class.hide]="getSelectedAncillaryData().length == 0" class="list-group-item"><span class="badge">{{getSelectedAncillaryData().length}}</span>Datasheets:</li>
         </ul>
     </div>
@@ -286,22 +286,37 @@
                     </div>
                 </div>
             </div>
-            <div class="panel panel-default" [class.hide]="_outputFieldsService.getSelectedOptionalFields().length == 0">
+            <div class="panel panel-default" [class.hide]="getOutputFieldsCount() == 0">
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <a data-toggle="collapse" data-parent="#filterAccordion" href="#outputFieldsCollapse">
-                            Output Fields: <span class="badge">{{getSelectedOptionalFields().length}}</span></a>
+                            Output Fields: <span class="badge">{{getOutputFieldsCount()}}</span></a>
                     </h4>
                 </div>
                 <div id="outputFieldsCollapse" class="panel-collapse collapse">
                     <div class="panel-body">
                         <div id="outputFieldView" style="overflow-y: scroll; height:100px;">
                             <table class="table table-striped table-hover table-responsive header-fixed">
-                                <tr *ngFor="let outputField of getSelectedOptionalFields()">
-                                    <td><a (click)="removeOptionalField(outputField)">
-                                        <span class="glyphicon glyphicon-remove"></span>
-                                    </a> {{outputField.field_name}}</td>
-                                </tr>
+                                <ng-container *ngIf="usesGroupedFields()">
+                                    <ng-container *ngFor="let group of getSelectedOptionalGroups()">
+                                        <tr><td>
+                                            <a (click)="removeOptionalGroup(group)"><span class="glyphicon glyphicon-remove"></span></a>
+                                            <strong>{{group.label}}</strong>
+                                        </td></tr>
+                                        <tr *ngFor="let item of getGroupDisplayItems(group)">
+                                            <td style="padding-left:30px;">
+                                                <a class="outputfield" href="javascript:;" data-toggle="tooltip" title="{{item.tooltip}}">{{item.label}}</a>
+                                            </td>
+                                        </tr>
+                                    </ng-container>
+                                </ng-container>
+                                <ng-container *ngIf="!usesGroupedFields()">
+                                    <tr *ngFor="let outputField of getSelectedOptionalFields()">
+                                        <td><a (click)="removeOptionalField(outputField)">
+                                            <span class="glyphicon glyphicon-remove"></span>
+                                        </a> {{outputField.field_name}}</td>
+                                    </tr>
+                                </ng-container>
                             </table>
                         </div>
                     </div>

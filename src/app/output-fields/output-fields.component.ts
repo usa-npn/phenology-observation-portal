@@ -3,7 +3,7 @@ import {Router} from "@angular/router";
 import {NpnPortalService} from "../npn-portal.service";
 import {OutputField} from "./output-field";
 import {OutputFieldsService} from "./output-fields.service";
-import { OptionalFieldGroup, RAW_OPTIONAL_FIELD_GROUPS } from './optional-field-groups';
+import { OptionalFieldGroup, OPTIONAL_FIELD_GROUPS, usesGroupedFields } from './optional-field-groups';
 
 
 @Component({
@@ -15,7 +15,7 @@ export class OutputFieldsComponent implements OnInit {
                 private _outputFieldsService: OutputFieldsService,
                 private _router: Router) {
 
-        if (this.getDownloadType() === 'raw') {
+        if (this.usesGroupedFields()) {
             this.tabs.push({title: 'Optional Fields', view: 'optionalFieldsView'});
             this.tabs.push({title: 'Climate Data', view: 'climateDataView'});
             this.tabs.push({title: 'Default Fields', view: 'defaultFieldsView'});
@@ -121,30 +121,34 @@ export class OutputFieldsComponent implements OnInit {
         this._npnPortalService.setObservationCount();
     }
 
-    // --- Raw group methods ---
+    // --- Grouped-fields methods (raw + summarized) ---
+
+    usesGroupedFields(): boolean {
+        return usesGroupedFields(this.getDownloadType());
+    }
 
     getOptionalGroups(): OptionalFieldGroup[] {
-        return RAW_OPTIONAL_FIELD_GROUPS.filter(group => !group.fieldCategory);
+        return (OPTIONAL_FIELD_GROUPS[this.getDownloadType()] || []).filter(group => !group.fieldCategory);
     }
 
     getClimateGroups(): OptionalFieldGroup[] {
-        return RAW_OPTIONAL_FIELD_GROUPS.filter(group => !!group.fieldCategory);
+        return (OPTIONAL_FIELD_GROUPS[this.getDownloadType()] || []).filter(group => !!group.fieldCategory);
     }
 
     isGroupSelected(group: OptionalFieldGroup): boolean {
-        return this._outputFieldsService.isGroupSelected(group);
+        return this._outputFieldsService.isGroupSelected(group, this.getDownloadType());
     }
 
     onToggleGroup(group: OptionalFieldGroup, checked: boolean): void {
-        this._outputFieldsService.toggleGroup(group, checked);
+        this._outputFieldsService.toggleGroup(group, checked, this.getDownloadType());
         this.submit();
     }
 
     getGroupDisplayItems(group: OptionalFieldGroup): Array<{label: string; tooltip: string}> {
-        return this._outputFieldsService.getGroupDisplayItems(group);
+        return this._outputFieldsService.getGroupDisplayItems(group, this.getDownloadType());
     }
 
-    // --- End raw group methods ---
+    // --- End grouped-fields methods ---
 
     onSelect(page) {
         this._router.navigate( [page] );

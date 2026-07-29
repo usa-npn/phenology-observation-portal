@@ -1,8 +1,8 @@
 <h2>Output Fields</h2>
 <p>Select which optional fields you would like to have appear in your data output file. Use tabs to add climate data fields, derived from Daymet, and view default fields.</p>
 
-<!-- Raw (Status and Intensity): tabbed Optional Fields / Climate Data / Default Fields -->
-<ng-container *ngIf="getDownloadType() === 'raw'">
+<!-- Grouped (raw, summarized): tabbed Optional Fields / Climate Data / Default Fields -->
+<ng-container *ngIf="usesGroupedFields()">
     <ul class="nav nav-tabs">
         <li role="presentation" *ngFor="let tab of tabs" [class.active]=isActiveTab(tab.view) (click)=onClickTab(tab)>
             <a href="javascript:;">{{tab.title}}</a>
@@ -66,8 +66,8 @@
     </div>
 </ng-container>
 
-<!-- Non-raw: existing tab-based UI -->
-<ng-container *ngIf="getDownloadType() !== 'raw'">
+<!-- Non-grouped (siteLevelSummarized, magnitude): existing tab-based UI -->
+<ng-container *ngIf="!usesGroupedFields()">
     <ul class="nav nav-tabs">
         <li role="presentation" *ngFor="let tab of tabs" [class.active]=isActiveTab(tab.view) (click)=onClickTab(tab)>
             <a href="javascript:;">{{tab.title}}</a>

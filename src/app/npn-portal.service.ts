@@ -283,7 +283,7 @@ export class NpnPortalService {
     }
 
   getObservationCount() {
-    if (this.downloadType === 'raw') {
+    if (this.downloadType === 'raw' || this.downloadType === 'summarized') {
       return this._tinybirdService.getCount(
           this.config.getObservationCountUrl(), this.buildCountParams())
         .pipe(map((total: number) => ({ obsCount: total })));
@@ -316,7 +316,7 @@ export class NpnPortalService {
       params = params.set('network_ids', networkIds);
     }
 
-    const datasetIds = this.getSelectedDatasets().map((d) => d.dataset_id).join(',');
+    const datasetIds = this.getSelectedDatasetIds().join(',');
     if (datasetIds) {
       params = params.set('dataset_ids', datasetIds);
     }
@@ -363,7 +363,7 @@ export class NpnPortalService {
   download() {
     this.downloadStatus = "downloading";
 
-    const isRaw = this.downloadType === 'raw';
+    const usesFlags = this.downloadType === 'raw' || this.downloadType === 'summarized';
 
     const httpOptions = {
       headers: new HttpHeaders({
@@ -393,14 +393,17 @@ export class NpnPortalService {
       additionalFieldsDisplay: this._outputFieldsService.getSelectedOptionalFields().map((optionalField) => optionalField.field_name),
       dataset_ids: this.getSelectedDatasetIds(),
       integrated_datasets: this.getSelectedDatasets().map((dataset) => dataset.dataset_name),
-      // the download service's ancillary_data enum has no Observers file; sending it fails the whole request
-      ancillary_data: this.getSelectedDatasheets().map((datasheet) => datasheet.name).filter((name) => name !== 'Observers'),
+      ancillary_data: this.getSelectedDatasheets()
+        .map((datasheet) => datasheet.name)
+        // Site Visit Details isn't available for Individual Phenometrics; strip it defensively
+        // in case a saved search carries it over.
+        .filter((name) => !(this.downloadType === 'summarized' && name === 'Site Visit Details')),
       qualityFlags: this._outputFieldsService.dataQualityChecksSelected() ? null : 'ignored',
       stations: this.stations
     };
 
-    if (isRaw) {
-      Object.assign(payload, this._outputFieldsService.getSelectedIncludeFlags());
+    if (usesFlags) {
+      Object.assign(payload, this._outputFieldsService.getSelectedIncludeFlags(this.downloadType));
     } else {
       payload.additionalFields = this._outputFieldsService.getSelectedOptionalFields().map((f) => f.machine_name);
       payload.additionalFieldsDisplay = this._outputFieldsService.getSelectedOptionalFields().map((f) => f.field_name);

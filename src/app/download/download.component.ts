@@ -12,6 +12,7 @@ import {DateService} from "../date-range/date.service";
 import {PersistentSearchService} from "../persistent-search.service";
 import {Config} from "../config.service";
 import { BsModalComponent } from 'ng2-bs3-modal';
+import { OptionalFieldGroup, usesGroupedFields } from "../output-fields/optional-field-groups";
 
 @Component({
     selector: 'download',
@@ -120,7 +121,30 @@ export class DownloadComponent {
     getSelectedOptionalFields() {
         return this._outputFieldsService.getSelectedOptionalFields();
     }
-    
+
+    usesGroupedFields(): boolean {
+        return usesGroupedFields(this._npnPortalService.downloadType);
+    }
+
+    getSelectedOptionalGroups(): OptionalFieldGroup[] {
+        return this._outputFieldsService.getSelectedGroups(this._npnPortalService.downloadType);
+    }
+
+    getGroupDisplayItems(group: OptionalFieldGroup): Array<{label: string; tooltip: string}> {
+        return this._outputFieldsService.getGroupDisplayItems(group, this._npnPortalService.downloadType);
+    }
+
+    getOutputFieldsCount(): number {
+        return this.usesGroupedFields() ? this.getSelectedOptionalGroups().length : this.getSelectedOptionalFields().length;
+    }
+
+    removeOptionalGroup(group: OptionalFieldGroup) {
+        const type = this._npnPortalService.downloadType;
+        this._outputFieldsService.toggleGroup(group, false, type);
+        this._outputFieldsService.syncOptionalFields(type);
+        this._npnPortalService.setObservationCount();
+    }
+
     getSelectedAncillaryData() {
         return this._npnPortalService.getSelectedDatasheets();
     }

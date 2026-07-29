@@ -3,7 +3,7 @@ import {OutputField} from './output-field';
 import { HttpClient } from '@angular/common/http';
 import {Config} from '../config.service';
 import {PersistentSearchService} from "../persistent-search.service";
-import { OptionalFieldGroup, RAW_OPTIONAL_FIELD_GROUPS } from './optional-field-groups';
+import { OptionalFieldGroup, OPTIONAL_FIELD_GROUPS } from './optional-field-groups';
 
 @Injectable()
 export class OutputFieldsService {
@@ -280,25 +280,38 @@ export class OutputFieldsService {
         return this.http.get<OutputField[]>(this._metadataFieldsUrl + '?type=magnitude');
     }    
 
-    // --- Raw group helpers ---
+    // --- Group helpers (raw + summarized) ---
 
-    getGroupMembers(group: OptionalFieldGroup): OutputField[] {
-        if (group.fieldCategory === 'climate') return this.climateFieldsRaw;
-        if (group.fieldCategory === 'remoteSensing') return this.remoteSensingFieldsRaw;
+    private getFieldArrays(downloadType: string) {
+        if (downloadType === 'summarized') {
+            return { optional: this.optionalFieldsSummarized,
+                     climate: this.climateFieldsSummarized,
+                     remoteSensing: this.remoteSensingFieldsSummarized };
+        }
+        return { optional: this.optionalFieldsRaw,
+                 climate: this.climateFieldsRaw,
+                 remoteSensing: this.remoteSensingFieldsRaw };
+    }
+
+    getGroupMembers(group: OptionalFieldGroup, downloadType: string): OutputField[] {
+        const { optional, climate, remoteSensing } = this.getFieldArrays(downloadType);
+        if (group.fieldCategory === 'climate') return climate;
+        if (group.fieldCategory === 'remoteSensing') return remoteSensing;
         return group.machineNames
-            .map(name => this.optionalFieldsRaw.find(f => f.machine_name === name))
+            .map(name => optional.find(f => f.machine_name === name))
             .filter((f): f is OutputField => f !== undefined);
     }
 
-    getGroupDisplayItems(group: OptionalFieldGroup): Array<{label: string; tooltip: string}> {
+    getGroupDisplayItems(group: OptionalFieldGroup, downloadType: string): Array<{label: string; tooltip: string}> {
+        const { optional, climate, remoteSensing } = this.getFieldArrays(downloadType);
         if (group.fieldCategory === 'climate') {
-            return this.climateFieldsRaw.map(f => ({ label: f.field_name, tooltip: f.field_description }));
+            return climate.map(f => ({ label: f.field_name, tooltip: f.field_description }));
         }
         if (group.fieldCategory === 'remoteSensing') {
-            return this.remoteSensingFieldsRaw.map(f => ({ label: f.field_name, tooltip: f.field_description }));
+            return remoteSensing.map(f => ({ label: f.field_name, tooltip: f.field_description }));
         }
         return group.machineNames.map(name => {
-            const field = this.optionalFieldsRaw.find(f => f.machine_name === name);
+            const field = optional.find(f => f.machine_name === name);
             if (field) return { label: field.field_name, tooltip: field.field_description };
             const fallback = group.fallbacks && group.fallbacks[name];
             if (fallback) return { label: fallback.label, tooltip: fallback.tooltip };
@@ -306,29 +319,39 @@ export class OutputFieldsService {
         });
     }
 
-    isGroupSelected(group: OptionalFieldGroup): boolean {
-        const members = this.getGroupMembers(group);
+    isGroupSelected(group: OptionalFieldGroup, downloadType: string): boolean {
+        const members = this.getGroupMembers(group, downloadType);
         return members.length > 0 && members.every(f => f.selected);
     }
 
-    toggleGroup(group: OptionalFieldGroup, selected: boolean): void {
-        const members = this.getGroupMembers(group);
+    toggleGroup(group: OptionalFieldGroup, selected: boolean, downloadType: string): void {
+        const members = this.getGroupMembers(group, downloadType);
         for (const field of members) {
             field.selected = selected;
         }
     }
 
-    getSelectedIncludeFlags(): { [key: string]: string } {
+    getSelectedGroups(downloadType: string): OptionalFieldGroup[] {
+        return (OPTIONAL_FIELD_GROUPS[downloadType] || []).filter(group => this.isGroupSelected(group, downloadType));
+    }
+
+    getSelectedIncludeFlags(downloadType: string): { [key: string]: string } {
         const flags: { [key: string]: string } = {};
-        for (const group of RAW_OPTIONAL_FIELD_GROUPS) {
-            if (this.isGroupSelected(group)) {
+        for (const group of OPTIONAL_FIELD_GROUPS[downloadType] || []) {
+            if (this.isGroupSelected(group, downloadType)) {
                 flags[group.flag] = '1';
             }
         }
+        if (this.observers_datasheet_selected) flags['include_submission'] = '1';
         return flags;
     }
 
-    // --- End raw group helpers ---
+    syncOptionalFields(downloadType: string): void {
+        const { optional, climate, remoteSensing } = this.getFieldArrays(downloadType);
+        this.optionalFields = optional.concat(climate).concat(remoteSensing).map(obj => Object.assign({}, obj));
+    }
+
+    // --- End group helpers ---
 
     togglePartnerGroupField(selected) {
         for(var field of this.rawFields) {
@@ -362,6 +385,8 @@ export class OutputFieldsService {
         this.selectAllOptional = false;
         this.selectAllClimate = false;
 		this.selectAllRemoteSensing = false;
+        this.site_visit_datasheet_selected = false;
+        this.observers_datasheet_selected = false;
 
         for(var field of this.rawFields) {
             field.selected = false;

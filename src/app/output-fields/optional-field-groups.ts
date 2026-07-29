@@ -120,3 +120,54 @@ export const RAW_OPTIONAL_FIELD_GROUPS: OptionalFieldGroup[] = [
         fieldCategory: 'remoteSensing'
     }
 ];
+
+// Every member below exists in the individual_summarized metadata, so unlike raw, no fallbacks are needed.
+export const SUMMARIZED_OPTIONAL_FIELD_GROUPS: OptionalFieldGroup[] = [
+    {
+        flag: 'include_submission',
+        label: 'Submission Details',
+        machineNames: ['observedby_person_id']
+    },
+    {
+        flag: 'include_observation_detail',
+        label: 'Observation Detail',
+        machineNames: ['dataset_id', 'partner_group', 'observed_status_conflict_flag']
+    },
+    {
+        flag: 'include_series_detail',
+        label: 'Series Detail',
+        machineNames: ['numys_in_series', 'numdays_in_series', 'multiple_observers', 'multiple_firsty']
+    },
+    {
+        flag: 'include_species_detail',
+        label: 'Species Detail',
+        machineNames: [
+            'species_functional_type',
+            'species_category',
+            'lifecycle_duration',
+            'growth_habit',
+            'usda_plants_symbol',
+            'itis_number'
+        ]
+    },
+    {
+        flag: 'include_individual_detail',
+        label: 'Individual Detail',
+        machineNames: ['site_name', 'plant_nickname', 'patch', 'phenophase_category']
+    },
+    {
+        flag: 'include_climate',
+        label: 'Climate Data',
+        machineNames: [],
+        fieldCategory: 'climate'
+    }
+];
+
+export const OPTIONAL_FIELD_GROUPS: { [downloadType: string]: OptionalFieldGroup[] } = {
+    raw: RAW_OPTIONAL_FIELD_GROUPS,
+    summarized: SUMMARIZED_OPTIONAL_FIELD_GROUPS
+};
+
+export function usesGroupedFields(downloadType: string): boolean {
+    return !!OPTIONAL_FIELD_GROUPS[downloadType];
+}
