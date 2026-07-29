@@ -395,9 +395,10 @@ export class NpnPortalService {
       integrated_datasets: this.getSelectedDatasets().map((dataset) => dataset.dataset_name),
       ancillary_data: this.getSelectedDatasheets()
         .map((datasheet) => datasheet.name)
-        // Site Visit Details isn't available for Individual Phenometrics; strip it defensively
-        // in case a saved search carries it over.
-        .filter((name) => !(this.downloadType === 'summarized' && name === 'Site Visit Details')),
+        // Site Visit Details and Observers aren't available for Individual Phenometrics; strip them
+        // defensively in case a saved search carries them over.
+        .filter((name) => !(this.downloadType === 'summarized'
+                            && (name === 'Site Visit Details' || name === 'Observers'))),
       qualityFlags: this._outputFieldsService.dataQualityChecksSelected() ? null : 'ignored',
       stations: this.stations
     };

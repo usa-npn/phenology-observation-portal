@@ -58,7 +58,10 @@ export class AncillaryDataComponent implements OnInit {
                     }
                 }
             }
-            if(datasheet.selected && datasheet.name === "Observers") {
+            // Observers isn't available for Individual Phenometrics, so a carried-over selection
+            // must not force observedby_person_id / include_submission on for that type.
+            if(datasheet.selected && datasheet.name === "Observers"
+                && this._npnPortalService.downloadType !== "summarized") {
                 for(var field of this.optionalFields) {
                     if ("observedby_person_id" === field.machine_name) {
                         field.selected = true;

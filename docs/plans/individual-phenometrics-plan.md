@@ -30,15 +30,77 @@ per-type grouping later is a config change, not a rewrite").
 | 3 | Group → flag contract | **Six groups** (below). `include_site_detail` and `include_phenophase_detail` are *not* used for IPM — their fields fold into `include_individual_detail`. No `include_remote_sensing` (IPM has no remote-sensing fields). |
 | 4 | Observation Date | **No-op.** The existing `summarized` date form already submits start/end `YYYY-MM-DD` built from calendar-day + year. Year windowing stays server-side. |
 | 5 | Ancillary — Site Visit | **Already excluded** by `AvailabilityPipe`. Add a defensive payload filter to close the saved-search carry-over hole. |
-| 6 | Ancillary — Observers | **Send it.** Remove the existing `!== 'Observers'` strip; backend support is a tracked follow-up. |
+| 6 | Ancillary — Observers | ~~**Send it.** Remove the existing `!== 'Observers'` strip; backend support is a tracked follow-up.~~ **Superseded — see revision below. Observers is excluded from IPM entirely.** |
 | 7 | Estimated records | Widen the Tinybird count branch to include `summarized`; keep the existing **÷20** factor. |
 | 8 | `dataset_ids` in count | Align with `download()` — use `getSelectedDatasetIds()` so `-9999` expands to `-9999,3`. Still omitted entirely when nothing is selected. |
 | 9 | Output Fields UI | **Generalize the raw path** by `downloadType` (keyed group map + threaded helpers). One shared template serves both grouped types. |
 | 10 | `additionalFields` redundancy | **Leave as-is.** The raw payload still sends `additionalFields`/`additionalFieldsDisplay` alongside the flags, contrary to the S&I plan's decision #4. Documented as a follow-up, not fixed here. |
-| 11 | Observers → `include_submission` | **Force the whole group on** when the Observers datasheet is selected. |
+| 11 | Observers → `include_submission` | ~~**Force the whole group on** when the Observers datasheet is selected.~~ **Superseded — see revision below. Nothing forces the group for IPM.** |
 | 12 | Download summary | **Nested group view**: selected groups at the top level with the `×` remove control, member fields listed read-only and indented beneath. Badge counts **groups**. Applies to S&I too. |
 | 13 | Legacy saved searches | **Out of scope.** Pre-retrofit searches may restore partial groups; explicitly not supported. Searches saved from here on round-trip correctly with no new code. |
 | 14 | Backend readiness | Ready enough. Send the flags and iterate server-side; a perfect first pass is not required. |
+
+---
+
+## Revision — Observers ancillary data removed from IPM (2026-07-29)
+
+A requirements change after the original implementation: **Individual Phenometrics must not offer the
+Observers ancillary datasheet at all**, the same way it already excludes Site Visit Details. This
+reverses decisions #6 and #11 above.
+
+Rationale for the new shape: the Observers file was only ever going to be produced once the backend
+added support (follow-up #1 below), and the requirement now is that IPM has no Observers file. Rather
+than sending a flag the server will not honor, the datasheet is hidden and stripped end to end. The
+`observedby_person_id` field itself is unaffected — it remains an ordinary optional output field,
+selectable through the **Submission Details** group on the Output Fields screen. Only the ancillary
+*file* goes away.
+
+| Aspect | Before | After |
+|---|---|---|
+| Datasheet checkbox visible for IPM | Yes | **No** (`AvailabilityPipe`) |
+| `Observers` in `ancillary_data` payload | Sent | **Stripped** for `summarized` |
+| `observedby_person_id` force-selected | Yes, when Observers ticked | **No** for `summarized` |
+| `include_submission` forced on | Yes, when Observers ticked | **No** for `summarized` — group checkbox only |
+| S&I / Site / Magnitude behavior | — | **Unchanged** (all three already hide Observers) |
+
+### Files changed for this revision
+
+**`src/app/ancillary-data/availability-pipe.ts`** — add the IPM exclusion alongside the three that
+already exist:
+
+```ts
+&& !(datasheet.name === "Observers" && reportType === "Individual Phenometrics")
+```
+
+**`src/app/npn-portal.service.ts`** — widen the existing defensive `ancillary_data` filter to cover
+both excluded datasheets:
+
+```ts
+.filter((name) => !(this.downloadType === 'summarized'
+                    && (name === 'Site Visit Details' || name === 'Observers'))),
+```
+
+**`src/app/ancillary-data/ancillary-data.component.ts`** — `submit()` iterates the *unfiltered*
+datasheet list, so a saved search carrying a ticked Observers would still force
+`observedby_person_id` on and set `observers_datasheet_selected`. Guard that branch on the download
+type. (The Site Visit branch above it is already inert for IPM — `observation_group_id` doesn't exist
+in IPM metadata — so it needs no equivalent guard.)
+
+**`src/app/output-fields/output-fields.service.ts`** — guard the decision-#11 forcing in
+`getSelectedIncludeFlags()` with `downloadType !== 'summarized'`. Belt-and-braces given the component
+guard above; kept rather than deleted so the S&I path's semantics stay explicit if Observers is ever
+re-enabled for a grouped type.
+
+No change to `SUMMARIZED_OPTIONAL_FIELD_GROUPS` — **Submission Details** stays in the group list.
+
+### Verification delta
+
+- IPM → Ancillary Data screen: **no Observers checkbox**; the remaining datasheets are unchanged.
+- S&I, Site Phenometrics, Magnitude: Observers still hidden, as before.
+- Submission Details on the IPM Output Fields screen ticks/unticks freely and sends
+  `include_submission` only when the user selects it.
+- A saved search created before this change with Observers ticked: the POST body's `ancillary_data`
+  omits `Observers`, and `include_submission` is not forced on.
 
 ---
 
@@ -196,13 +258,8 @@ filter identically; keep omitting the param when nothing is selected.
 - `Object.assign(payload, this._outputFieldsService.getSelectedIncludeFlags(this.downloadType))`.
 - Leave `additionalFields`/`additionalFieldsDisplay` in the base payload untouched (decision #10).
 - `ancillary_data` — drop the `!== 'Observers'` filter (decision #6) and add the defensive Site Visit
-  strip for IPM (decision #5):
-
-```ts
-ancillary_data: this.getSelectedDatasheets()
-    .map((datasheet) => datasheet.name)
-    .filter((name) => !(this.downloadType === 'summarized' && name === 'Site Visit Details')),
-```
+  strip for IPM (decision #5). **Superseded by the 2026-07-29 revision**, which strips `Observers`
+  for `summarized` too — see that section for the shipped form.
 
 ### 6. `src/app/download/download.component.ts`
 
@@ -258,16 +315,20 @@ public on the component, so the template can call
 
 ### 9. No change
 
-`ancillary-data.component.ts` (the Observers forcing already achieves decision #11 for IPM, since
-`include_submission` has a single member), `date-range.*`, `config.service.ts`, all environment files,
-`tinybird.service.ts`, `availability-pipe.ts`, and the polling logic.
+`date-range.*`, `config.service.ts`, all environment files, `tinybird.service.ts`, and the polling
+logic.
+
+> `ancillary-data.component.ts` and `availability-pipe.ts` were listed here originally, but the
+> 2026-07-29 revision changes both.
 
 ---
 
 ## Out of scope / deferred (tracked follow-ups)
 
-1. **Observers ancillary file** — now sent to the server, but the backend hasn't added it yet. Needs
-   server-side support before it produces a file. *(Owner will handle after this phase.)*
+1. ~~**Observers ancillary file** — now sent to the server, but the backend hasn't added it yet. Needs
+   server-side support before it produces a file. *(Owner will handle after this phase.)*~~
+   **Closed by the 2026-07-29 revision** — Observers is excluded from IPM, so no backend work is
+   needed for this type.
 2. **`include_series_detail` / widened `include_individual_detail`** — flag names coined on the client;
    confirm or rename server-side.
 3. **`additionalFields`/`additionalFieldsDisplay` still sent** alongside the `include_*` flags for both
@@ -312,5 +373,6 @@ public on the component, so the template can call
 - **Download:** POST body carries `downloadType: "Individual Phenometrics"` plus only the selected
   `include_*` flags; 202 → `job_id` → poll → presigned URL. Backend-side flag handling may need
   iteration; that's expected.
-- **Observers:** ticking it checks Submission Details in the grouped UI and sends `include_submission`
-  plus `Observers` in `ancillary_data`. Resetting filters clears the forcing.
+- ~~**Observers:** ticking it checks Submission Details in the grouped UI and sends `include_submission`
+  plus `Observers` in `ancillary_data`. Resetting filters clears the forcing.~~ Replaced by the
+  revision's verification delta above — Observers is not offered for IPM at all.

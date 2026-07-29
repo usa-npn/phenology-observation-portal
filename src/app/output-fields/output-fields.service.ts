@@ -342,7 +342,11 @@ export class OutputFieldsService {
                 flags[group.flag] = '1';
             }
         }
-        if (this.observers_datasheet_selected) flags['include_submission'] = '1';
+        // The Observers datasheet is not offered for Individual Phenometrics, so it never forces
+        // include_submission there; Submission Details is selected through the group checkbox only.
+        if (this.observers_datasheet_selected && downloadType !== 'summarized') {
+            flags['include_submission'] = '1';
+        }
         return flags;
     }
 
