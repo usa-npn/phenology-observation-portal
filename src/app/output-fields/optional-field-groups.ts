@@ -112,12 +112,6 @@ export const RAW_OPTIONAL_FIELD_GROUPS: OptionalFieldGroup[] = [
         label: 'Climate Data',
         machineNames: [],
         fieldCategory: 'climate'
-    },
-    {
-        flag: 'include_remote_sensing',
-        label: 'Remote Sensing Data',
-        machineNames: [],
-        fieldCategory: 'remoteSensing'
     }
 ];
 
