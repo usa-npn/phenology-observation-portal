@@ -18,8 +18,15 @@ export const RAW_OPTIONAL_FIELD_GROUPS: OptionalFieldGroup[] = [
             'submittedby_person_id',
             'submission_datetime',
             'updatedby_person_id',
-            'update_datetime'
-        ]
+            'update_datetime',
+            'lpl_certified_date'
+        ],
+        fallbacks: {
+            lpl_certified_date: {
+                label: 'LPL Certified Date',
+                tooltip: 'Placeholder description for LPL Certified Date.'
+            }
+        }
     },
     {
         flag: 'include_observation_detail',
@@ -120,7 +127,13 @@ export const SUMMARIZED_OPTIONAL_FIELD_GROUPS: OptionalFieldGroup[] = [
     {
         flag: 'include_submission',
         label: 'Submission Details',
-        machineNames: ['observedby_person_id']
+        machineNames: ['observedby_person_id', 'lpl_certified_date'],
+        fallbacks: {
+            lpl_certified_date: {
+                label: 'LPL Certified Date',
+                tooltip: 'Placeholder description for LPL Certified Date.'
+            }
+        }
     },
     {
         flag: 'include_observation_detail',
