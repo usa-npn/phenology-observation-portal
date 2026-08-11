@@ -83,6 +83,11 @@ export class DateRangeComponent implements OnInit, AfterViewInit {
         customPeriodInterest: ['', Validators.required]
     }, {validator: validateYearRange});
 
+    private toLocalIsoDate(d: Date): string {
+        const pad = (n: number) => String(n).padStart(2, '0');
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    }
+
     startDateChange(event) {
         if (event.value && event.value.target && event.value.target.children[0]) {
             this.rawDateForm.patchValue({startDate: event.value.target.children[0].value});
@@ -238,13 +243,13 @@ export class DateRangeComponent implements OnInit, AfterViewInit {
             this._dateService.startYear = startYear;
             this._dateService.endYear = endYear;
             
-            let periodToSet = (this.magnitudePhenoForm.controls.periodInterest.value != -1) ? this.magnitudePhenoForm.controls.periodInterest.value : this.magnitudePhenoForm.controls.customPeriodInterest.value;
+            let periodToSet = Number((this.magnitudePhenoForm.controls.periodInterest.value != -1) ? this.magnitudePhenoForm.controls.periodInterest.value : this.magnitudePhenoForm.controls.customPeriodInterest.value);
             this._dateService.periodInterest = periodToSet;
             this._npnPortalService.periodInterest = periodToSet;
 
-            this._dateService.startDate = new Date(startYear, 0, 1).toISOString().split('T')[0];
+            this._dateService.startDate = this.toLocalIsoDate(new Date(startYear, 0, 1));
 
-            this._dateService.endDate = new Date(endYear, 11, 31).toISOString().split('T')[0];
+            this._dateService.endDate = this.toLocalIsoDate(new Date(endYear, 11, 31));
         }
       else if (this.getDownloadType() != 'raw') {
         let startYear = this.dateForm.controls.startDateGroup.value.year;
@@ -270,12 +275,12 @@ export class DateRangeComponent implements OnInit, AfterViewInit {
           this._npnPortalService.startYear = startYear;
           this._npnPortalService.endYear = endYear;
 
-          this._dateService.startDate = new Date(startYear, this._dateService.months.indexOf(startMonth), startDay).toISOString().split('T')[0];
-          this._dateService.endDate = new Date(endYear, this._dateService.months.indexOf(endMonth), endDay).toISOString().split('T')[0];
+          this._dateService.startDate = this.toLocalIsoDate(new Date(startYear, this._dateService.months.indexOf(startMonth), startDay));
+          this._dateService.endDate = this.toLocalIsoDate(new Date(endYear, this._dateService.months.indexOf(endMonth), endDay));
 
           if (this.getDownloadType() === 'siteLevelSummarized') {
-              this._dateService.dataPrecision = this.dateForm.controls.dataPrecision.value;
-              this._npnPortalService.dataPrecision = this.dateForm.controls.dataPrecision.value;
+              this._dateService.dataPrecision = Number(this.dateForm.controls.dataPrecision.value);
+              this._npnPortalService.dataPrecision = Number(this.dateForm.controls.dataPrecision.value);
           }
           else {
               this._dateService.dataPrecision = null;

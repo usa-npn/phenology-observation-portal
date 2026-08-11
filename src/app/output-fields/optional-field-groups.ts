@@ -170,9 +170,105 @@ export const SUMMARIZED_OPTIONAL_FIELD_GROUPS: OptionalFieldGroup[] = [
     }
 ];
 
+// Every member below exists in the site_summarized metadata, so no fallbacks are needed.
+export const SITE_LEVEL_OPTIONAL_FIELD_GROUPS: OptionalFieldGroup[] = [
+    {
+        flag: 'include_observation_detail',
+        label: 'Observation Detail',
+        machineNames: [
+            'partner_group',
+            'observed_status_conflict_flag',
+            'observed_status_conflict_flag_individual_ids'
+        ]
+    },
+    {
+        flag: 'include_site_detail',
+        label: 'Site Detail',
+        machineNames: ['site_name']
+    },
+    {
+        flag: 'include_species_detail',
+        label: 'Species Detail',
+        machineNames: [
+            'species_functional_type',
+            'species_category',
+            'lifecycle_duration',
+            'growth_habit',
+            'usda_plants_symbol',
+            'itis_number'
+        ]
+    },
+    {
+        flag: 'include_phenophase_detail',
+        label: 'Phenophase Detail',
+        machineNames: ['phenophase_category']
+    },
+    {
+        flag: 'include_series_detail',
+        label: 'Series Detail',
+        machineNames: ['num_individuals_with_multiple_firsty', 'individuals_ids_with_multiple_firsty']
+    },
+    {
+        flag: 'include_dispersion',
+        label: 'Dispersion Measures',
+        machineNames: [
+            'sd_first_yes_in_days',
+            'min_first_yes_doy',
+            'max_first_yes_doy',
+            'median_first_yes_doy',
+            'sd_numdays_since_prior_no',
+            'sd_last_yes_in_days',
+            'min_last_yes_doy',
+            'max_last_yes_doy',
+            'median_last_yes_doy',
+            'sd_numdays_until_next_no'
+        ]
+    },
+    {
+        flag: 'include_climate',
+        label: 'Climate Data',
+        machineNames: [],
+        fieldCategory: 'climate'
+    }
+];
+
+// Every member below exists in the magnitude metadata, so no fallbacks are needed. No climate group —
+// magnitude_metrics aggregates across locations, so there is no coherent Daymet key.
+export const MAGNITUDE_OPTIONAL_FIELD_GROUPS: OptionalFieldGroup[] = [
+    {
+        flag: 'include_species_detail',
+        label: 'Species Detail',
+        machineNames: [
+            'species_functional_type',
+            'species_category',
+            'lifecycle_duration',
+            'growth_habit',
+            'usda_plants_symbol',
+            'itis_number'
+        ]
+    },
+    {
+        flag: 'include_phenophase_detail',
+        label: 'Phenophase Detail',
+        machineNames: ['phenophase_category']
+    },
+    {
+        flag: 'include_observation_detail',
+        label: 'Observation Detail',
+        machineNames: ['in-phase_search_method', 'in-phase_per_hr_search_method', 'start_date_doy', 'end_date_doy']
+    },
+    {
+        flag: 'include_dispersion',
+        label: 'Dispersion Measures',
+        machineNames: ['sd_numanimals_in-phase', 'sd_numanimals_in-phase_per_hr', 'sd_numanimals_in-phase_per_hr_per_acre']
+    }
+];
+
 export const OPTIONAL_FIELD_GROUPS: { [downloadType: string]: OptionalFieldGroup[] } = {
     raw: RAW_OPTIONAL_FIELD_GROUPS,
-    summarized: SUMMARIZED_OPTIONAL_FIELD_GROUPS
+    summarized: SUMMARIZED_OPTIONAL_FIELD_GROUPS,
+    siteLevelSummarized: SITE_LEVEL_OPTIONAL_FIELD_GROUPS,
+    magnitude: MAGNITUDE_OPTIONAL_FIELD_GROUPS
 };
 
 export function usesGroupedFields(downloadType: string): boolean {

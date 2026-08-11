@@ -84,7 +84,8 @@ export class OutputFieldsService {
     public siteLevelMagnitude:OutputField[] = [];
     public optionalFieldsMagnitude:OutputField[]= [];
     public climateFieldsMagnitude:OutputField[] = [];
-    public defaultFieldsMagnitude:OutputField[] = [];   
+	public remoteSensingFieldsMagnitude:OutputField[] = [];
+    public defaultFieldsMagnitude:OutputField[] = [];
     
     optionalFields:OutputField[] = [];
 
@@ -108,34 +109,12 @@ export class OutputFieldsService {
     }
 
     togglePartnerGroupOptionalField(selected, downloadType) {
-        if(downloadType === 'raw') {
-            for (var field of this.optionalFieldsRaw) {
-                if (field.machine_name === 'partner_group')
-                    field.selected =  selected;
-            }
-            this.optionalFields = this.optionalFieldsRaw.concat(this.climateFieldsRaw).concat(this.remoteSensingFieldsRaw).map(obj => Object.assign({}, obj));
+        const { optional } = this.getFieldArrays(downloadType);
+        for (const field of optional) {
+            if (field.machine_name === 'partner_group')
+                field.selected = selected;
         }
-        if(downloadType === 'summarized') {
-            for (var field of this.optionalFieldsSummarized) {
-                if (field.machine_name === 'partner_group')
-                    field.selected =  selected;
-            }
-            this.optionalFields = this.optionalFieldsSummarized.concat(this.climateFieldsSummarized).concat(this.remoteSensingFieldsSummarized).map(obj => Object.assign({}, obj));
-        }
-        if(downloadType === 'siteLevelSummarized') {
-            for (var field of this.optionalFieldsSiteLevelSummarized) {
-                if (field.machine_name === 'partner_group')
-                    field.selected =  selected;
-            }
-            this.optionalFields = this.optionalFieldsSiteLevelSummarized.concat(this.climateFieldsSiteLevelSummarized).concat(this.remoteSensingFieldsSiteLevelSummarized).map(obj => Object.assign({}, obj));
-        }
-        if(downloadType === 'magnitude') {
-            for (var field of this.optionalFieldsMagnitude) {
-                if (field.machine_name === 'partner_group')
-                    field.selected =  selected;
-            }
-            this.optionalFields = this.optionalFieldsMagnitude.concat(this.climateFieldsMagnitude).map(obj => Object.assign({}, obj));
-        }
+        this.syncOptionalFields(downloadType);
     }
 
     mapBooleans(field) {
@@ -280,17 +259,27 @@ export class OutputFieldsService {
         return this.http.get<OutputField[]>(this._metadataFieldsUrl + '?type=magnitude');
     }    
 
-    // --- Group helpers (raw + summarized) ---
+    // --- Group helpers (raw, summarized, siteLevelSummarized, magnitude) ---
 
     private getFieldArrays(downloadType: string) {
-        if (downloadType === 'summarized') {
-            return { optional: this.optionalFieldsSummarized,
-                     climate: this.climateFieldsSummarized,
-                     remoteSensing: this.remoteSensingFieldsSummarized };
+        switch (downloadType) {
+            case 'summarized':
+                return { optional: this.optionalFieldsSummarized,
+                         climate: this.climateFieldsSummarized,
+                         remoteSensing: this.remoteSensingFieldsSummarized };
+            case 'siteLevelSummarized':
+                return { optional: this.optionalFieldsSiteLevelSummarized,
+                         climate: this.climateFieldsSiteLevelSummarized,
+                         remoteSensing: this.remoteSensingFieldsSiteLevelSummarized };
+            case 'magnitude':
+                return { optional: this.optionalFieldsMagnitude,
+                         climate: this.climateFieldsMagnitude,
+                         remoteSensing: this.remoteSensingFieldsMagnitude };
+            default:
+                return { optional: this.optionalFieldsRaw,
+                         climate: this.climateFieldsRaw,
+                         remoteSensing: this.remoteSensingFieldsRaw };
         }
-        return { optional: this.optionalFieldsRaw,
-                 climate: this.climateFieldsRaw,
-                 remoteSensing: this.remoteSensingFieldsRaw };
     }
 
     getGroupMembers(group: OptionalFieldGroup, downloadType: string): OutputField[] {
@@ -342,9 +331,9 @@ export class OutputFieldsService {
                 flags[group.flag] = '1';
             }
         }
-        // The Observers datasheet is not offered for Individual Phenometrics, so it never forces
-        // include_submission there; Submission Details is selected through the group checkbox only.
-        if (this.observers_datasheet_selected && downloadType !== 'summarized') {
+        // The Observers datasheet is only offered for Status and Intensity, and only raw declares
+        // include_submission, so the forcing must not fire for any other type.
+        if (this.observers_datasheet_selected && downloadType === 'raw') {
             flags['include_submission'] = '1';
         }
         return flags;

@@ -11,8 +11,9 @@ import {Config} from "./config.service";
 import { OutputFieldsService } from './output-fields/output-fields.service';
 import { TinybirdService } from './tinybird.service';
 import { environment } from '../environments/environment'
-import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { usesGroupedFields } from './output-fields/optional-field-groups';
+import { isDatasheetAvailable } from './ancillary-data/availability-pipe';
 
 @Injectable()
 export class NpnPortalService {
@@ -283,12 +284,9 @@ export class NpnPortalService {
     }
 
   getObservationCount() {
-    if (this.downloadType === 'raw' || this.downloadType === 'summarized') {
-      return this._tinybirdService.getCount(
-          this.config.getObservationCountUrl(), this.buildCountParams())
-        .pipe(map((total: number) => ({ obsCount: total })));
-    }
-    return of({ obsCount: 50000000 }); // other types: mock until their retrofits land
+    return this._tinybirdService.getCount(
+        this.config.getObservationCountUrl(), this.buildCountParams())
+      .pipe(map((total: number) => ({ obsCount: total })));
   }
 
   buildCountParams(): HttpParams {
@@ -363,7 +361,7 @@ export class NpnPortalService {
   download() {
     this.downloadStatus = "downloading";
 
-    const usesFlags = this.downloadType === 'raw' || this.downloadType === 'summarized';
+    const usesFlags = usesGroupedFields(this.downloadType);
 
     const httpOptions = {
       headers: new HttpHeaders({
@@ -395,10 +393,7 @@ export class NpnPortalService {
       integrated_datasets: this.getSelectedDatasets().map((dataset) => dataset.dataset_name),
       ancillary_data: this.getSelectedDatasheets()
         .map((datasheet) => datasheet.name)
-        // Site Visit Details and Observers aren't available for Individual Phenometrics; strip them
-        // defensively in case a saved search carries them over.
-        .filter((name) => !(this.downloadType === 'summarized'
-                            && (name === 'Site Visit Details' || name === 'Observers'))),
+        .filter((name) => isDatasheetAvailable(name, this.getReportType())),
       qualityFlags: this._outputFieldsService.dataQualityChecksSelected() ? null : 'ignored',
       stations: this.stations
     };

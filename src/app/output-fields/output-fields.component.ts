@@ -17,7 +17,9 @@ export class OutputFieldsComponent implements OnInit {
 
         if (this.usesGroupedFields()) {
             this.tabs.push({title: 'Optional Fields', view: 'optionalFieldsView'});
-            this.tabs.push({title: 'Climate Data', view: 'climateDataView'});
+            if (this.getClimateGroups().length) {
+                this.tabs.push({title: 'Climate Data', view: 'climateDataView'});
+            }
             this.tabs.push({title: 'Default Fields', view: 'defaultFieldsView'});
         } else {
             this.tabs.push({title: 'Optional Fields',     view: 'optionalFieldsView'});
@@ -167,9 +169,21 @@ export class OutputFieldsComponent implements OnInit {
                     this._outputFieldsService.optionalFieldsMagnitude :
                     this._outputFieldsService.optionalFieldsSiteLevelSummarized;
 
-        this.climateFields = this._npnPortalService.downloadType === "raw" ? this._outputFieldsService.climateFieldsRaw : (this._npnPortalService.downloadType === "summarized" ? this._outputFieldsService.climateFieldsSummarized : this._outputFieldsService.climateFieldsSiteLevelSummarized);
+        this.climateFields = this._npnPortalService.downloadType === "raw" ?
+            this._outputFieldsService.climateFieldsRaw :
+            (this._npnPortalService.downloadType === "summarized" ?
+                this._outputFieldsService.climateFieldsSummarized :
+                (this._npnPortalService.downloadType === "magnitude" ?
+                    this._outputFieldsService.climateFieldsMagnitude :
+                    this._outputFieldsService.climateFieldsSiteLevelSummarized));
 
-        this.remoteSensingFields = this._npnPortalService.downloadType === "raw" ? this._outputFieldsService.remoteSensingFieldsRaw : (this._npnPortalService.downloadType === "summarized" ? this._outputFieldsService.remoteSensingFieldsSummarized : this._outputFieldsService.remoteSensingFieldsSiteLevelSummarized);
+        this.remoteSensingFields = this._npnPortalService.downloadType === "raw" ?
+            this._outputFieldsService.remoteSensingFieldsRaw :
+            (this._npnPortalService.downloadType === "summarized" ?
+                this._outputFieldsService.remoteSensingFieldsSummarized :
+                (this._npnPortalService.downloadType === "magnitude" ?
+                    this._outputFieldsService.remoteSensingFieldsMagnitude :
+                    this._outputFieldsService.remoteSensingFieldsSiteLevelSummarized));
 
         this.defaultFields = this._npnPortalService.downloadType === "raw" ?
             this._outputFieldsService.defaultFieldsRaw :
