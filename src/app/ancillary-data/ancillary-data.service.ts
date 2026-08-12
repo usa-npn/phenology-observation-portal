@@ -2,12 +2,14 @@ import {Injectable, EventEmitter} from '@angular/core';
 import {AncillaryData} from './ancillaryData';
 import {NpnPortalService} from "../npn-portal.service";
 import {PersistentSearchService} from "../persistent-search.service";
+import {OutputFieldsService} from "../output-fields/output-fields.service";
 
 @Injectable()
 export class AncillaryDataService {
 
-    constructor (private _npnPortalService: NpnPortalService, 
-                 private _persistentSearchService: PersistentSearchService) {}
+    constructor (private _npnPortalService: NpnPortalService,
+                 private _persistentSearchService: PersistentSearchService,
+                 private _outputFieldsService: OutputFieldsService) {}
 
     public ready:boolean = false;
     
@@ -30,6 +32,15 @@ export class AncillaryDataService {
             }
             this._npnPortalService.datasheets = this.datasheets.map(obj => Object.assign({}, obj));
         }
+        // These drive include_submission and the observation_group_id / observedby_person_id
+        // forcing in getSelectedIncludeFlags(). AncillaryDataComponent.submit() is the only other
+        // place they're set, so without this a restored datasheet has no effect on the download
+        // until the user happens to open that page. Same downloadType guard as submit().
+        this._outputFieldsService.site_visit_datasheet_selected =
+            this.datasheets.some((datasheet) => datasheet.selected && datasheet.name === 'Site Visit Details');
+        this._outputFieldsService.observers_datasheet_selected =
+            this.datasheets.some((datasheet) => datasheet.selected && datasheet.name === 'Observers')
+            && this._npnPortalService.downloadType !== 'summarized';
         this.ready = true;
     }
     

@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {Config} from "./config.service";
 
 export class savedSearch { //todo type these
@@ -19,7 +19,8 @@ export class savedSearch { //todo type these
     phenophases;
     partnerGroups;
     datasets;
-    optionalFields;
+    optionalFields;      // legacy metadata_field_id list - still written, no longer restored
+    optionalFieldGroups; // include_* flags of the selected output-field groups
     datasheets;
     searchSource;
 }
@@ -34,18 +35,8 @@ export class PersistentSearchService {
     phenophases = [];
     partnerGroups = [];
     datasets = [];
-    optionalFields = [];
+    optionalFieldGroups = [];
     datasheets = [];
-
-    rangeType:string;
-    startDay:number;
-    endDay:number;
-    startMonth:string = "June";
-    endMonth:string;
-    startYear:number;
-    endYear:number;
-    
-    dataPrecision:number;
 
     saveSearch(searchJson) {
         const httpOptions = {
@@ -58,13 +49,12 @@ export class PersistentSearchService {
             searchJson
         });
 
-        //always use https on dev/prod servers, but not necessarily locally
-        return this.http.post(this.config.getPopServerUrl() + this.config.getPopSearchEndpoint(), data, httpOptions);
+        return this.http.post(this.config.getSavedSearchUrl(), data, httpOptions);
     }
 
+    // Responds 400 when the hash isn't a 32-char hex md5, 404 when no such search exists.
     getSearch(searchId) {
-        const options = { params: new HttpParams().set('searchId', searchId) };
-        return this.http.get(this.config.getPopServerUrl() + this.config.getPopSearchEndpoint(), options);
+        return this.http.get(this.config.getSavedSearchUrl() + '/' + searchId);
     }
 
 

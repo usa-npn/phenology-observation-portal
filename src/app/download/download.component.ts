@@ -263,7 +263,12 @@ export class DownloadComponent {
              phenophases: this._npnPortalService.getSelectedPhenophases().map((phenophase) => phenophase.phenophase_id),
              partnerGroups: this._npnPortalService.getSelectedPartnerGroups().map((group) => group.Network_ID),
              datasets: this._npnPortalService.getSelectedDatasets().map((dataset) => dataset.dataset_id),
+             // Written for any other reader of the shared saved_search table; POP restores from
+             // optionalFieldGroups below, which is the unit the UI and the download payload use.
              optionalFields: this._outputFieldsService.getSelectedOptionalFields().map((field) => field.metadata_field_id),
+             optionalFieldGroups: this._outputFieldsService
+                 .getSelectedGroups(this._npnPortalService.downloadType)
+                 .map((group) => group.flag),
              datasheets: this._npnPortalService.getSelectedDatasheets().map((datasheet) => datasheet.id),
              dataPrecision: this._npnPortalService.dataPrecision,
              periodInterest: this._npnPortalService.periodInterest,
@@ -275,14 +280,13 @@ export class DownloadComponent {
              startYear: this._npnPortalService.startYear,
              endYear: this._npnPortalService.endYear
          };
-         this._persistentSearchService.saveSearch(savedSearch).subscribe((res) => {
-             if(res['download_path'] === "error") {
-                 console.log('error saving search');
-             }
-             else {
+         this._persistentSearchService.saveSearch(savedSearch).subscribe(
+             (res) => {
                  this.savedSearchUrl = this._configService.getPopUrl() + '?search=' + res['saved_search_hash'];
                  this.showSavedSearch = true;
-             }
-         });
+             },
+             (error) => {
+                 console.log('error saving search', error);
+             });
      }
 }

@@ -47,18 +47,6 @@ export class Config {
         }
     }
 
-    public getPopDownloadEndpoint() {
-        return '/download';
-    }
-
-    public getPopDownloadStatusEndpoint() {
-        return '/downloadstatus';
-    }
-
-    public getPopSearchEndpoint() {
-        return '/search';
-    }
-
     public getPopFgdcEndpoint() {
         return '/fgdc';
     }
@@ -77,6 +65,11 @@ export class Config {
 
     public getTokenUrl() {
         return environment.TOKEN_URL;
+    }
+
+    // No trailing slash - getSearch() appends '/{hash}'.
+    public getSavedSearchUrl() {
+        return environment.SAVED_SEARCH_URL;
     }
 
 }

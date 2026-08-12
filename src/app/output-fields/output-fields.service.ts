@@ -132,20 +132,12 @@ export class OutputFieldsService {
                 rawFields.map(this.mapBooleans);
                 this.rawFields = rawFields;
 
-                let fieldIds = this._persistentSearchService.optionalFields;
-                if(fieldIds) {
-                    for(var fieldId of fieldIds) {
-                        for(var rawField of this.rawFields) {
-                            if(rawField.metadata_field_id === fieldId)
-                                rawField.selected = true;
-                        }
-                    }
-                }
-                
                 this.optionalFieldsRaw = rawFields.filter((field) => {return !field.climate && !field.required && !field.remote_sensing && this.remote_sensing_fields.indexOf(field.machine_name) == -1});
                 this.climateFieldsRaw = rawFields.filter((field) => {return field.climate && !field.required});
 				this.remoteSensingFieldsRaw = rawFields.filter((field) => {return field.remote_sensing && !field.climate && !field.required});
                 this.defaultFieldsRaw = rawFields.filter((field) => {return field.required});
+
+                this.applySavedGroups('raw');
 
                 this.optionalFields = this.optionalFieldsRaw.concat(this.climateFieldsRaw).concat(this.remoteSensingFieldsRaw).map(obj => Object.assign({}, obj));                    
                 
@@ -165,20 +157,12 @@ export class OutputFieldsService {
                 summarizedFields.map(this.mapBooleans);
                 this.summarizedFields = summarizedFields;
 
-                let fieldIds = this._persistentSearchService.optionalFields;
-                if(fieldIds) {
-                    for(var fieldId of fieldIds) {
-                        for(var summarizedField of this.summarizedFields) {
-                            if(summarizedField.metadata_field_id === fieldId)
-                                summarizedField.selected = true;
-                        }
-                    }
-                }
-                
                 this.optionalFieldsSummarized = summarizedFields.filter((field) => {return !field.climate && !field.required && !field.remote_sensing && this.remote_sensing_fields.indexOf(field.machine_name) == -1});
                 this.climateFieldsSummarized = summarizedFields.filter((field) => {return field.climate && !field.required});
 				this.remoteSensingFieldsSummarized = summarizedFields.filter((field) => {return field.remote_sensing &&  !field.climate && !field.required});
                 this.defaultFieldsSummarized = summarizedFields.filter((field) => {return field.required});
+
+                this.applySavedGroups('summarized');
 
                 this.optionalFields = this.optionalFieldsSummarized.concat(this.climateFieldsSummarized).map(obj => Object.assign({}, obj));
                 
@@ -198,20 +182,12 @@ export class OutputFieldsService {
                 siteLevelSummarizedFields.map(this.mapBooleans);
                 this.siteLevelSummarizedFields = siteLevelSummarizedFields;
 
-                let fieldIds = this._persistentSearchService.optionalFields;
-                if(fieldIds) {
-                    for(var fieldId of fieldIds) {
-                        for(var siteLevelSummarizedField of this.siteLevelSummarizedFields) {
-                            if(siteLevelSummarizedField.metadata_field_id === fieldId)
-                                siteLevelSummarizedField.selected = true;
-                        }
-                    }
-                }
-                
                 this.optionalFieldsSiteLevelSummarized = siteLevelSummarizedFields.filter((field) => {return !field.climate && !field.required && !field.remote_sensing && this.remote_sensing_fields.indexOf(field.machine_name) == -1});
                 this.climateFieldsSiteLevelSummarized = siteLevelSummarizedFields.filter((field) => {return field.climate && !field.required});
 				this.remoteSensingFieldsSiteLevelSummarized = siteLevelSummarizedFields.filter((field) => {return field.remote_sensing &&  !field.climate && !field.required});
                 this.defaultFieldsSiteLevelSummarized = siteLevelSummarizedFields.filter((field) => {return field.required});
+
+                this.applySavedGroups('siteLevelSummarized');
 
                 this.optionalFields = this.optionalFieldsSiteLevelSummarized.concat(this.climateFieldsSiteLevelSummarized).map(obj => Object.assign({}, obj));
                 
@@ -232,20 +208,11 @@ export class OutputFieldsService {
                 magnitudeFields.map(this.mapBooleans);
                 this.magnitudeFields = magnitudeFields;
 
-                let fieldIds = this._persistentSearchService.optionalFields;
-                if(fieldIds) {
-                    for(var fieldId of fieldIds) {
-                        for(var magnitudeField of this.magnitudeFields) {
-                            if(magnitudeField.metadata_field_id === fieldId)
-                                magnitudeField.selected = true;
-                        }
-                    }
-                }
-                
-                
                 this.optionalFieldsMagnitude = magnitudeFields.filter((field) => {return !field.climate && !field.required && !field.remote_sensing});
                 this.climateFieldsMagnitude = magnitudeFields.filter((field) => {return field.climate && !field.required});
                 this.defaultFieldsMagnitude = magnitudeFields.filter((field) => {return field.required});
+
+                this.applySavedGroups('magnitude');
 
                 this.optionalFields = this.optionalFieldsMagnitude.concat(this.climateFieldsMagnitude).map(obj => Object.assign({}, obj));
                 
@@ -260,6 +227,31 @@ export class OutputFieldsService {
     }    
 
     // --- Group helpers (raw, summarized, siteLevelSummarized, magnitude) ---
+
+    // Re-select the groups a saved search stored. Called from each init*Fields() once the
+    // per-category arrays exist, since getGroupMembers() reads them. Selecting whole groups is
+    // what guarantees isGroupSelected() - and therefore the include_* flag - comes back true.
+    // Pre-cutover searches carry per-field metadata_field_ids instead and are not restored.
+    private applySavedGroups(downloadType: string): void {
+        const flags = this._persistentSearchService.optionalFieldGroups;
+        if (!flags || !flags.length) return;
+        for (const group of OPTIONAL_FIELD_GROUPS[downloadType] || []) {
+            if (flags.indexOf(group.flag) !== -1)
+                this.toggleGroup(group, true, downloadType);
+        }
+    }
+
+    // Whether the metadata for a download type has loaded. Defaults to true so a cold start,
+    // where no type is chosen yet, has nothing to wait on.
+    fieldsReady(downloadType: string): boolean {
+        switch (downloadType) {
+            case 'raw':                 return this.rawFieldsReady;
+            case 'summarized':          return this.summarizedFieldsReady;
+            case 'siteLevelSummarized': return this.siteLevelSummarizedFieldsReady;
+            case 'magnitude':           return this.magnitudeFieldsReady;
+            default:                    return true;
+        }
+    }
 
     private getFieldArrays(downloadType: string) {
         switch (downloadType) {
