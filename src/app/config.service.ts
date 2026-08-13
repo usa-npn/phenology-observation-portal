@@ -4,17 +4,6 @@ import { environment } from '../environments/environment';
 @Injectable()
 export class Config {
 
-    public getPopServerUrl() {
-        // if(location.hostname.includes('local')){
-        //     return location.protocol + '//' + location.hostname;
-        // }
-        if(location.hostname.includes('staging')){
-            return "https://services-staging.usanpn.org/pop-services";
-        }else{
-            return "https://services.usanpn.org/pop-services";
-        }
-    }
-
     public getNpnPortalServerUrl() {
         // if(location.hostname.includes('local')){
         //     return location.protocol + '//' + location.hostname;
@@ -45,10 +34,6 @@ export class Config {
         }else{
             return window.location.origin + "/observations";
         }
-    }
-
-    public getPopFgdcEndpoint() {
-        return '/fgdc';
     }
 
     public getLambdaEndpoint() {
