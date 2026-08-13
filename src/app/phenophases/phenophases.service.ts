@@ -1,6 +1,8 @@
 import {Injectable, EventEmitter} from '@angular/core';
 import {Phenophase} from './phenophase';
 import { HttpClient } from '@angular/common/http';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { first } from 'rxjs/operators';
 import {Config} from '../config.service';
 import {PersistentSearchService} from "../persistent-search.service";
 import {NpnPortalService} from "../npn-portal.service";
@@ -16,6 +18,8 @@ export class PhenophasesService {
     private _phenophasesUrl = this.config.getNpnPortalServerUrl() + '/npn_portal/phenophases/getPhenophases.json';
     errorMessage: string;
     public ready:boolean = false;
+    // See LocationsService.ready$.
+    public ready$ = new ReplaySubject<boolean>(1);
     public phenophases:Phenophase[] = [];
     public phenophaseRemoved$ = new EventEmitter();
     public submitPhenophases$ = new EventEmitter();
@@ -29,8 +33,9 @@ export class PhenophasesService {
     }
 
     initPhenophases() {
-        this.getPhenophases().subscribe(
-            phenophases => {
+        // Runs concurrently with the saved-search fetch - see LocationsService.initStates().
+        forkJoin([this.getPhenophases(), this._persistentSearchService.restored$.pipe(first())]).subscribe(
+            ([phenophases]) => {
                 this.phenophases = phenophases;
                 console.log('phenophases have been set');
 
@@ -46,6 +51,7 @@ export class PhenophasesService {
                 }
                 
                 this.ready = true;
+                this.ready$.next(true);
             },
             error => this.errorMessage = <any>error)
     }

@@ -1,6 +1,8 @@
 import {Injectable, EventEmitter} from '@angular/core';
 import {State} from './state';
 import { HttpClient } from '@angular/common/http';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { first } from 'rxjs/operators';
 import {Config} from '../config.service';
 import {PersistentSearchService} from "../persistent-search.service";
 import {NpnPortalService} from "../npn-portal.service";
@@ -16,6 +18,9 @@ export class LocationsService {
     private _statesUrl = this.config.getNpnPortalServerUrl() + '/npn_portal/stations/getStates.json';
     errorMessage: string;
     public ready:boolean = false;
+    // Observable twin of `ready`, for callers that need to act the moment the restored selections
+    // have been copied onto NpnPortalService rather than poll a flag from a template.
+    public ready$ = new ReplaySubject<boolean>(1);
     public states:State[] = [];
     currentTab:string = 'statesView';
     public stateRemoved$ = new EventEmitter();
@@ -30,9 +35,11 @@ export class LocationsService {
     }
     
     initStates() {
-        this.getStates().subscribe(
-            states => {
-                this.states = states; 
+        // Runs concurrently with the saved-search fetch; forkJoin holds the restored selections
+        // back until both have landed, whichever order that happens in.
+        forkJoin([this.getStates(), this._persistentSearchService.restored$.pipe(first())]).subscribe(
+            ([states]) => {
+                this.states = states;
                 console.log('states have been set');
                 let stateIds = this._persistentSearchService.states;
                 if(stateIds) {
@@ -45,6 +52,7 @@ export class LocationsService {
                     this._npnPortalService.states = this.states.map(obj => Object.assign({}, obj));
                 }
                 this.ready = true;
+                this.ready$.next(true);
             },
             error => this.errorMessage = <any>error)
     }

@@ -1,6 +1,8 @@
  import {Injectable, EventEmitter} from '@angular/core';
  import {SpeciesType} from './species-type';
  import { HttpClient } from '@angular/common/http';
+ import { forkJoin, ReplaySubject } from 'rxjs';
+ import { first } from 'rxjs/operators';
  import {FunctionalType} from './functional-type';
  import {Species} from './species';
  import {Config} from '../config.service'
@@ -31,6 +33,8 @@
      }
 
      public ready:boolean = false;
+     // See LocationsService.ready$.
+     public ready$ = new ReplaySubject<boolean>(1);
      public species:Species[] = [];
      public functionalTypes:FunctionalType[] = [];
     public speciesTypes:SpeciesType[] = [{
@@ -181,8 +185,9 @@
 
 
      initSpecies() {
-         this.getSpecies().subscribe(
-             species => {
+         // Runs concurrently with the saved-search fetch - see LocationsService.initStates().
+         forkJoin([this.getSpecies(), this._persistentSearchService.restored$.pipe(first())]).subscribe(
+             ([species]) => {
                  console.log('species have been set');
                  this.species = species;
                  let speciesIds = this._persistentSearchService.species;
@@ -196,6 +201,7 @@
                      this._npnPortalService.species = this.species.map(obj => Object.assign({}, obj));
                  }
                  this.ready = true;
+                 this.ready$.next(true);
              },
              error => this.errorMessage = <any>error)
      }

@@ -1,8 +1,11 @@
 import {Injectable} from '@angular/core';
+import { LocationStrategy } from '@angular/common';
 import { environment } from '../environments/environment';
 
 @Injectable()
 export class Config {
+
+    constructor(private _locationStrategy: LocationStrategy) {}
 
     public getNpnPortalServerUrl() {
         // if(location.hostname.includes('local')){
@@ -24,16 +27,12 @@ export class Config {
         }
     }
 
+    // POP's own front-end root, used to build shareable ?search= links. This has to be wherever
+    // this build is actually served from, which is exactly its <base href> (set by --base-href at
+    // build time, or APP_BASE_HREF). The old hardcoded "/observations" produced a dead link
+    // anywhere else - under ng serve, and after the base href moved to "/".
     public getPopUrl() {
-        // if(location.hostname.includes('local')){
-        //     return window.location.origin;
-        // }
-        
-        if(location.hostname.includes('staging')){
-            return window.location.origin + "/observations";
-        }else{
-            return window.location.origin + "/observations";
-        }
+        return window.location.origin + this._locationStrategy.getBaseHref();
     }
 
     public getLambdaEndpoint() {

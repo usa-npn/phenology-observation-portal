@@ -1,6 +1,8 @@
 import {Injectable, EventEmitter} from '@angular/core';
 import {Dataset} from './dataset';
 import { HttpClient } from '@angular/common/http';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { first } from 'rxjs/operators';
 import {Config} from '../config.service';
 import {PersistentSearchService} from "../persistent-search.service";
 import {NpnPortalService} from "../npn-portal.service";
@@ -16,6 +18,8 @@ export class IntegratedDatasetService {
     private _datasetUrl = this.config.getNpnPortalServerUrl() + '/npn_portal/observations/getDatasetDetails.json';
     errorMessage: string;
     public ready:boolean = false;
+    // See LocationsService.ready$.
+    public ready$ = new ReplaySubject<boolean>(1);
     public datasets:Dataset[] = [];
 
     public datasetRemoved$ = new EventEmitter();
@@ -30,8 +34,9 @@ export class IntegratedDatasetService {
     }
 
     initDatasets() {
-        this.getDatasets().subscribe(
-            datasets => {       
+        // Runs concurrently with the saved-search fetch - see LocationsService.initStates().
+        forkJoin([this.getDatasets(), this._persistentSearchService.restored$.pipe(first())]).subscribe(
+            ([datasets]) => {
                 this.datasets = datasets.filter((d) => d.dataset_name === 'Legacy Lilac/Honeysuckle Data - East'
                 || d.dataset_name === 'Legacy Lilac/Honeysuckle Data - West'
                 || d.dataset_name === 'ADF Nature Log'
@@ -62,6 +67,7 @@ export class IntegratedDatasetService {
                 }
                 
                 this.ready = true;
+                this.ready$.next(true);
             },
             error => this.errorMessage = <any>error)
     }

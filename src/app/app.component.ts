@@ -1,5 +1,7 @@
 import {Component} from "@angular/core";
 import {Router} from '@angular/router';
+import {forkJoin} from 'rxjs';
+import {first} from 'rxjs/operators';
 import {DownloadComponent} from "./download/download.component";
 import {NpnPortalService} from "./npn-portal.service";
 import {DateService} from "./date-range/date.service";
@@ -74,8 +76,14 @@ export class AppComponent {
         return page == this._npnPortalService.activePage
     }
 
+    // True from the moment a ?search= hash is seen until it has been restored (or failed). The
+    // nav stays disabled through that window so it can't enable, then disable again once the
+    // restored download type brings its own metadata request with it.
+    private restorePending = false;
+
     allDataLoaded() {
-        return this._locationsService.ready
+        return !this.restorePending
+            && this._locationsService.ready
             && this._phenophasesService.ready
             && this._speciesService.ready
             && this._partnerGroupsService.ready
@@ -83,15 +91,15 @@ export class AppComponent {
             && this._integratedDatasetService.ready
     }
 
+    // None of these depend on the saved search to *start* - each one joins restored$ before it
+    // applies any restored selection, so they run in parallel with the saved-search fetch.
     initializeData() {
         this._locationsService.initStates();
         this._speciesService.initSpecies();
         this._speciesService.initFunctionalTypes();
         this._partnerGroupsService.initPartnerGroups();
         this._phenophasesService.initPhenophases();
-        this.initOutputFields();
         this._integratedDatasetService.initDatasets();
-        this._ancillaryDataService.initDatasheets();
     }
 
     // Only fires when a saved search restored a download type. On a cold start the type is
@@ -107,21 +115,61 @@ export class AppComponent {
     
     ngOnInit() {
         let searchId = this._persistentSearchService.getSearchId();
+        this.restorePending = !!searchId;
+
+        // Kick the reference data off first. It used to wait for the saved-search response, which
+        // meant a slow /saved_search left get-started on its loading bar - and every nav button
+        // disabled - for the saved-search round trip *plus* the reference-data round trip.
+        this.initializeData();
+
         if(!searchId) {
-            this.initializeData();
+            this.restore(null);
             return;
         }
         this._persistentSearchService.getSearch(searchId).subscribe(
-            (savedSearch: savedSearch) => {
-                this.applySavedSearch(savedSearch);
-                this.initializeData();
-            },
+            (savedSearch: savedSearch) => this.restore(savedSearch),
             (error) => {
                 // A stale, malformed (400) or missing (404) hash must not strand the user on the
                 // loading screen - fall through to a normal empty session.
                 console.warn('Could not load saved search "' + searchId + '"', error);
-                this.initializeData();
+                this.restore(null);
             });
+    }
+
+    // Runs once, on every path - with the restored search, or with null when there is nothing to
+    // restore. Order matters: the selections have to be on PersistentSearchService before
+    // restored$ releases the services waiting on it.
+    private restore(savedSearch: savedSearch) {
+        this.applySavedSearch(savedSearch);
+        this._persistentSearchService.restored$.next(savedSearch);
+        this.restorePending = false;
+
+        // Both read what applySavedSearch just wrote - the download type and the datasheet ids.
+        this.initOutputFields();
+        this._ancillaryDataService.initDatasheets();
+
+        // A restored search arrives with its filters already set, but nothing ever asked for a
+        // count, so "Estimated Records" sat blank until the user visited a filter page and
+        // navigated away (DeactivateGuard -> submit() -> setObservationCount()).
+        //
+        // Nothing restored - get-started's setDownloadType() drives the first count, as always.
+        if(!savedSearch || !savedSearch.downloadType)
+            return;
+
+        // It has to wait for all five services below. applySavedSearch() only puts ids on
+        // PersistentSearchService; each service translates those into the selections
+        // buildCountParams() actually reads (state_code, phenophase_category, the -9999 dataset
+        // expansion) when its own request lands. Counting any earlier asks for an unfiltered total.
+        forkJoin([
+            this._locationsService.ready$.pipe(first()),
+            this._speciesService.ready$.pipe(first()),
+            this._phenophasesService.ready$.pipe(first()),
+            this._partnerGroupsService.ready$.pipe(first()),
+            this._integratedDatasetService.ready$.pipe(first())
+        ]).subscribe(() => {
+            if(this._npnPortalService.reportTypeSelected())
+                this._npnPortalService.setObservationCount();
+        });
     }
 
     //set all our model data using the returned JSON
@@ -144,6 +192,17 @@ export class AppComponent {
         if(savedSearch.dataPrecision) {
             this._dateService.dataPrecision = savedSearch.dataPrecision;
             this._npnPortalService.dataPrecision = savedSearch.dataPrecision;
+        }
+        // Both are written by saveSearch() but were never read back. Without periodInterest a
+        // restored magnitude search divides by null in getMagnitudeEstimate(), so the record
+        // count comes out Infinity; without rangeType a saved year range reopens as a calendar one.
+        if(savedSearch.periodInterest) {
+            this._dateService.periodInterest = savedSearch.periodInterest;
+            this._npnPortalService.periodInterest = savedSearch.periodInterest;
+        }
+        if(savedSearch.rangeType) {
+            this._dateService.rangeType = savedSearch.rangeType;
+            this._npnPortalService.rangeType = savedSearch.rangeType;
         }
         if(savedSearch.startYear) {
             this._dateService.startYear = savedSearch.startYear;

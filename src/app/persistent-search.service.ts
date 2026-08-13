@@ -1,5 +1,6 @@
 import {Injectable} from "@angular/core";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ReplaySubject } from 'rxjs';
 import {Config} from "./config.service";
 
 export class savedSearch { //todo type these
@@ -13,6 +14,8 @@ export class savedSearch { //todo type these
     endYear;
     endDay;
     dataPrecision:number;
+    periodInterest;
+    rangeType;
     stations;
     states;
     species;
@@ -37,6 +40,12 @@ export class PersistentSearchService {
     datasets = [];
     optionalFieldGroups = [];
     datasheets = [];
+
+    // Emits exactly once, after AppComponent has copied a restored search into the fields above -
+    // or immediately with null when there is no ?search= to restore, or the fetch failed.
+    // Reference-data requests fire in parallel with the saved-search fetch and join on this, so a
+    // slow saved-search response no longer delays every other request behind it.
+    restored$ = new ReplaySubject<any>(1);
 
     saveSearch(searchJson) {
         const httpOptions = {

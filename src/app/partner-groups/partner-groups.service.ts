@@ -2,6 +2,8 @@ import {Injectable, EventEmitter} from '@angular/core';
 import {PartnerGroup} from './partner-group';
 import {PartnerGroupTag} from './partner-group-tag';
 import { HttpClient } from '@angular/common/http';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { first } from 'rxjs/operators';
 import {Config} from '../config.service';
 import {PersistentSearchService} from "../persistent-search.service";
 import {NpnPortalService} from "../npn-portal.service";
@@ -20,6 +22,8 @@ export class PartnerGroupsService {
 
     errorMessage: string;
     public ready:boolean = false;
+    // See LocationsService.ready$.
+    public ready$ = new ReplaySubject<boolean>(1);
     public nameFilter:string = "";
     public partnerGroups:PartnerGroup[] = [];
     public partnerGroupTags:PartnerGroupTag[] = [];
@@ -35,9 +39,10 @@ export class PartnerGroupsService {
     }
 
     initPartnerGroups() {
-        this.getPartnerGroups().subscribe(
-            partnerGroups => {
-                this.partnerGroups = partnerGroups; 
+        // Runs concurrently with the saved-search fetch - see LocationsService.initStates().
+        forkJoin([this.getPartnerGroups(), this._persistentSearchService.restored$.pipe(first())]).subscribe(
+            ([partnerGroups]) => {
+                this.partnerGroups = partnerGroups;
                 console.log('partner groups have been set');
 
                 let partnerGroupIds = this._persistentSearchService.partnerGroups;
@@ -52,6 +57,7 @@ export class PartnerGroupsService {
                 }
                 
                 this.ready = true;
+                this.ready$.next(true);
             },
             error => this.errorMessage = <any>error)
 
