@@ -3,7 +3,7 @@ import {OutputField} from './output-field';
 import { HttpClient } from '@angular/common/http';
 import {Config} from '../config.service';
 import {PersistentSearchService} from "../persistent-search.service";
-import { OptionalFieldGroup, OPTIONAL_FIELD_GROUPS } from './optional-field-groups';
+import { OptionalFieldGroup, OPTIONAL_FIELD_GROUPS, getPartnerGroupFieldGroup } from './optional-field-groups';
 
 @Injectable()
 export class OutputFieldsService {
@@ -108,12 +108,15 @@ export class OutputFieldsService {
         })
     }
 
-    togglePartnerGroupOptionalField(selected, downloadType) {
-        const { optional } = this.getFieldArrays(downloadType);
-        for (const field of optional) {
-            if (field.machine_name === 'partner_group')
-                field.selected = selected;
-        }
+    // Filtering by partner group implies the partner_group column is wanted, so selecting any
+    // partner group checks the whole group that owns it - under grouped fields a single member
+    // being selected shows nothing in the UI and sends no include_* flag. Deliberately one-way:
+    // clearing the partner group filter leaves the group checked rather than silently dropping a
+    // group's worth of columns the user may have checked themselves.
+    selectPartnerGroupFieldGroup(downloadType) {
+        const group = getPartnerGroupFieldGroup(downloadType);
+        if (!group) return; // magnitude has no partner_group column
+        this.toggleGroup(group, true, downloadType);
         this.syncOptionalFields(downloadType);
     }
 
@@ -234,11 +237,20 @@ export class OutputFieldsService {
     // Pre-cutover searches carry per-field metadata_field_ids instead and are not restored.
     private applySavedGroups(downloadType: string): void {
         const flags = this._persistentSearchService.optionalFieldGroups;
-        if (!flags || !flags.length) return;
-        for (const group of OPTIONAL_FIELD_GROUPS[downloadType] || []) {
-            if (flags.indexOf(group.flag) !== -1)
-                this.toggleGroup(group, true, downloadType);
+        if (flags && flags.length) {
+            for (const group of OPTIONAL_FIELD_GROUPS[downloadType] || []) {
+                if (flags.indexOf(group.flag) !== -1)
+                    this.toggleGroup(group, true, downloadType);
+            }
         }
+
+        // Same rule as selectPartnerGroupFieldGroup(), applied on restore: a search saved with a
+        // partner group filter comes back with the owning group checked, whether or not its flag
+        // was stored. This is the one point where both the restored partner groups and the
+        // per-category field arrays exist, so it can't be done from PartnerGroupsService.
+        const savedPartnerGroups = this._persistentSearchService.partnerGroups;
+        if (savedPartnerGroups && savedPartnerGroups.length)
+            this.selectPartnerGroupFieldGroup(downloadType);
     }
 
     // Whether the metadata for a download type has loaded. Defaults to true so a cold start,

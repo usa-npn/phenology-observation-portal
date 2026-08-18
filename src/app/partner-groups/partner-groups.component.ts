@@ -120,7 +120,8 @@ export class PartnerGroupsComponent implements OnInit {
     }
     
     submit() {
-        this._outputFieldsService.togglePartnerGroupOptionalField(this.aPartnerGroupIsSelected(), this._npnPortalService.downloadType);
+        if(this.aPartnerGroupIsSelected())
+            this._outputFieldsService.selectPartnerGroupFieldGroup(this._npnPortalService.downloadType);
         this._npnPortalService.partnerGroups = JSON.parse(JSON.stringify(this.partnerGroups));
         this._partnerGroupsService.partnerGroups = JSON.parse(JSON.stringify(this.partnerGroups));
         this._npnPortalService.setObservationCount();

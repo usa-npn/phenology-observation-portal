@@ -274,3 +274,15 @@ export const OPTIONAL_FIELD_GROUPS: { [downloadType: string]: OptionalFieldGroup
 export function usesGroupedFields(downloadType: string): boolean {
     return !!OPTIONAL_FIELD_GROUPS[downloadType];
 }
+
+// The output field carrying the partner group name. Filtering by partner group implies the user
+// wants that column back, so selecting any partner group auto-selects the group that owns it -
+// under grouped fields the whole group has to be selected for its include_* flag to be sent.
+export const PARTNER_GROUP_MACHINE_NAME = 'partner_group';
+
+// The group that owns partner_group for a download type, or undefined when that type has none
+// (magnitude aggregates across partners, so it exposes no partner_group column).
+export function getPartnerGroupFieldGroup(downloadType: string): OptionalFieldGroup | undefined {
+    return (OPTIONAL_FIELD_GROUPS[downloadType] || [])
+        .find(group => group.machineNames.indexOf(PARTNER_GROUP_MACHINE_NAME) !== -1);
+}
