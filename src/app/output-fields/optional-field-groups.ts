@@ -19,12 +19,22 @@ export const RAW_OPTIONAL_FIELD_GROUPS: OptionalFieldGroup[] = [
             'submission_datetime',
             'updatedby_person_id',
             'update_datetime',
-            'lpl_certified_date'
+            'lpl_certified_date',
+            'observer_certified',
+            'observer_certified_date'
         ],
         fallbacks: {
             lpl_certified_date: {
                 label: 'LPL Certified Date',
                 tooltip: 'Placeholder description for LPL Certified Date.'
+            },
+            observer_certified: {
+                label: 'Observer Certified',
+                tooltip: ''
+            },
+            observer_certified_date: {
+                label: 'Observer Certified Date',
+                tooltip: ''
             }
         }
     },
@@ -122,16 +132,30 @@ export const RAW_OPTIONAL_FIELD_GROUPS: OptionalFieldGroup[] = [
     }
 ];
 
-// Every member below exists in the individual_summarized metadata, so unlike raw, no fallbacks are needed.
+// Members below exist in the individual_summarized metadata except the certification fields, which
+// are not published there yet and so carry fallbacks.
 export const SUMMARIZED_OPTIONAL_FIELD_GROUPS: OptionalFieldGroup[] = [
     {
         flag: 'include_submission',
         label: 'Submission Details',
-        machineNames: ['observedby_person_id', 'lpl_certified_date'],
+        machineNames: [
+            'observedby_person_id',
+            'lpl_certified_date',
+            'observer_certified',
+            'observer_certified_date'
+        ],
         fallbacks: {
             lpl_certified_date: {
                 label: 'LPL Certified Date',
                 tooltip: 'Placeholder description for LPL Certified Date.'
+            },
+            observer_certified: {
+                label: 'Observer Certified',
+                tooltip: ''
+            },
+            observer_certified_date: {
+                label: 'Observer Certified Date',
+                tooltip: ''
             }
         }
     },
